@@ -1,0 +1,5 @@
+is_global = true
+build_property.RootNamespace = GetInventoryPlugin
+build_property.ProjectDir = C:\Users\yanie\source\ASF-PluginTemplate\GetInventoryPlugin\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 

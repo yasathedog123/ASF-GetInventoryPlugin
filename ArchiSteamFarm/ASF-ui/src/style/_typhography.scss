@@ -1,0 +1,44 @@
+.title {
+	position: relative;
+	text-align: center;
+
+	&:after {
+		border-bottom: 2px solid var(--color-theme);
+		bottom: -0.25em;
+		content: '';
+		left: 50%;
+		margin-left: -20px;
+		position: absolute;
+		width: 40px;
+	}
+}
+
+.subtitle {
+	text-align: center;
+}
+
+.info {
+  text-align: center;
+  margin: 1em;
+  position: relative;
+}
+
+code {
+  padding: .05em .3em;
+  font-size: 85%;
+  background-color: var(--color-releases-code);
+  border-radius: 3px;
+}
+
+pre {
+  white-space: pre-wrap;
+  padding: 0.5em 1em;
+  font-size: 90%;
+  background-color: #2d333b;
+  border-radius: 3px;
+  color: var(--color-releases-pre);
+
+  > code {
+    background-color: inherit;
+  }
+}

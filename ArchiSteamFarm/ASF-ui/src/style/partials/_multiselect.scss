@@ -1,0 +1,134 @@
+@import '~vue-multiselect/dist/vue-multiselect.min.css';
+
+.multiselect {
+  border: 1px solid rgba(var(--color-text-dark), 0.1);
+  border-radius: 0.1875em;
+
+  @media screen and (max-height: 725px), screen and (max-width: 1366px) {
+    min-height: 20px;
+  }
+
+	@media screen and (max-height: 640px), screen and (max-width: 1000px) {
+    min-height: 20px;
+  }
+}
+
+.multiselect__select {
+  @media screen and (max-height: 725px), screen and (max-width: 1366px) {
+    height: 33px;
+  }
+
+  @media screen and (max-height: 640px), screen and (max-width: 1000px) {
+    height: 28px;
+  }
+}
+
+.multiselect,
+.multiselect__input,
+.multiselect__single {
+  font-size: inherit;
+  background: var(--color-background);
+}
+
+.multiselect__single {
+  top: 2px;
+  font-size: 14px;
+
+  @media screen and (max-height: 725px), screen and (max-width: 1366px) {
+    vertical-align: sub;
+    font-size: 0.9375em;
+  }
+
+  @media screen and (max-height: 640px), screen and (max-width: 1000px) {
+    vertical-align: top;
+  }
+}
+
+.multiselect,
+.multiselect__input::placeholder,
+.multiselect__placeholder,
+.multiselect__option--selected.multiselect__option--highlight {
+  color: var(--color-text-dark);
+}
+
+.multiselect__tags,
+.multiselect__spinner {
+  background: var(--color-background);
+  border-color: var(--color-border);
+}
+
+.multiselect__content-wrapper {
+  top: 35px;
+  background: var(--color-background);
+  border-color: var(--color-border);
+  color: var(--color-text-dark);
+}
+
+.multiselect__tags {
+  border: none;
+
+  @media screen and (max-height: 640px), screen and (max-width: 1000px) {
+    min-height: 20px;
+    height: 33px;
+    padding: 5px 40px 0 8px;
+  }
+
+  @media screen and (max-height: 725px), screen and (max-width: 1366px) {
+    min-height: 20px;
+    height: 30px;
+    padding: 5px 40px 0 8px;
+  }
+
+  > input {
+    color: var(--color-text-dark);
+    margin-left: -5px;
+    margin-top: 0.7px;
+  }
+}
+
+.multiselect__tag,
+.multiselect__tag-icon:focus,
+.multiselect__tag-icon:hover {
+  background: var(--color-theme);
+}
+
+.multiselect__tag-icon:after {
+  color: var(--color-button-cancel);
+  font-size: 22px;
+}
+
+.multiselect__spinner:after,
+.multiselect__spinner:before {
+  border-top-color: var(--color-theme);
+}
+
+.multiselect__option--highlight:after {
+  color: var(--color-theme);
+  background: var(--color-background-light);
+}
+
+.multiselect__option--highlight {
+  background: var(--color-background-light);
+  color: var(--color-theme);
+}
+
+.multiselect__option--selected {
+  color: var(--color-theme);
+  background: var(--color-background);
+}
+
+.multiselect__option--selected.multiselect__option--highlight:hover {
+  color: var(--color-button-cancel);;
+  font-weight: 700;
+}
+
+.multiselect__option--selected.multiselect__option--highlight,
+.multiselect__option--selected.multiselect__option--highlight:after {
+  color: var(--color-theme);
+  background: var(--color-background-light);
+  font-weight: normal;
+}
+
+.multiselect__option--selected.multiselect__option--highlight:after {
+  color: #f44336;
+}

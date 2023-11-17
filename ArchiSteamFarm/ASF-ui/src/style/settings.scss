@@ -1,0 +1,23 @@
+$color-theme-blue: #367fa9;
+$color-theme-red: #a92616;
+$color-theme-teal: #359392;
+$color-theme-purple: #504d8e;
+$color-theme-green: #00a65a;
+$color-theme-orange: #D58D18;
+
+$color-text: #fff;
+$color-text-dark: #111113;
+$color-text-info: #ff7300;
+
+$color-status-disabled: #bfc3cb;
+$color-status-offline: #898989;
+$color-status-online: #57cbde;
+$color-status-farming: #90ba3c;
+
+$size-navigation: 15rem;
+$size-navigation-small: 3rem;
+
+$color-level-debug: $color-status-offline;
+$color-level-info: $color-theme-teal;
+$color-level-error: $color-theme-red;
+$color-level-warning: $color-theme-orange;

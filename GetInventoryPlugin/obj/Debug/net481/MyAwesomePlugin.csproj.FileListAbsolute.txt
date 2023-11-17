@@ -1,0 +1,14 @@
+C:\Users\yanie\source\ASF-PluginTemplate\MyAwesomePlugin\obj\Debug\net481\NuGet\F4CF2AF76571D5A0381EA34340C676B0B93400A6\TA.System.Runtime.CompilerServices.RuntimeHelpers.GetSubArray\1.0.1\System.Runtime.CompilerServices.RuntimeHelpers\GetSubArray.cs
+C:\Users\yanie\source\ASF-PluginTemplate\MyAwesomePlugin\obj\Debug\net481\MyAwesomePlugin.csproj.AssemblyReference.cache
+C:\Users\yanie\source\ASF-PluginTemplate\MyAwesomePlugin\obj\Debug\net481\MyAwesomePlugin.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yanie\source\ASF-PluginTemplate\MyAwesomePlugin\obj\Debug\net481\MyAwesomePlugin.AssemblyInfoInputs.cache
+C:\Users\yanie\source\ASF-PluginTemplate\MyAwesomePlugin\obj\Debug\net481\MyAwesomePlugin.AssemblyInfo.cs
+C:\Users\yanie\source\ASF-PluginTemplate\MyAwesomePlugin\obj\Debug\net481\MyAwesomePlugin.csproj.CoreCompileInputs.cache
+C:\Users\yanie\source\ASF-PluginTemplate\MyAwesomePlugin\obj\Debug\net481\MyAwesomePlugin.sourcelink.json
+C:\Users\yanie\source\ASF-PluginTemplate\MyAwesomePlugin\bin\Debug\net481\MyAwesomePlugin.dll
+C:\Users\yanie\source\ASF-PluginTemplate\MyAwesomePlugin\bin\Debug\net481\MyAwesomePlugin.pdb
+C:\Users\yanie\source\ASF-PluginTemplate\MyAwesomePlugin\bin\Debug\net481\JetBrains.Annotations.dll
+C:\Users\yanie\source\ASF-PluginTemplate\MyAwesomePlugin\bin\Debug\net481\Newtonsoft.Json.dll
+C:\Users\yanie\source\ASF-PluginTemplate\MyAwesomePlugin\obj\Debug\net481\MyAwesomePlugin.csproj.CopyComplete
+C:\Users\yanie\source\ASF-PluginTemplate\MyAwesomePlugin\obj\Debug\net481\MyAwesomePlugin.dll
+C:\Users\yanie\source\ASF-PluginTemplate\MyAwesomePlugin\obj\Debug\net481\MyAwesomePlugin.pdb

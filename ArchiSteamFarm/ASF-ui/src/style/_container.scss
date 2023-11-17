@@ -1,0 +1,42 @@
+.main-container {
+	height: 100%;
+	overflow: auto;
+	padding: 1em;
+}
+
+.main-container--bot-profile {
+  width: 400px;
+
+  @media screen and (max-width: 530px) {
+    width: auto;
+  }
+}
+
+.main-container--center {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+}
+
+.container {
+	background: var(--color-background-light);
+	border-radius: 3px;
+	border-top: 3px solid var(--color-theme);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+	margin-bottom: 1em;
+	max-width: 100%;
+	padding: 1em;
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
+
+.container--small {
+	width: 600px;
+}
+
+.container--fullheight {
+	box-sizing: border-box;
+	height: 100%;
+}

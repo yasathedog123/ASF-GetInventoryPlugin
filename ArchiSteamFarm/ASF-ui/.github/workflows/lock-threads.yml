@@ -1,0 +1,15 @@
+name: ASF-ui-lock-threads
+
+on:
+  schedule:
+    - cron: '0 1 * * *'
+
+jobs:
+  lock:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lock inactive threads
+        uses: dessant/lock-threads@v4.0.1
+        with:
+          issue-inactive-days: 30
+          pr-inactive-days: 30

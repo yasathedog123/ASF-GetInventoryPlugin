@@ -1,0 +1,14 @@
+C:\Users\yanie\source\ASF-PluginTemplate\GetInventoryPlugin\bin\Debug\net481\GetInventoryPlugin.dll
+C:\Users\yanie\source\ASF-PluginTemplate\GetInventoryPlugin\bin\Debug\net481\GetInventoryPlugin.pdb
+C:\Users\yanie\source\ASF-PluginTemplate\GetInventoryPlugin\bin\Debug\net481\JetBrains.Annotations.dll
+C:\Users\yanie\source\ASF-PluginTemplate\GetInventoryPlugin\bin\Debug\net481\Newtonsoft.Json.dll
+C:\Users\yanie\source\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net481\NuGet\ABF1710D9B283EF6072A52C1D607D7B39A1BD7C0\TA.System.Runtime.CompilerServices.RuntimeHelpers.GetSubArray\1.0.1\System.Runtime.CompilerServices.RuntimeHelpers\GetSubArray.cs
+C:\Users\yanie\source\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.csproj.AssemblyReference.cache
+C:\Users\yanie\source\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yanie\source\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.AssemblyInfoInputs.cache
+C:\Users\yanie\source\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.AssemblyInfo.cs
+C:\Users\yanie\source\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.csproj.CoreCompileInputs.cache
+C:\Users\yanie\source\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.sourcelink.json
+C:\Users\yanie\source\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.csproj.CopyComplete
+C:\Users\yanie\source\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.dll
+C:\Users\yanie\source\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.pdb
