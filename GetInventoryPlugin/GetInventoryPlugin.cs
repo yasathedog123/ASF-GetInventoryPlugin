@@ -44,7 +44,6 @@ namespace GetInventoryPlugin {
 					case $"{nameof(GetInventoryPlugin)}TestProperty" when configValue.Type == JTokenType.Boolean:
 						bool exampleBooleanValue = configValue.Value<bool>();
 						ASF.ArchiLogger.LogGenericInfo($"{nameof(GetInventoryPlugin)}TestProperty boolean property has been found with a value of: {exampleBooleanValue}");
-						ASF.ArchiLogger.LogGenericInfo();
 						break;
 				}
 			}
@@ -80,7 +79,7 @@ namespace GetInventoryPlugin {
 						ASF.ArchiLogger.LogGenericError("A Error Has Occured");
 						return "A Error has occured";
 					}
-					return $"Found a total of {totalNormalCards} Normal Cards and a total of {totalFoilCards} Foil Cards and you have a total of {totalGems} Gems";
+					return $"Found a total of {totalNormalCards} Normal Cards and a total of {totalFoilCards} Foil Cards and a total of {totalGems} Gems";
 				default:
 					return null;
 			}

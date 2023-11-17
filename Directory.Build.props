@@ -2,7 +2,7 @@
 	<Import Project="ArchiSteamFarm/Directory.Build.props" />
 
 	<PropertyGroup>
-		<PluginName>MyAwesomePlugin</PluginName>
+		<PluginName>GetInventoryPlugin</PluginName>
 		<Version>1.0.0.0</Version>
 	</PropertyGroup>
 
