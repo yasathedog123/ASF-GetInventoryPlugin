@@ -22,10 +22,10 @@ Simply go to **[Releases](https://github.com/yasathedog123/ASF-GetInventoryPlugi
 And then use:
 
 ```
-!getinventory (Bot Name)
+!getinventory
 ```
 
-() = optional if you send it from the steam chat as command, you will need the **FamilySharing** permission (or higher) in order to be able to use it by using the steam chat
+through the steam chat, You will need the **FamilySharing** permission (or higher) in order to be able to use the command
 
 ---
 
