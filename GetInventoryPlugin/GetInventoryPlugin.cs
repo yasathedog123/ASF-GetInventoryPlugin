@@ -44,7 +44,6 @@ namespace GetInventoryPlugin {
 					case $"{nameof(GetInventoryPlugin)}TestProperty" when configValue.Type == JTokenType.Boolean:
 						bool exampleBooleanValue = configValue.Value<bool>();
 						ASF.ArchiLogger.LogGenericInfo($"{nameof(GetInventoryPlugin)}TestProperty boolean property has been found with a value of: {exampleBooleanValue}");
-						ASF.ArchiLogger.LogGenericInfo();
 						break;
 				}
 			}
@@ -56,31 +55,64 @@ namespace GetInventoryPlugin {
 			long totalGems = 0;
 			switch (args[0].ToUpperInvariant()) {
 				case "GETINVENTORY" when access >= EAccess.FamilySharing:
-					try {
+					if (args[1] != null) {
+						try {
 #pragma warning disable IDE0049 // Simplify Names
-						await foreach (Asset item in bot.ArchiWebHandler.GetInventoryAsync().ConfigureAwait(false)) {
-							if (item.Type == Asset.EType.TradingCard) {
-								totalNormalCards += 1;
-							}
+							await foreach (Asset item in Bot.GetBot(args[1]).ArchiWebHandler.GetInventoryAsync().ConfigureAwait(false)) {
+								if (item.Type == Asset.EType.TradingCard) {
+									totalNormalCards += 1;
+								}
 
-							if (item.Type == Asset.EType.FoilTradingCard) {
-								totalFoilCards += 1;
-							}
+								if (item.Type == Asset.EType.FoilTradingCard) {
+									totalFoilCards += 1;
+								}
 
-							if (item.Type == Asset.EType.SteamGems) {
-								totalGems += item.Amount;
-							}
+								if (item.Type == Asset.EType.SteamGems) {
+									totalGems += item.Amount;
+								}
 
 #pragma warning restore IDE0049 // Simplify Names
 
 
-							//return randomCatURL != null ? randomCatURL.ToString() : "God damn it, we're out of cats, care to notify my master? Thanks!";
+								//return randomCatURL != null ? randomCatURL.ToString() : "God damn it, we're out of cats, care to notify my master? Thanks!";
+							}
+						} catch (Exception e) {
+							ASF.ArchiLogger.LogGenericError("A Error Has Occured");
+
+							return "A Error has occured";
 						}
-					} catch (Exception e) {
-						ASF.ArchiLogger.LogGenericError("A Error Has Occured");
-						return "A Error has occured";
+
+						return $"Found a total of {totalNormalCards} Normal Cards and a total of {totalFoilCards} Foil Cards and a total of {totalGems} Gems";
+					} else {
+						try {
+#pragma warning disable IDE0049 // Simplify Names
+							await foreach (Asset item in bot.ArchiWebHandler.GetInventoryAsync().ConfigureAwait(false)) {
+								if (item.Type == Asset.EType.TradingCard) {
+									totalNormalCards += 1;
+								}
+
+								if (item.Type == Asset.EType.FoilTradingCard) {
+									totalFoilCards += 1;
+								}
+
+								if (item.Type == Asset.EType.SteamGems) {
+									totalGems += item.Amount;
+								}
+
+#pragma warning restore IDE0049 // Simplify Names
+
+
+								//return randomCatURL != null ? randomCatURL.ToString() : "God damn it, we're out of cats, care to notify my master? Thanks!";
+							}
+						} catch (Exception e) {
+							ASF.ArchiLogger.LogGenericError("A Error Has Occured");
+
+							return "A Error has occured";
+						}
+
+						return $"Found a total of {totalNormalCards} Normal Cards and a total of {totalFoilCards} Foil Cards and a total of {totalGems} Gems";
 					}
-					return $"Found a total of {totalNormalCards} Normal Cards and a total of {totalFoilCards} Foil Cards and you have a total of {totalGems} Gems";
+
 				default:
 					return null;
 			}
