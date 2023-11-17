@@ -34969,11 +34969,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\yanie\\source\\ASF-PluginTemplate\\GetInventoryPlugin\\GetInventoryPlugin.csproj",
+      "projectUniqueName": "C:\\Users\\yanie\\source\\GetInventoryPlugin\\GetInventoryPlugin\\GetInventoryPlugin.csproj",
       "projectName": "GetInventoryPlugin",
-      "projectPath": "C:\\Users\\yanie\\source\\ASF-PluginTemplate\\GetInventoryPlugin\\GetInventoryPlugin.csproj",
+      "projectPath": "C:\\Users\\yanie\\source\\GetInventoryPlugin\\GetInventoryPlugin\\GetInventoryPlugin.csproj",
       "packagesPath": "C:\\Users\\yanie\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\yanie\\source\\ASF-PluginTemplate\\GetInventoryPlugin\\obj\\",
+      "outputPath": "C:\\Users\\yanie\\source\\GetInventoryPlugin\\GetInventoryPlugin\\obj\\",
       "projectStyle": "PackageReference",
       "crossTargeting": true,
       "centralPackageVersionsManagementEnabled": true,
@@ -34998,8 +34998,8 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "C:\\Users\\yanie\\source\\ASF-PluginTemplate\\ArchiSteamFarm\\ArchiSteamFarm\\ArchiSteamFarm.csproj": {
-              "projectPath": "C:\\Users\\yanie\\source\\ASF-PluginTemplate\\ArchiSteamFarm\\ArchiSteamFarm\\ArchiSteamFarm.csproj",
+            "C:\\Users\\yanie\\source\\GetInventoryPlugin\\ArchiSteamFarm\\ArchiSteamFarm\\ArchiSteamFarm.csproj": {
+              "projectPath": "C:\\Users\\yanie\\source\\GetInventoryPlugin\\ArchiSteamFarm\\ArchiSteamFarm\\ArchiSteamFarm.csproj",
               "excludeAssets": "all"
             }
           }
@@ -35007,8 +35007,8 @@
         "net481": {
           "targetAlias": "net481",
           "projectReferences": {
-            "C:\\Users\\yanie\\source\\ASF-PluginTemplate\\ArchiSteamFarm\\ArchiSteamFarm\\ArchiSteamFarm.csproj": {
-              "projectPath": "C:\\Users\\yanie\\source\\ASF-PluginTemplate\\ArchiSteamFarm\\ArchiSteamFarm\\ArchiSteamFarm.csproj",
+            "C:\\Users\\yanie\\source\\GetInventoryPlugin\\ArchiSteamFarm\\ArchiSteamFarm\\ArchiSteamFarm.csproj": {
+              "projectPath": "C:\\Users\\yanie\\source\\GetInventoryPlugin\\ArchiSteamFarm\\ArchiSteamFarm\\ArchiSteamFarm.csproj",
               "excludeAssets": "all"
             }
           }

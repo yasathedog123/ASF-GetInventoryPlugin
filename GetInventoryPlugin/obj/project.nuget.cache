@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "9mHWteLzLxO86KXaEYYeZnsDbctF/uUXm6XWipXi/Ai8fFPzATAZagmgLg+FmBXkv62MT9sCtBM9RPVW9bnkug==",
+  "dgSpecHash": "DVY2HAxY5vaT603pv53czqZJQ+HVpM59fLLnrLTsjHI0N/PfdtjxC+FELOGZpGsG6NUND2ZAvarMCRprMoJDPw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\yanie\\source\\ASF-PluginTemplate\\GetInventoryPlugin\\GetInventoryPlugin.csproj",
+  "projectFilePath": "C:\\Users\\yanie\\source\\GetInventoryPlugin\\GetInventoryPlugin\\GetInventoryPlugin.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\yanie\\.nuget\\packages\\anglesharp\\1.0.2\\anglesharp.1.0.2.nupkg.sha512",
     "C:\\Users\\yanie\\.nuget\\packages\\anglesharp.xpath\\2.0.3\\anglesharp.xpath.2.0.3.nupkg.sha512",
