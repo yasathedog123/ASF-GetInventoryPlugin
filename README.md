@@ -25,6 +25,13 @@ And then use:
 !getinventory
 ```
 
+or:
+
+```
+!getinventory (Bot Instance Name)
+```
+(ASF not supported as name)
+
 through the steam chat, You will need the **FamilySharing** permission (or higher) in order to be able to use the command
 
 ---

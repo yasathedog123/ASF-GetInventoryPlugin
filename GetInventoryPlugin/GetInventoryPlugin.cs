@@ -56,28 +56,37 @@ namespace GetInventoryPlugin {
 			switch (args[0].ToUpperInvariant()) {
 				case "GETINVENTORY" when access >= EAccess.FamilySharing:
 					try {
-#pragma warning disable IDE0049 // Simplify Names
-						await foreach (Asset item in bot.ArchiWebHandler.GetInventoryAsync().ConfigureAwait(false)) {
+						await foreach (Asset item in Bot.GetBot(args[1]).ArchiWebHandler.GetInventoryAsync().ConfigureAwait(false)) {
 							if (item.Type == Asset.EType.TradingCard) {
 								totalNormalCards += 1;
 							}
-
 							if (item.Type == Asset.EType.FoilTradingCard) {
 								totalFoilCards += 1;
 							}
-
 							if (item.Type == Asset.EType.SteamGems) {
 								totalGems += item.Amount;
 							}
-
-#pragma warning restore IDE0049 // Simplify Names
-
-
-							//return randomCatURL != null ? randomCatURL.ToString() : "God damn it, we're out of cats, care to notify my master? Thanks!";
 						}
 					} catch (Exception e) {
-						ASF.ArchiLogger.LogGenericError("A Error Has Occured");
-						return "A Error has occured";
+						try {
+							await foreach (Asset item in bot.ArchiWebHandler.GetInventoryAsync().ConfigureAwait(false)) {
+								if (item.Type == Asset.EType.TradingCard) {
+									totalNormalCards += 1;
+								}
+
+								if (item.Type == Asset.EType.FoilTradingCard) {
+									totalFoilCards += 1;
+								}
+
+								if (item.Type == Asset.EType.SteamGems) {
+									totalGems += item.Amount;
+								}
+							}
+						} catch (Exception err) {
+							ASF.ArchiLogger.LogGenericError($"A Error Has Occured:\n{err}");
+
+							return "A Error has occured";
+						}
 					}
 					return $"Found a total of {totalNormalCards} Normal Cards and a total of {totalFoilCards} Foil Cards and a total of {totalGems} Gems";
 				default:
@@ -121,8 +130,6 @@ namespace GetInventoryPlugin {
 		public async Task OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
 			// For example, we'll ensure that every bot starts paused regardless of Paused property, in order to do this, we'll just call Pause here in InitModules()
 			// Thanks to the fact that this method is called with each bot config reload, we'll ensure that our bot stays paused even if it'd get unpaused otherwise
-			bot.ArchiLogger.LogGenericInfo("Pausing this bot as asked from the plugin");
-			await bot.Actions.Pause(true).ConfigureAwait(false);
 		}
 
 		// This method is called when the bot is successfully connected to Steam network and it's a good place to schedule any on-connected tasks, as AWH is also expected to be available shortly

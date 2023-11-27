@@ -12,3 +12,16 @@ C:\Users\yanie\source\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net481\Get
 C:\Users\yanie\source\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.csproj.CopyComplete
 C:\Users\yanie\source\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.dll
 C:\Users\yanie\source\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.pdb
+C:\Users\yanie\RiderProjects\ASF-GetInventoryPlugin\GetInventoryPlugin\bin\Debug\net481\GetInventoryPlugin.dll
+C:\Users\yanie\RiderProjects\ASF-GetInventoryPlugin\GetInventoryPlugin\bin\Debug\net481\GetInventoryPlugin.pdb
+C:\Users\yanie\RiderProjects\ASF-GetInventoryPlugin\GetInventoryPlugin\bin\Debug\net481\JetBrains.Annotations.dll
+C:\Users\yanie\RiderProjects\ASF-GetInventoryPlugin\GetInventoryPlugin\bin\Debug\net481\Newtonsoft.Json.dll
+C:\Users\yanie\RiderProjects\ASF-GetInventoryPlugin\GetInventoryPlugin\obj\Debug\net481\NuGet\1C6F1EA74F3B0324322747EA7BC5DEE0E0EC391A\TA.System.Runtime.CompilerServices.RuntimeHelpers.GetSubArray\1.0.1\System.Runtime.CompilerServices.RuntimeHelpers\GetSubArray.cs
+C:\Users\yanie\RiderProjects\ASF-GetInventoryPlugin\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.csproj.AssemblyReference.cache
+C:\Users\yanie\RiderProjects\ASF-GetInventoryPlugin\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yanie\RiderProjects\ASF-GetInventoryPlugin\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.AssemblyInfoInputs.cache
+C:\Users\yanie\RiderProjects\ASF-GetInventoryPlugin\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.AssemblyInfo.cs
+C:\Users\yanie\RiderProjects\ASF-GetInventoryPlugin\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.csproj.CoreCompileInputs.cache
+C:\Users\yanie\RiderProjects\ASF-GetInventoryPlugin\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.csproj.CopyComplete
+C:\Users\yanie\RiderProjects\ASF-GetInventoryPlugin\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.dll
+C:\Users\yanie\RiderProjects\ASF-GetInventoryPlugin\GetInventoryPlugin\obj\Debug\net481\GetInventoryPlugin.pdb
