@@ -1,6 +1,6 @@
 # Razmjene
 
-ASF ima mogućnost Steam ne interaktivne (offline) razmjene. I primanje (prihvatanje/odbijanje) kao i slanje zahtjeva je dostupno odmah i ne zahtjeva specijalnu konfiguraciju, ali zahtijeva Steam nalog bez restrikcija (onaj koji je potrošio 5$ ili više na Steam prodavnici). Modul za razmjene je nedostupan nalogu sa restrikcijama.
+ASF ima mogućnost Steam ne interaktivne (offline) razmjene. I primanje (prihvatanje/odbijanje) kao i slanje zahtjeva je dostupno odmah i ne zahtjeva specijalnu konfiguraciju, ali zahtijeva Steam nalog bez restrikcija (onaj koji je potrošio 5$ ili više na Steam prodavnici). Only limited trading functionality is available for restricted accounts.
 
 ---
 

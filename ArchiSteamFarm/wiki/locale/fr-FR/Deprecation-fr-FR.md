@@ -1,12 +1,12 @@
 # Dépréciation
 
-Depuis ASF V3.1.2.2, nous suivons une politique de désapprobation cohérente afin de rendre le développement et l’utilisation beaucoup plus cohérents.
+We're doing our best to follow consistent deprecation policy in order to make both development as well as usage far more consistent.
 
 ---
 
 ## Qu'est ce la dépréciation ?
 
-La désapprobation est un processus consistant à effectuer des modifications majeures plus ou moins importantes rendant obsolètes les options, arguments, fonctionnalités ou fonctions précédemment utilisés. Une désapprobation signifie généralement que quelque chose a été simplement réécrit d'une autre manière, et vous devez vous assurer que vous y passerez dans les meilleurs délais. Dans ce cas, il s'agit simplement de déplacer une fonctionnalité  vers un emplacement plus approprié.
+Deprecation is the process of smaller or bigger breaking changes that render previously used options, arguments, functionalities or usage cases obsolete. Une désapprobation signifie généralement que quelque chose a été simplement réécrit d'une autre manière, et vous devez vous assurer que vous y passerez dans les meilleurs délais. Dans ce cas, il s'agit simplement de déplacer une fonctionnalité  vers un emplacement plus approprié.
 
 ASF change rapidement et cherche toujours à devenir meilleur. Malheureusement, cela veut dire que nous pouvons changer ou déplacer certaines fonctionnalités existantes vers une autre partie du logiciel, au profit de nouvelles fonctionnalités, de compatibilité et de stabilité. Grâce à cela, nous n’avons pas besoin de nous en tenir aux décisions de développement obsolètes ou tout simplement douloureusement erronées que nous avons prises il y a des années. Nous essayons toujours de fournir un remplacement raisonnable qui corresponde à l'utilisation attendue des fonctionnalités précédemment disponibles. C'est pourquoi la désapprobation est généralement sans danger et nécessite de petites corrections par rapport à l'utilisation précédente.
 

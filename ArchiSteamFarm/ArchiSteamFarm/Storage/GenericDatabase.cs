@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
 using JetBrains.Annotations;
@@ -35,9 +36,7 @@ public abstract class GenericDatabase : SerializableFile {
 
 	[PublicAPI]
 	public void DeleteFromJsonStorage(string key) {
-		if (string.IsNullOrEmpty(key)) {
-			throw new ArgumentNullException(nameof(key));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(key);
 
 		if (!KeyValueJsonStorage.TryRemove(key, out _)) {
 			return;
@@ -48,19 +47,14 @@ public abstract class GenericDatabase : SerializableFile {
 
 	[PublicAPI]
 	public JToken? LoadFromJsonStorage(string key) {
-		if (string.IsNullOrEmpty(key)) {
-			throw new ArgumentNullException(nameof(key));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(key);
 
-		return KeyValueJsonStorage.TryGetValue(key, out JToken? value) ? value : null;
+		return KeyValueJsonStorage.GetValueOrDefault(key);
 	}
 
 	[PublicAPI]
 	public void SaveToJsonStorage(string key, JToken value) {
-		if (string.IsNullOrEmpty(key)) {
-			throw new ArgumentNullException(nameof(key));
-		}
-
+		ArgumentException.ThrowIfNullOrEmpty(key);
 		ArgumentNullException.ThrowIfNull(value);
 
 		if (value.Type == JTokenType.Null) {

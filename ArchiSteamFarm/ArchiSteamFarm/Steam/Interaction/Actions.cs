@@ -47,14 +47,18 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	private static readonly SemaphoreSlim GiftCardsSemaphore = new(1, 1);
 
 	private readonly Bot Bot;
-	private readonly ConcurrentHashSet<ulong> HandledGifts = new();
+	private readonly ConcurrentHashSet<ulong> HandledGifts = [];
 	private readonly SemaphoreSlim TradingSemaphore = new(1, 1);
 
 	private Timer? CardsFarmerResumeTimer;
 	private bool ProcessingGiftsScheduled;
 	private bool TradingScheduled;
 
-	internal Actions(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+	internal Actions(Bot bot) {
+		ArgumentNullException.ThrowIfNull(bot);
+
+		Bot = bot;
+	}
 
 	public void Dispose() {
 		// Those are objects that are always being created if constructor doesn't throw exception
@@ -80,9 +84,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			throw new InvalidEnumArgumentException(nameof(cryptoMethod), (int) cryptoMethod, typeof(ArchiCryptoHelper.ECryptoMethod));
 		}
 
-		if (string.IsNullOrEmpty(stringToEncrypt)) {
-			throw new ArgumentNullException(nameof(stringToEncrypt));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(stringToEncrypt);
 
 		return ArchiCryptoHelper.Encrypt(cryptoMethod, stringToEncrypt);
 	}
@@ -114,6 +116,23 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 	}
 
 	[PublicAPI]
+	public async Task<(bool Success, IReadOnlyCollection<Confirmation>? Confirmations, string Message)> GetConfirmations() {
+		if (Bot.BotDatabase.MobileAuthenticator == null) {
+			return (false, null, Strings.BotNoASFAuthenticator);
+		}
+
+		if (!Bot.IsConnectedAndLoggedOn) {
+			return (false, null, Strings.BotNotConnected);
+		}
+
+		ImmutableHashSet<Confirmation>? confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
+
+		bool success = confirmations != null;
+
+		return (success, confirmations, success ? Strings.Success : Strings.WarningFailed);
+	}
+
+	[PublicAPI]
 	public ulong GetFirstSteamMasterID() {
 		ulong steamMasterID = Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key > 0) && (kv.Key != Bot.SteamID) && new SteamID(kv.Key).IsIndividualAccount && (kv.Value == BotConfig.EAccess.Master)).Select(static kv => kv.Key).OrderBy(static steamID => steamID).FirstOrDefault();
 
@@ -131,23 +150,6 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		await TradingSemaphore.WaitAsync().ConfigureAwait(false);
 
 		return new SemaphoreLock(TradingSemaphore);
-	}
-
-	[PublicAPI]
-	public async Task<(bool Success, IReadOnlyCollection<Confirmation>? Confirmations, string Message)> GetConfirmations() {
-		if (Bot.BotDatabase.MobileAuthenticator == null) {
-			return (false, null, Strings.BotNoASFAuthenticator);
-		}
-
-		if (!Bot.IsConnectedAndLoggedOn) {
-			return (false, null, Strings.BotNotConnected);
-		}
-
-		ImmutableHashSet<Confirmation>? confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
-
-		bool success = confirmations != null;
-
-		return (success, confirmations, success ? Strings.Success : Strings.WarningFailed);
 	}
 
 	[PublicAPI]
@@ -222,9 +224,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			throw new InvalidEnumArgumentException(nameof(hashingMethod), (int) hashingMethod, typeof(ArchiCryptoHelper.EHashingMethod));
 		}
 
-		if (string.IsNullOrEmpty(stringToHash)) {
-			throw new ArgumentNullException(nameof(stringToHash));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(stringToHash);
 
 		return ArchiCryptoHelper.Hash(hashingMethod, stringToHash);
 	}
@@ -319,9 +319,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			throw new ArgumentNullException(nameof(items));
 		}
 
-		if (itemsPerTrade < 2) {
-			throw new ArgumentOutOfRangeException(nameof(itemsPerTrade));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(itemsPerTrade);
 
 		if (!Bot.IsConnectedAndLoggedOn) {
 			return (false, Strings.BotNotConnected);
@@ -375,13 +373,8 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 
 	[PublicAPI]
 	public async Task<(bool Success, string Message)> SendInventory(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, ulong targetSteamID = 0, string? tradeToken = null, Func<Asset, bool>? filterFunction = null, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
-
-		if (contextID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(contextID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 
 		if (!Bot.IsConnectedAndLoggedOn) {
 			return (false, Strings.BotNotConnected);

@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
@@ -41,10 +42,12 @@ public sealed class GitHubController : ArchiController {
 	///     This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime.
 	/// </remarks>
 	[HttpGet("Release")]
-	[ProducesResponseType(typeof(GenericResponse<GitHubReleaseResponse>), (int) HttpStatusCode.OK)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
+	[ProducesResponseType<GenericResponse<GitHubReleaseResponse>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.ServiceUnavailable)]
 	public async Task<ActionResult<GenericResponse>> GitHubReleaseGet() {
-		GitHub.ReleaseResponse? releaseResponse = await GitHub.GetLatestRelease(false).ConfigureAwait(false);
+		CancellationToken cancellationToken = HttpContext.RequestAborted;
+
+		GitHub.ReleaseResponse? releaseResponse = await GitHub.GetLatestRelease(false, cancellationToken).ConfigureAwait(false);
 
 		return releaseResponse != null ? Ok(new GenericResponse<GitHubReleaseResponse>(new GitHubReleaseResponse(releaseResponse))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 	}
@@ -56,19 +59,19 @@ public sealed class GitHubController : ArchiController {
 	///     This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime.
 	/// </remarks>
 	[HttpGet("Release/{version:required}")]
-	[ProducesResponseType(typeof(GenericResponse<GitHubReleaseResponse>), (int) HttpStatusCode.OK)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
+	[ProducesResponseType<GenericResponse<GitHubReleaseResponse>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.ServiceUnavailable)]
 	public async Task<ActionResult<GenericResponse>> GitHubReleaseGet(string version) {
-		if (string.IsNullOrEmpty(version)) {
-			throw new ArgumentNullException(nameof(version));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(version);
+
+		CancellationToken cancellationToken = HttpContext.RequestAborted;
 
 		GitHub.ReleaseResponse? releaseResponse;
 
 		switch (version.ToUpperInvariant()) {
 			case "LATEST":
-				releaseResponse = await GitHub.GetLatestRelease().ConfigureAwait(false);
+				releaseResponse = await GitHub.GetLatestRelease(cancellationToken: cancellationToken).ConfigureAwait(false);
 
 				break;
 			default:
@@ -76,7 +79,7 @@ public sealed class GitHubController : ArchiController {
 					return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(version))));
 				}
 
-				releaseResponse = await GitHub.GetRelease(parsedVersion.ToString(4)).ConfigureAwait(false);
+				releaseResponse = await GitHub.GetRelease(parsedVersion.ToString(4), cancellationToken).ConfigureAwait(false);
 
 				break;
 		}
@@ -91,15 +94,15 @@ public sealed class GitHubController : ArchiController {
 	///     This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime.
 	/// </remarks>
 	[HttpGet("Wiki/History/{page:required}")]
-	[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
+	[ProducesResponseType<GenericResponse<string>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.ServiceUnavailable)]
 	public async Task<ActionResult<GenericResponse>> GitHubWikiHistoryGet(string page) {
-		if (string.IsNullOrEmpty(page)) {
-			throw new ArgumentNullException(nameof(page));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(page);
 
-		Dictionary<string, DateTime>? revisions = await GitHub.GetWikiHistory(page).ConfigureAwait(false);
+		CancellationToken cancellationToken = HttpContext.RequestAborted;
+
+		Dictionary<string, DateTime>? revisions = await GitHub.GetWikiHistory(page, cancellationToken).ConfigureAwait(false);
 
 		return revisions != null ? revisions.Count > 0 ? Ok(new GenericResponse<ImmutableDictionary<string, DateTime>>(revisions.ToImmutableDictionary())) : BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(page)))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 	}
@@ -112,15 +115,15 @@ public sealed class GitHubController : ArchiController {
 	///     Specifying revision is optional - when not specified, will fetch latest available. If specified revision is invalid, GitHub will automatically fetch the latest revision as well.
 	/// </remarks>
 	[HttpGet("Wiki/Page/{page:required}")]
-	[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
+	[ProducesResponseType<GenericResponse<string>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.ServiceUnavailable)]
 	public async Task<ActionResult<GenericResponse>> GitHubWikiPageGet(string page, [FromQuery] string? revision = null) {
-		if (string.IsNullOrEmpty(page)) {
-			throw new ArgumentNullException(nameof(page));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(page);
 
-		string? html = await GitHub.GetWikiPage(page, revision).ConfigureAwait(false);
+		CancellationToken cancellationToken = HttpContext.RequestAborted;
+
+		string? html = await GitHub.GetWikiPage(page, revision, cancellationToken).ConfigureAwait(false);
 
 		return html switch {
 			null => StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries))),

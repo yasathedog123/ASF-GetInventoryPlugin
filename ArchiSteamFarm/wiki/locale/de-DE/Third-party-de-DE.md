@@ -2,15 +2,21 @@
 
 Dieser Abschnitt enthält verschiedene Ergänzungen von Drittanbietern, die ausschließlich (oder hauptsächlich) für die Verwendung zusammen mit ASF geschrieben wurden. Sie reichen von ASF-Plugins über einfache Webanwendungen und interne Bibliotheken zur Integration bis hin zu voll ausgestatteten Bots für andere Plattformen. Wenn Du etwas zur Liste hinzufügen möchtest, lass es uns im Discord oder über unsere Steam-Gruppe wissen.
 
-Bitte beachte, dass die folgenden Programme **nicht** von den ASF-Entwicklern beaufsichtigt werden und **wir daher keine Garantie für sie übernehmen**, insbesondere in Bezug auf die Sicherheit, den Schutz oder die Einhaltung der Steam-Nutzungsbedingungen. Diese Liste wird nur als Referenz gepflegt. Sie sollten immer sicherstellen, dass das Drittanbieter-Programm, das Sie gerade verwenden wollen, sicher ist, da Sie es auf eigene Gefahr verwenden.
+Bitte beachte, dass die folgenden Programme **nicht** von den ASF-Entwicklern beaufsichtigt werden und **wir daher keine Garantie für sie übernehmen**, insbesondere in Bezug auf die Sicherheit, den Schutz oder die Einhaltung der Steam-Nutzungsbedingungen. Diese Liste wird nur als Referenz gepflegt. Sie sollten immer sicherstellen, dass das Drittanbieter-Programm, das Sie gerade verwenden möchten, sicher ist, da Sie es auf eigene Gefahr verwenden.
 
 ---
 
 ## ASF-Plugins
 
+### **[Citrinate](https://github.com/Citrinate)**
+
+- **[BoosterManager](https://github.com/Citrinate/BoosterManager)**, -Plugin für ASF bietet eine einfach zu bedienende Schnittstelle zur Umwandlung von Edelsteinen in Boosterpacks sowie verschiedene Funktionen zur Verwaltung von Lagerbeständen und Marktlistungen.
+- **[CS2Interface](https://github.com/Citrinate/CS2Interface)**, Plugin für ASF, mit dem Sie mit Counter Strike 2 über **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)** interagieren können.
+- **[FreePackages](https://github.com/Citrinate/FreePackages)**, Plugin für ASF, das kostenlose Pakete auf Steam findet und diese zu Ihrem Account hinzufügt.
+
 ### **[Rudokhvist](https://github.com/Rudokhvist)**
 
-- **[ASF-Errungenschaften-Verwalter](https://github.com/Rudokhvist/ASF-Achievement-Manager)**, Erweiterung für ASF die Ihnen erlaubt, ihre Steam Errungenschaften zu verwalten.
+- **[ASF-Errungenschaften-Verwalter](https://github.com/Rudokhvist/ASF-Achievement-Manager)**, Erweiterung für ASF die Ihnen erlaubt, Ihre Steam Errungenschaften zu verwalten.
 - **[BirthdayPlugin](https://github.com/Rudokhvist/BirthdayPlugin)**, ASF-Plugin um Geburtstags-Glückwünsche zu erhalten.
 - **[BoosterCreator](https://github.com/Rudokhvist/BoosterCreator)**, Erweiterung für ASF, das die Funktionalität der Erstellung von Booster-Paketen bereitstellt.
 - **[Case-Insensitive-ASF](https://github.com/Rudokhvist/Case-Insensitive-ASF)**, Erweiterung für ASF, um Botnamen unabhängig von Groß- und Kleinschreibung zu machen.
@@ -29,6 +35,7 @@ Bitte beachte, dass die folgenden Programme **nicht** von den ASF-Entwicklern be
 ### Sonstiges
 
 - **[ASFEnhance](https://github.com/chr233/ASFEnhance)**, Plugin, welches ASF um verschiedene neue Funktionen (insbesondere Befehle) erweitert.
+- **[ASFFreeGames](https://github.com/maxisoft/ASFFreeGames)**, Plugin für ASF erlaubt es einem automatisch kostenlose Steamspiele zu sammeln, die auf Reddit bekannt gegeben wurden.
 
 ---
 
@@ -58,8 +65,8 @@ Bitte beachte, dass die folgenden Programme **nicht** von den ASF-Entwicklern be
 
 ## Programme
 
-- **[Keys extractor](https://ske.xpixv.com)**, ermöglicht es ihren Produktschlüssel in verschiedenen Formaten zu kopieren und einzufügen um den Befehl `redeem` für ASF zu erstellen. Für weitere Details schau ihren das **[GitHub Repository](https://github.com/PixvIO/SKE)** an.
-- **[ASF Mass Config Editor](https://github.com/genesix-eu/ASF_MCE)**, welcher es ermöglicht mehrere ASF-Konfigurationen einfach zu verwalten.
+- **[Keys extractor](https://umaim.github.io/SKE)**, ermöglicht es Ihren Produktschlüssel in verschiedenen Formaten zu kopieren und einzufügen um den Befehl `redeem` für ASF zu erstellen. Für weitere Details schau Ihren das **[GitHub Repository](https://github.com/PixvIO/SKE)** an.
+- **[ASF-Stapelkonfigurationsbearbeitung](https://github.com/genesix-eu/ASF_MCE)**, welcher es ermöglicht mehrere ASF-Konfigurationen einfach zu verwalten.
 
 ---
 

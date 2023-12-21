@@ -1,12 +1,12 @@
 # Deprecazione
 
-A partire da ASF V3.1.2.2, seguiremo la politica di deprecazione consistente seguente per rendere molto più coerenti sia lo sviluppo che l'utilizzo.
+We're doing our best to follow consistent deprecation policy in order to make both development as well as usage far more consistent.
 
 ---
 
 ## Cos'è la deprecazione?
 
-La deprecazione è il processo di apportare modifiche di rottura più piccole o più grandi che rendano obsoleti opzioni, argomenti, funzionalità o casi d'uso precedentemente usati. La deprecazione di solito significa che la cosa data è semplicemente stata riscritta in un'altra forma (simile) e dovresti assicurarti in modo tempestivo di eseguire il passaggio appropriato a esso. In questo caso, è semplicemente spostare la funzionalità in un luogo più appropriato.
+Deprecation is the process of smaller or bigger breaking changes that render previously used options, arguments, functionalities or usage cases obsolete. La deprecazione di solito significa che la cosa data è semplicemente stata riscritta in un'altra forma (simile) e dovresti assicurarti in modo tempestivo di eseguire il passaggio appropriato a esso. In questo caso, è semplicemente spostare la funzionalità in un luogo più appropriato.
 
 ASF cambia rapidamente e colpisce sempre per diventare migliore. Questo purtroppo significa che potremmo modificare o spostare alcune funzionalità esistenti in un altro segmento del programma perché benefici da nuove funzionalità, per compatibilità o stabilità. Grazie a questo non dobbiamo attenerci a decisioni di sviluppo obsolete o semplicemente dolorosamente sbagliate fatte anni fa. Proviamo sempre a fornire sostituzioni ragionevoli adeguate all'uso previsto della funzionalità precedentemente disponibile, poiché la deprecazione è principalmente innocua e richiede piccole correzioni dall'uso precedente.
 
@@ -28,7 +28,7 @@ La fase 2 è pianificata dopo che si svolge la fase 1 spiegata sopra ed è rilas
 
 ---
 
-## Summary
+## Sommario
 
 Hai più o meno un **mese intero** per fare il passaggio appropriato, che dovrebbe essere più che abbastanza anche se sei un utente casuale di ASF. Dopo quel periodo, ASF non garantisce più che le vecchie impostazioni avranno alcun effetto (fase 2), rendendo effettivamente non più funzionali certe funzionalità senza che tu lo noti. Se stai lanciando ASF dopo più di un mese di inattività, si consiglia di **[ricominciare da zero](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Setting-up)**, o di leggere tutti i changelog mancati e di aggiornare manualmente il tuo uso a quello corrente.
 
@@ -36,7 +36,7 @@ In gran parte dei casi, ignorare l'avviso di deprecazione non renderà inutilizz
 
 ---
 
-## Example
+## Esempio
 
 Abbiamo spostato l'**[argomento della riga di comando](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Command-line-arguments)** `--server` della pre-V3.1.2 nella **[proprietà di configurazione globale](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#global-config)** di `IPC`.
 

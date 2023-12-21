@@ -48,7 +48,7 @@ ASF 如&#8203;**[常见问题](https://github.com/JustArchiNET/ArchiSteamFarm/wi
 
 ### 我怎样确认下载的文件是真实的？
 
-我们使用与 **[Debian](https://www.debian.org/CD/verify)** 非常类似的简易验证方式，以此作为 GitHub Release 的一部分。 自 ASF V5.1.3.3 的每个官方版本开始，除了 `zip` 文件以外，还包括 `SHA512SUMS` 和 `SHA512SUMS.sign` 文件。 在下载您所需 `zip` 文件的同时，也下载这两个文件用于校验。
+我们使用与 **[Debian](https://www.debian.org/CD/verify)** 非常类似的简易验证方式，以此作为 GitHub Release 的一部分。 在 ASF 的每个官方版本中，除了 `zip` 构建产物以外，还包括 `SHA512SUMS` 和 `SHA512SUMS.sign` 文件。 在下载您所需 `zip` 文件的同时，也下载这两个文件用于校验。
 
 首先，您应该使用 `SHA512SUMS` 文件来验证指定 `zip` 文件 `SHA-512` 校验和的值与我们的计算相符。 在 Linux 上，您可以使用 `sha512sum` 工具做这件事。
 

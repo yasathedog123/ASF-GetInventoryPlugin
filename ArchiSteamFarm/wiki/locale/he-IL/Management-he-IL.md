@@ -1,4 +1,4 @@
-# Management
+# ניהול
 
 This section covers subjects related to managing the ASF process in optimal way. While not strictly mandatory for usage, it includes bunch of tips, tricks and good practices that we'd like to share, especially for system administrators, people packaging the ASF for usage in third-party repositories, as well as advanced users and alike.
 
@@ -134,7 +134,7 @@ That would be doing it manually, it's much easier to use our **[`systemd` servic
 
 ### I know better and I still want to run as `root`
 
-As of V5.2.0.10, ASF no longer stops you from doing so, only displays a warning with a short notice. Just don't be shocked if one day due to a bug in the program it'll blow up your whole OS with complete data loss - you've been warned.
+ASF doesn't forcefully stop you from doing so, only displays a warning with a short notice. Just don't be shocked if one day due to a bug in the program it'll blow up your whole OS with complete data loss - you've been warned.
 
 ---
 

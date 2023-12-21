@@ -52,8 +52,8 @@ export DOTNET_gcServer=1
 export DOTNET_TieredPGO=1
 export DOTNET_ReadyToRun=0
 
-./ArchiSteamFarm # For OS-specific build
-./ArchiSteamFarm.sh # For generic build
+./ArchiSteamFarm # Za OS-specifične gradnje
+./ArchiSteamFarm.sh # Za generične gradnje
 ```
 
 Ili na Windowsu (powershell):
@@ -64,8 +64,8 @@ $Env:DOTNET_gcServer=1
 $Env:DOTNET_TieredPGO=1
 $Env:DOTNET_ReadyToRun=0
 
-.\ArchiSteamFarm.exe # For OS-specific build
-.\ArchiSteamFarm.cmd # For generic build
+.\ArchiSteamFarm.exe # Za OS-specifične gradnje
+.\ArchiSteamFarm.cmd # Za generične gradnje
 ```
 
 ---

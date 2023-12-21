@@ -1,6 +1,6 @@
 # Ruilhandel
 
-ASF biedt ondersteuning voor Steam niet-interactieve (offline) transacties. Both receiving (accepting/declining) as well as sending trades is available right away and doesn't require special configuration, but obviously requires unrestricted Steam account (the one that spent 5$ in the store already). Trading module is unavailable for restricted accounts.
+ASF biedt ondersteuning voor Steam niet-interactieve (offline) transacties. Both receiving (accepting/declining) as well as sending trades is available right away and doesn't require special configuration, but obviously requires unrestricted Steam account (the one that spent 5$ in the store already). Only limited trading functionality is available for restricted accounts.
 
 ---
 

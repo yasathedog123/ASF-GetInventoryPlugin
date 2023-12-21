@@ -1,6 +1,6 @@
 # Steam Family Sharing
 
-ASF поддерживает Steam Family Sharing начиная с версии 2.1.5.5+. Чтобы понять, как ASF работает с этим, вы должны сначала прочитать, как работает **[Steam Family Sharing](https://store.steampowered.com/promotion/familysharing)**, который используется в магазине Steam.
+ASF supports Steam Family Sharing - in order to understand how ASF works with that, you should firstly read how **[Steam Family Sharing works](https://store.steampowered.com/promotion/familysharing)**, which is available on Steam store.
 
 ---
 
@@ -10,9 +10,9 @@ ASF поддерживает Steam Family Sharing начиная с версии
 
 ASF включает в себя соответствующую логику для того, чтобы отслеживать использование библиотеки пользователями Steam Family Sharing, и поэтому не будет "выбрасывать" их из игровой сессии из-за запуска игры. ASF будет работать так же, как в случае когда библиотека заблокирована основным аккаунтом, поэтому если библиотека используется либо с вашего клиента steam, либо одним из пользователей Steam Family Sharing, ASF не будет пытаться фармить, и будет вместо этого ожидать пока библиотека освободится.
 
-В дополнение к вышесказанному, после входа, ASF обратиться к странице **[управления Steam Family Sharing](https://store.steampowered.com/account/managedevices)** и получит оттуда до 5 `steamIDs`, которым разрешён доступ к вашей библиотеке. Этим пользователям будут присвоены права доступа `FamilySharing`, позволяющие использовать некоторые **[команды](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-ru-RU)**, в частности позволяя им использовать команду `pause~` на аккаунте, который разрешил им доступ к библиотеке, что позволяет поставить модуль фарма на паузу, чтобы запустить игру доступную через Steam Family Sharing.
+In addition to above, after logging in, ASF will access your **[family sharing settings](https://store.steampowered.com/account/managedevices)**, from which it'll extract up to 5 `steamIDs` allowed to use your library. Этим пользователям будут присвоены права доступа `FamilySharing`, позволяющие использовать некоторые **[команды](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-ru-RU)**, в частности позволяя им использовать команду `pause~` на аккаунте, который разрешил им доступ к библиотеке, что позволяет поставить модуль фарма на паузу, чтобы запустить игру доступную через Steam Family Sharing.
 
-В совокупности весь этот функционал позволяет вашим друзьям приостановить процесс фарма командой `pause~`, запустить игру, играть сколько им вздумается, а после окончания игры ASF автоматически возобновит процесс фарма. Разумеется, команда `pause~` не нужна если ASF в данный момент ничего не фармит, поскольку ваши друзья могут просто запустить игру, и логика, описанная выше, проследит чтобы они не были "выброшены" из игровой сессии.
+Connecting both functionalities described above allows your friends to `pause~` your cards farming process, start a game, play as long as they wish, and then after they're done playing, cards farming process will be automatically resumed by ASF. Разумеется, команда `pause~` не нужна если ASF в данный момент ничего не фармит, поскольку ваши друзья могут просто запустить игру, и логика, описанная выше, проследит чтобы они не были "выброшены" из игровой сессии.
 
 ---
 

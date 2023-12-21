@@ -56,9 +56,7 @@ public static class PluginsCore {
 
 	[PublicAPI]
 	public static async Task<ICrossProcessSemaphore> GetCrossProcessSemaphore(string objectName) {
-		if (string.IsNullOrEmpty(objectName)) {
-			throw new ArgumentNullException(nameof(objectName));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(objectName);
 
 		if (ASF.GlobalConfig == null) {
 			throw new InvalidOperationException(nameof(ASF.GlobalConfig));
@@ -68,10 +66,9 @@ public static class PluginsCore {
 		// At the same time it'd be the best if we avoided all special characters, such as '/' found e.g. in base64, as we can't be sure that it's not a prohibited character in regards to native OS implementation
 		// Because of that, SHA256 is sufficient for our case, as it generates alphanumeric characters only, and is barely 256-bit long. We don't need any kind of complex cryptography or collision detection here, any hashing will do, and the shorter the better
 		if (!string.IsNullOrEmpty(Program.NetworkGroup)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			objectName += $"-{Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(Program.NetworkGroup!)))}";
+			objectName += $"-{Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(Program.NetworkGroup)))}";
 		} else if (!string.IsNullOrEmpty(ASF.GlobalConfig.WebProxyText)) {
-			objectName += $"-{Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(ASF.GlobalConfig.WebProxyText!)))}";
+			objectName += $"-{Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(ASF.GlobalConfig.WebProxyText)))}";
 		}
 
 		string resourceName = OS.GetOsResourceName(objectName);
@@ -210,7 +207,7 @@ public static class PluginsCore {
 			return true;
 		}
 
-		HashSet<IPlugin> invalidPlugins = new();
+		HashSet<IPlugin> invalidPlugins = [];
 
 		foreach (IPlugin plugin in activePlugins) {
 			try {
@@ -294,9 +291,7 @@ public static class PluginsCore {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		if ((args == null) || (args.Length == 0)) {
 			throw new ArgumentNullException(nameof(args));
@@ -462,9 +457,7 @@ public static class PluginsCore {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 			return null;
@@ -576,10 +569,7 @@ public static class PluginsCore {
 	}
 
 	internal static async Task OnPICSChanges(uint currentChangeNumber, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> appChanges, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> packageChanges) {
-		if (currentChangeNumber == 0) {
-			throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
-		}
-
+		ArgumentOutOfRangeException.ThrowIfZero(currentChangeNumber);
 		ArgumentNullException.ThrowIfNull(appChanges);
 		ArgumentNullException.ThrowIfNull(packageChanges);
 
@@ -595,9 +585,7 @@ public static class PluginsCore {
 	}
 
 	internal static async Task OnPICSChangesRestart(uint currentChangeNumber) {
-		if (currentChangeNumber == 0) {
-			throw new ArgumentNullException(nameof(currentChangeNumber));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(currentChangeNumber);
 
 		if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 			return;
@@ -655,15 +643,13 @@ public static class PluginsCore {
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	private static HashSet<Assembly>? LoadAssembliesFrom(string path) {
-		if (string.IsNullOrEmpty(path)) {
-			throw new ArgumentNullException(nameof(path));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(path);
 
 		if (!Directory.Exists(path)) {
 			return null;
 		}
 
-		HashSet<Assembly> assemblies = new();
+		HashSet<Assembly> assemblies = [];
 
 		try {
 			foreach (string assemblyPath in Directory.EnumerateFiles(path, "*.dll", SearchOption.AllDirectories)) {

@@ -1,6 +1,6 @@
 # Trocas
 
-O ASF possui suporte não interativo (off-line) para trocas Steam. Tanto receber (aceitar/rejeitar) quanto enviar trocas é uma função disponível de imediato e não requer uma configuração especial, mas obviamente requer uma conta Steam sem restrições (que já tenha gasto 5 dólares na loja). O módulo de trocas não está disponível para contas restritas.
+O ASF possui suporte não interativo (off-line) para trocas Steam. Tanto receber (aceitar/rejeitar) quanto enviar trocas é uma função disponível de imediato e não requer uma configuração especial, mas obviamente requer uma conta Steam sem restrições (que já tenha gasto 5 dólares na loja). Only limited trading functionality is available for restricted accounts.
 
 ---
 

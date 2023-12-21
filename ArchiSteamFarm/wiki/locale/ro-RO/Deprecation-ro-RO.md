@@ -1,12 +1,12 @@
 # Versiuni vechi
 
-Începând cu ASF V3.1.2.2, vom urma o politică consecventă de depreciere pentru a face atât dezvoltarea, cât și utilizarea mult mai consecvente.
+We're doing our best to follow consistent deprecation policy in order to make both development as well as usage far more consistent.
 
 ---
 
 ## Ce este deprecierea?
 
-Deprecierea este procesul de a aduce schimbări mai mici sau mai mari care fac ca opțiunile, argumentele, funcționalitățile sau cazurile de utilizare folosite anterior să fie scoase din uz. De obicei, deprecierea înseamnă că acel lucru a fost pur și simplu rescris într-o altă formă (similară), și ar trebui să vă asigurați în timp util că veți comuta în mod corespunzător. În acest caz, se mută pur și simplu funcționalitatea dată într-un loc mai potrivit.
+Deprecation is the process of smaller or bigger breaking changes that render previously used options, arguments, functionalities or usage cases obsolete. De obicei, deprecierea înseamnă că acel lucru a fost pur și simplu rescris într-o altă formă (similară), și ar trebui să vă asigurați în timp util că veți comuta în mod corespunzător. În acest caz, se mută pur și simplu funcționalitatea dată într-un loc mai potrivit.
 
 ASF se schimbă rapid și întotdeauna încearcă să devină mai bun. Din păcate, acest lucru înseamnă că putem schimba sau muta unele funcționalități existente într-un alt segment al programului pentru a beneficia de noi caracteristici, compatibilitate sau stabilitate. Datorită acestui lucru nu trebuie să rămânem cu decizii de dezvoltare învechite sau pur și simplu greșite pe care le-am luat cu ani în urmă. Încercăm întotdeauna să oferim un înlocuitor rezonabil care să corespundă utilizării așteptate a funcționalității disponibile anterior, Din acest motiv, deprecierea este în mare parte inofensivă și necesită mici reparații în raport cu utilizarea anterioară.
 
@@ -28,7 +28,7 @@ Etapa 2 este programată după etapa 1 explicată mai sus şi se lansează într
 
 ---
 
-## Summary
+## Rezumat
 
 Ai mai mult sau mai puțin o **lună întreagă** pentru a face schimbarea, care ar trebui să fie mai mult decât suficient, chiar dacă sunteți un utilizator ocazional ASF. După această perioadă, ASF nu mai garantează că vechile setări vor avea vreun efect (etapa 2), ceea ce va duce ca anumite caracteristici să nu mai funcţioneze fără a le mai observa. Dacă lansați ASF după mai mult de o lună de inactivitate, vă este recomandat să **[începeți de la zero](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Setting-up)** din nou, sau să citiți toate modificările pe care le-ai ratat și să adaptați manual utilizarea la cea curentă.
 
@@ -36,7 +36,7 @@ Ai mai mult sau mai puțin o **lună întreagă** pentru a face schimbarea, care
 
 ---
 
-## Example
+## Exemplu
 
 Am mutat **[argumentul de linie de comanda](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Command-line-arguments)** pre-V3.1.2.2 `--server` în **[proprietatea globală de configurare](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#global-config)** `IPC`.
 

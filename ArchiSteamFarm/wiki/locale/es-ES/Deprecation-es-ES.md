@@ -1,6 +1,6 @@
 # Obsolescencia
 
-A partir de ASF V3.1.2.2, seguiremos una política de obsolescencia consistente para hacer tanto el desarrollo como el uso mucho más congruentes.
+Hacemos todo lo posible para seguir una política de obsolescencia consistente para hacer que tanto el desarrollo como el uso sean mucho más consistentes.
 
 ---
 

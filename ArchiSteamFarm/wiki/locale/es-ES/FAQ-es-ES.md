@@ -28,7 +28,7 @@ Los puntos principales se repiten aquí, porque las personas generalmente no qui
 - **Necesitas poseer el juego en tu cuenta de Steam para poder obtener cromos de él. El préstamo familiar no cuenta.**
 - **No puedes recolectar el juego infinitamente, cada juego tiene un número fijo de cromos a obtener. Una vez que obtienes todos (alrededor de la mitad del set completo), el juego ya no es candidato para recolección. No importa si has vendido, intercambiado, fabricado u olvidado lo que ocurrió con los cromos que obtuviste, una vez que te quedas sin cromos obtenibles, el juego se acabó.**
 - **No puedes obtener cromos de juegos F2P sin gastar dinero en ellos. Esto significa juegos permanentemente F2P como Team Fortress 2 o Dota 2. Poseer juegos F2P no te otorga cromos obtenibles.**
-- **No puedes obtener cromos en [cuentas limitadas](https://support.steampowered.com/kb_article.php?ref=3330-iagk-7663&l=spanish), independientemente de los juegos que posea. Antes era posible, para ya no es el caso.**
+- **No puedes obtener cromos en [cuentas limitadas](https://help.steampowered.com/es/faqs/view/71D3-35C2-AD96-AA3A), independientemente de los juegos poseídos. Antes era posible, para ya no es el caso.**
 - **Los juegos de paga que obtengas gratis durante una promoción no pueden ser recolectados para obtener cromos, independientemente de lo que se muestre en la página de la tienda. Antes era posible, para ya no es el caso.**
 
 Como puedes ver, los cromos de Steam te son otorgados por jugar un juego que compraste, o un juego F2P en el que has gastado dinero. Si juegas dicho juego lo suficiente, todos los cromos terminarán apareciendo en tu inventario, haciendo posible que completes una insignia (después de obtener la mitad restante del set), los vendas, o hagas lo que quieras.
@@ -117,7 +117,7 @@ Sí, ASF ni siquiera se molesta en descargar archivos de los juegos, así que fu
 
 ### ¿ASF es similar a Idle Master?
 
-La única similitud es el propósito general de ambos programas, el cual es recolectar juegos de Steam para obtener cromos. Todo lo demás, incluyendo el método de recolección, los algoritmos usados, la estructura del programa, funcionalidad, compatibilidad, terminando con el código fuente en sí mismo, es totalmente diferente y esos dos programas no tienen nada en común entre sí, ni siquiera la base fundamental - IM se ejecuta en .NET Framework, ASF en .NET (Core). ASF fue creado para resolver problemas de IM que no era posible solucionar con una simple edición de código - por eso ASF fue escrito desde cero, sin usar una sola línea de código o incluso la idea general de IM, porque ese código y esas ideas eran totalmente erróneas para empezar. IM y ASF son como Windows y Linux - ambos son sistemas operativos y ambos pueden ser instalados en tu PC, pero no comparten casi nada entre sí, además de tener un propósito similar.
+La única similitud es el propósito general de ambos programas, el cual es recolectar juegos de Steam para obtener cromos. Todo lo demás, incluyendo el método de recolección, la estructura del programa, funcionalidad, compatibilidad, algoritmos usados, especialmente el código fuente en sí mismo, es totalmente diferente y esos dos programas no tienen nada en común entre sí, ni siquiera la base fundamental - IM se ejecuta en .NET Framework, ASF en .NET (Core). ASF fue creado para resolver problemas de IM que no era posible solucionar con una simple edición de código - por eso ASF fue escrito desde cero, sin usar una sola línea de código o incluso la idea general de IM, porque ese código y esas ideas eran totalmente erróneas para empezar. IM y ASF son como Windows y Linux - ambos son sistemas operativos y ambos pueden ser instalados en tu PC, pero no comparten casi nada entre sí, además de tener un propósito similar.
 
 Por eso no deberías comparar ASF con IM basado en las expectativas de IM. Debes tratar ASF e IM como programas totalmente independientes con su propio conjunto de características. Algunas de esas características se sobreponen y puedes encontrar una característica particular en ambos, pero muy raramente, puesto que ASF cumple su propósito con un enfoque totalmente diferente en comparación con IM.
 
@@ -135,7 +135,7 @@ Además de eso, ASF **es mucho más estable y confiable** cuando se trata de pro
 
 Esos son 3 puntos **muy importantes** por los que deberías considerar usar ASF, ya que afectan directamente a todos los que recolectan cromos de Steam y no hay forma de que digan "esto no aplica para mí", ya que los mantenimientos de Steam y sus peculiaridades son cosas que les pasan a todos. Hay una docena de razones menos y más importantes de las que puedes aprender en el resto de preguntas frecuentes. Dicho brevemente, **sí**, deberías usar ASF incluso si no necesitas ninguna característica adicional que esté disponible en comparación con IM.
 
-Además, IM está oficialmente descontinuado y puede dejar de funcionar completamente en el futuro, sin nadie que se preocupe por arreglarlo, considerando que existen soluciones mucho más potentes (no solo ASF). IM ya no funciona para muchas personas, y ese número solo está subiendo, no bajando. Debes evitar el uso de software obsoleto en primer lugar, no solo IM sino también todos los programas descontinuados. No tener un mantenimiento activo significa que a nadie le importa si funciona o no, nadie verifica si lo hace y **nadie es responsable de su funcionalidad**, lo que es un asunto crucial en términos de seguridad. Es suficiente con que haya un error crítico que cause problemas en la infraestructura de Steam - sin nadie que lo corrija, Steam puede emitir otra ola de baneos que te afectará sin siquiera ser consciente de que esto sea un problema, como ya le ha ocurrido a personas usando, adivina qué, una versión obsoleta de ASF.
+Además, IM está oficialmente descontinuado y puede dejar de funcionar completamente en el futuro, sin nadie que se preocupe por arreglarlo, considerando que existen soluciones mucho más potentes (no solo ASF). IM ya no funciona para muchas personas, y ese número solo está subiendo, no bajando. Debes evitar el uso de software obsoleto en primer lugar, no solo IM sino también todos los programas descontinuados. Ningún mantenedor activo significa que a nadie le importa si funciona o no, y **nadie es responsable por su funcionalidad**, lo que es un asunto crucial en términos de seguridad. Es suficiente con que haya un error crítico que cause problemas en la infraestructura de Steam - sin nadie que lo corrija, Steam puede emitir otra ola de baneos que te afectará sin siquiera ser consciente de que esto sea un problema, como ya le ha ocurrido a personas usando, adivina qué, una versión obsoleta de ASF.
 
 ---
 
@@ -145,7 +145,7 @@ Depende de lo que consideres "interesante" para ti. Si planeas recolectar más d
 
 Primero y más importante, tienes algunas características integradas mencionadas **[arriba](#vale-la-pena-usar-asf-si-actualmente-estoy-usando-idle-master-y-funciona-bien-para-mí)** que son fundamentales para la recolección independientemente de tu objetivo final, y muy a menudo solo eso ya es suficiente para que consideres usar ASF. Pero ya sabes eso, así que vamos a pasar a algunas características más interesantes:
 
-- **Puedes recolectar desconectado** (función `OnlineStatus` de `Offline`). Recolectar desconectado hace posible omitir completamente el estatus de juego, lo que permite recolectar con ASF mientras se muestra "En Línea" en Steam al mismo tiempo, sin que tus amigos noten siquiera que ASF está jugando por ti. Esta es una característica superior, ya que te permite permanecer en línea en tu cliente de Steam, sin molestar a tus amigos con cambios constantes de juego, o confundirlos haciéndoles creer que estás jugando cuando en realidad no es así. Este punto por sí solo hace que valga la pena usar ASF si respetas a tus amigos, pero solo es el principio. También es agradable notar que esta característica no tiene nada que ver con la configuración de privacidad de Steam - si ejecutas el juego tú mismo, entonces te mostrarás correctamente como jugando para tus amigos, haciendo invisible la parte de ASF y sin afectar tu cuenta en absoluto.
+- **Puedes recolectar desconectado** (`OnlineStatus` establecido en `Offline`). Recolectar desconectado hace posible omitir completamente el estatus de juego, lo que permite recolectar con ASF mientras se muestra "En Línea" en Steam al mismo tiempo, sin que tus amigos noten siquiera que ASF está jugando por ti. Esta es una característica superior, ya que te permite permanecer en línea en tu cliente de Steam, sin molestar a tus amigos con cambios constantes de juego, o confundirlos haciéndoles creer que estás jugando cuando en realidad no es así. Este punto por sí solo hace que valga la pena usar ASF si respetas a tus amigos, pero solo es el principio. También es agradable notar que esta característica no tiene nada que ver con la configuración de privacidad de Steam - si ejecutas el juego tú mismo, entonces te mostrarás correctamente como jugando para tus amigos, haciendo invisible la parte de ASF y sin afectar tu cuenta en absoluto.
 
 - **Puedes omitir juegos reembolsables** (función `SkipRefundableGames`). ASF tiene una lógica integrada para juegos reembolsables y puedes configurar ASF para no recolectarlos automáticamente. Esto te permite evaluar por ti mismo si tu juego recién comprado en la tienda de Steam valía tu dinero, sin que ASF trate de recolectar cromos de él lo antes posible. Si juegas por más de dos horas, o pasan 2 semanas desde la compra, entonces ASF procederá a recolectar ese juego dado que ya no es reembolsable. Hasta entonces tienes control total si lo disfrutas o no y lo puedes reembolsar fácilmente si es necesario, sin tener que añadirlo manualmente a la lista negra o no usar ASF durante ese tiempo.
 
@@ -217,7 +217,7 @@ No, no es posible porque ASF (a diferencia de Idle Master o SAM) no interfiere d
 
 ---
 
-### ¿Usar ASF puede impedir que juegue en servidores protegidos por VAC, como se indica **[aquí](https://support.steampowered.com/kb_article.php?ref=2117-ilzv-2837&l=spanish)**?
+### ¿Usar ASF puede evitar que juegue en servidores asegurados por VAC, como se indica **[aquí](https://help.steampowered.com/faqs/view/22C0-03D0-AE4B-04E8)**?
 
 ASF no requiere que el cliente de Steam esté en ejecución o siquiera que esté instalado. De acuerdo a este concepto, **no** debería causar ningún problema relacionado con VAC, porque ASF garantiza que no interfiere con el cliente de Steam y todos sus procesos - este es el punto principal cuando hablamos de que ASF garantiza ser libre de VAC.
 
@@ -239,7 +239,7 @@ Al final, sin embargo, siempre es una cuestión de confianza en el desarrollador
 
 ### ¿Puedo ser baneado por esto?
 
-Para responder esta pregunta, debemos examinar de cerca el **[acuerdo de suscriptor a Steam](https://store.steampowered.com/subscriber_agreement/spanish/)**. Steam no prohíbe el uso de múltiples cuentas, de hecho, **[lo permite](https://support.steampowered.com/kb_article.php?ref=8625-WRAH-9030&l=spanish#share)** implicando que puedes usar el mismo autenticador móvil en más de una cuenta. Lo que no permite es compartir cuentas con otras personas, pero no estamos haciendo eso aquí.
+Para responder esta pregunta, debemos examinar de cerca el **[acuerdo de suscriptor a Steam](https://store.steampowered.com/subscriber_agreement/spanish/)**. Steam no prohíbe el uso de múltiples cuentas, de hecho, **[lo permite](https://help.steampowered.com/faqs/view/7EFD-3CAE-64D3-1C31#share)** implicando que puedes usar el mismo autenticador móvil en más de una cuenta. Lo que no permite es compartir cuentas con otras personas, pero no estamos haciendo eso aquí.
 
 El único punto real que considera a ASF es el siguiente:
 > No está permitido utilizar Trampas, software automatizado (bots), mods, aplicaciones de trampas (hacks) ni cualquier otro software de terceros no autorizado para modificar o automatizar cualquier proceso del bazar de suscripciones.
@@ -257,11 +257,15 @@ Por lo tanto, como con cada software de Steam, ASF no está autorizado por Valve
 Especialmente porque:
 > En cuanto a las suscripciones y los contenidos y servicios ajenos a Valve, Valve no filtra ese contenido de terceros disponible en Steam o a través de otras fuentes. Valve no acepta responsabilidad ni obligación alguna por el contenido de terceros. Algunas aplicaciones de software de terceros pueden utilizarse con fines comerciales; no obstante, si usted adquiere ese software a través de Steam, solo puede utilizarlo con fines privados.
 
-Sin embargo, Valve claramente admite la existencia de los "recolectores de Steam", como se indica **[aquí](https://support.steampowered.com/kb_article.php?ref=2117-ilzv-2837&l=spanish)**, si me preguntas, estoy bastante seguro de que si no estuvieran de acuerdo con ellos, ya hubieran hecho algo en lugar de señalar que podrían causar problemas relacionados con VAC. La palabra clave aquí es recolectores de **Steam**, por ejemplo ASF, y no recolectores de **juegos**.
+Sin embargo, Valve claramente admite la existencia de los "recolectores de Steam", como se indica **[aquí](https://help.steampowered.com/faqs/view/22C0-03D0-AE4B-04E8)**, si me preguntas, estoy bastante seguro de que si no estuvieran de acuerdo con ellos, ya hubieran hecho algo en lugar de señalar que podrían causar problemas relacionados con VAC. La palabra clave aquí es recolectores de **Steam**, por ejemplo ASF, y no recolectores de **juegos**.
 
 Ten en cuenta que lo anterior solo es nuestra interpretación de los **[Términos de Servicio de Steam](https://store.steampowered.com/subscriber_agreement/spanish)** y varios puntos - ASF está bajo la licencia Apache 2.0, que claramente establece:
 
-> A menos que sea requerido por una ley aplicable o aceptado por escrito, ASF se distribuye "TAL CUAL", SIN GARANTÍAS O CONDICIONES DE NINGÚN TIPO, ya sea expresa o implícitamente.
+```
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+```
 
 Usas este software bajo tu propio riesgo. Es muy improbable que puedas ser baneado por eso, pero si lo eres, solo puedes culparte a ti mismo.
 
@@ -275,7 +279,7 @@ El primer caso involucra a individuo con más de 1000 bots que recibió un bloqu
 
 > Hola XXX, Gracias por contactar con el Soporte de Steam. Parece que esta cuenta fue usada para administrar una red de bots. Usar bots es una violación al Acuerdo de Suscriptor a Steam.
 
-Por favor, usa algo de sentido común y no asumas que puedes hacer tales locuras solo porque ASF te permite hacerlo. Ejecutar el comando `loot ASF` en más de 1000 bots fácilmente puede ser considerado como un ataque **[DDoS](https://es.wikipedia.org/wiki/Ataque_de_denegaci%C3%B3n_de_servicio)**, y personalmente no me sorprende que alguien haya sido baneado por ello. Ten en cuenta el sentido común y un uso justo en lo que respecta al servicio de Steam, y **muy probablemente** estarás bien.
+Por favor, usa algo de sentido común y no asumas que puedes hacer tales locuras solo porque ASF te permite hacerlo. Ejecutar el comando `loot ASF` en más de 1000 bots fácilmente puede ser considerado como un ataque **[DDoS](https://es.wikipedia.org/wiki/Ataque_de_denegaci%C3%B3n_de_servicio)**, y personalmente no me sorprende que alguien haya sido baneado por ello. Mantén por lo menos un uso justo en lo que respecta al servicio de Steam, y **muy probablemente** estarás bien.
 
 El segundo caso involucró a un sujeto con más de 170 bots que fue baneado durante las Rebajas de Invierno de Steam 2017.
 
@@ -297,7 +301,7 @@ Es difícil decir si el aumento de las cuentas en línea simultáneamente fue la
 
 ---
 
-Todos lo incidentes anteriores tienen algo en común - ASF solo es una herramienta y es **tu** decisión cómo vas a usarlo. No serás baneado solo por usar ASF, sino por **cómo** lo usas. Puede ser una herramienta útil para recolectar una sola cuenta, o una red masiva de recolección formada por miles de bots. En cualquiera de los casos, no estoy ofreciendo asesoría legal, y tú debes decidir cómo usar ASF. No estoy ocultando ninguna información que podría ayudarte, por ejemplo, el hecho de que ASF hizo que baneen a algunas personas, no tengo razón para hacerlo - es tu decisión lo que quieras hacer con esa información. Si me preguntas - usa un poco de sentido común, evita tener más bots de los que recomendamos, no envíes cientos de intercambios al mismo tiempo, siempre usa una versión actualizada de ASF y _deberías_ estar bien. Cada incidente de esta naturaleza por **alguna razón** siempre le ha ocurrido a personas que ignoraron nuestra recomendación y decidieron que saben mejor que nosotros cuántos bots pueden ejecutar. Ya sea solo una coincidencia o un factor real, depende de ti decidirlo. No estoy ofreciendo ningún consejo legal, solo manifiesto una opinión que te puede ser útil, o la puedes ignorar completamente y basarte solo en los hechos relacionados anteriormente.
+Todos lo incidentes anteriores tienen algo en común - ASF solo es una herramienta y es **tu** decisión cómo vas a usarlo. No serás baneado solo por usar ASF, sino por **cómo** lo usas. Puede ser una herramienta útil para recolectar una sola cuenta, o una red masiva de recolección formada por miles de bots. En cualquiera caso, no estoy ofreciendo asesoría legal, y tú debes decidir cómo usar ASF. No estoy ocultando ninguna información que podría ayudarte, por ejemplo, el hecho de que ASF hizo que baneen a algunas personas, no tengo razón para hacerlo - es tu decisión lo que quieras hacer con esa información. Si me preguntas - usa un poco de sentido común, evita tener más bots de los que recomendamos, no envíes cientos de intercambios al mismo tiempo, siempre usa una versión actualizada de ASF y _deberías_ estar bien. Cada incidente de esta naturaleza por **alguna razón** siempre le ha ocurrido a personas que ignoraron nuestra recomendación y decidieron que saben mejor que nosotros cuántos bots pueden ejecutar. Ya sea solo una coincidencia o un factor real, depende de ti decidirlo. No estoy ofreciendo ningún consejo legal, solo manifiesto una opinión que te puede ser útil, o la puedes ignorar completamente y basarte solo en los hechos relacionados anteriormente.
 
 ---
 
@@ -347,7 +351,7 @@ ASF es una aplicación de consola, no hay ventana para ser minimizada, porque la
 
 ### ¿Usar ASF mantiene la elegibilidad para recibir packs de refuerzo?
 
-**Sí**. ASF usa el mismo método para iniciar sesión en la red de Steam que el cliente oficial, por lo tanto también mantiene la habilidad de recibir packs de refuerzo para las cuentas usadas en ASF. Además, preservar esa habilidad no requiere iniciar sesión en la comunidad de Steam, así que puedes usar `OnlineStatus` de `Offline` si lo deseas.
+**Sí**. ASF usa el mismo método para iniciar sesión en la red de Steam que el cliente oficial, por lo tanto también mantiene la habilidad de recibir packs de refuerzo para las cuentas usadas en ASF. Además, preservar esa habilidad no requiere iniciar sesión en la comunidad de Steam, así que puedes usar `OnlineStatus` en `Offline` si lo deseas.
 
 ---
 
@@ -553,7 +557,7 @@ Lo más probable es que utilices Windows y que tu consola tenga el modo de edici
 
 ### ¡ASF no puede aceptar o enviar intercambios!
 
-Primero lo obvio - las cuentas nuevas empiezan como limitadas. Hasta que desbloquees la cuenta añadiendo a la cartera o gastando en la tienda $5 dólares estadounidenses (o lo equivalente en tu moneda), ASF no puede aceptar ni enviar intercambios usando esta cuenta. En este caso, ASF declarará que el inventario está vacío, porque cada cromo en él es no intercambiable. Tampoco será posible recibir ningún intercambio, ya que eso requiere que ASF pueda obtener la clave API, y la funcionalidad de clave API está deshabilitada para las cuentas limitadas. En resumen - los intercambios están descartados para todas las cuentas limitadas, sin excepciones.
+Primero lo obvio - las cuentas nuevas empiezan como limitadas. Hasta que desbloquees la cuenta añadiendo a la cartera o gastando en la tienda $5 dólares estadounidenses (o lo equivalente en tu moneda), ASF no puede aceptar ni enviar intercambios usando esta cuenta. En este caso, ASF declarará que el inventario está vacío, porque cada cromo en él es no intercambiable.
 
 Además, si no usas **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-es-ES)**, es posible que ASF de hecho acepte/envíe intercambios, pero necesitas confirmarlos a través de tu correo electrónico. Del mismo modo, si usas la autenticación de dos factores clásica, necesitas confirmar el intercambio a través de tu autenticador. Las confirmaciones son **obligatorias** ahora, si no las quieres aceptar por ti mismo, considera importar tu autenticador a ASF 2FA.
 

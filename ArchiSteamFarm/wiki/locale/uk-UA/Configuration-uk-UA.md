@@ -42,7 +42,7 @@ The purpose of our **[Web-based ConfigGenerator](https://justarchinet.github.io/
 
 Our **[ASF-ui](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC#asf-ui)** IPC interface allows you to configure ASF as well, and is superior solution for reconfiguring ASF after generating the initial configs due to the fact that it can edit the configs in-place, as opposed to Web-based ConfigGenerator which generates them statically.
 
-In order to use ASF-ui, you must have our **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)** interface enabled itself. `IPC` is enabled by default starting with ASF V5.1.0.0, therefore you can access it right away, as long as you didn't disable it yourself.
+In order to use ASF-ui, you must have our **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)** interface enabled itself. `IPC` is enabled by default, therefore you can access it right away, as long as you didn't disable it yourself.
 
 After launching the program, simply navigate to ASF's **[IPC address](http://localhost:1242)**. If everything worked properly, you can change ASF configuration from there as well.
 
@@ -463,7 +463,7 @@ If you're unsure how to configure this option, it's best to leave it at default.
 
 ### `CompleteTypesToSend`
 
-параметр типу `ImmutableHashSet<byte>` з пустим значенням за замовчуванням. When ASF is done with completing a given set of item types specified here, it can automatically send steam trade with all finished sets to the user with `Master` permission, which is very convenient if you'd like to utilize given bot account for e.g. STM matching, while moving finished sets to some other account. This option works the same as `loot` command, therefore keep in mind that it requires user with `Master` permission set, you may also need a valid `SteamTradeToken`, as well as using an account that is eligible for trading in the first place.
+параметр типу `ImmutableHashSet<byte>` з пустим значенням за замовчуванням. When ASF is done with completing a given set of item types specified here, it can automatically send steam trade with all finished sets to the user with `Master` permission, which is very convenient if you'd like to utilize given bot account for e.g. STM matching, while moving finished sets to some other account. Ця функція працює так само як і команда `loot`, тож майте на увазі, що вона потребує користувача з набором дозволів рівня `Master`, вам також може знадобитися як дійсний `SteamTradeToken`, так і обліковий запис із розблокованою можливістю обмінів.
 
 As of today, the following item types are supported in this setting:
 
@@ -472,7 +472,7 @@ As of today, the following item types are supported in this setting:
 | 3     | FoilTradingCard | Foil variant of `TradingCard`                                 |
 | 5     | TradingCard     | Steam trading card, being used for crafting badges (non-foil) |
 
-Please note that regardless of the settings above, ASF will only ask for Steam (`appID` of 753) community (`contextID` of 6) items, so all game items, gifts and likewise, are excluded from the trade offer by definition.
+Please note that regardless of the settings above, ASF will only ask for **[Steam community items](https://steamcommunity.com/my/inventory/#753_6)** (`appID` of 753, `contextID` of 6), so all game items, gifts and likewise, are excluded from the trade offer by definition.
 
 Due to additional overhead of using this option, it's recommended to use it only on bot accounts that have a realistic chance of finishing sets on their own - for example, it makes no sense to activate if you're already using `SendOnFarmingFinished`, `SendTradePeriod` or `loot` command on usual basis.
 
@@ -583,7 +583,7 @@ There is also farming priority queue that is accessible through `fq` **[commands
 | 15    | KeyboardSkin          | Special keyboard skin for Steam deck                          |
 | 16    | StartupVideo          | Special startup video for Steam deck                          |
 
-Please note that regardless of the settings above, ASF will only ask for Steam (`appID` of 753) community (`contextID` of 6) items, so all game items, gifts and likewise, are excluded from the trade offer by definition.
+Please note that regardless of the settings above, ASF will only ask for **[Steam community items](https://steamcommunity.com/my/inventory/#753_6)** (`appID` of 753, `contextID` of 6), so all game items, gifts and likewise, are excluded from the trade offer by definition.
 
 Default ASF setting is based on the most common usage of the bot, with looting only booster packs, and trading cards (including foils). The property defined here allows you to alter that behaviour in whatever way that satisfies you. Please keep in mind that all types not defined above will show as `Unknown` type, which is especially important when Valve releases some new Steam item, that will be marked as `Unknown` by ASF as well, until it's added here (in the future release). That's why in general it's not recommended to include `Unknown` type in your `LootableTypes`, unless you know what you're doing, and you also understand that ASF will send your entire inventory in a trade offer if Steam Network gets broken again and reports all your items as `Unknown`. My strong suggestion is to not include `Unknown` type in the `LootableTypes`, even if you expect to loot everything (else).
 
@@ -730,9 +730,9 @@ Further explanation on this subject is available in **[remote communication](htt
 
 ### `SendOnFarmingFinished`
 
-параметр типу `bool` зі значенням за замовчуванням `false`. When ASF is done with farming given account, it can automatically send steam trade containing everything farmed up to this point to user with `Master` permission, which is very convenient if you don't want to bother with trades yourself. This option works the same as `loot` command, therefore keep in mind that it requires user with `Master` permission set, you may also need a valid `SteamTradeToken`, as well as using an account that is eligible for trading in the first place. In addition to initiating `loot` after finishing farming, ASF will also initiate `loot` on each new items notification (when not farming), and after completing each trade that results in new items (always) when this option is active. This is especially useful for "forwarding" items received from other people to our account.
+параметр типу `bool` зі значенням за замовчуванням `false`. Коли ASF закінчив фарм на даному обліковому записі, ця функція може автоматично надіслати пропозицію обміну, що міститиме усе здобуте до цього моменту, користувачу з рівнем доступу `Master`, що дуже зручно, якщо ви не хочете займатись обмінами особисто. Ця функція працює так само як і команда `loot`, тож майте на увазі, що вона потребує користувача з набором дозволів рівня `Master`, вам також може знадобитися як дійсний `SteamTradeToken`, так і обліковий запис із розблокованою можливістю обмінів. Окрім запуску `loot` після закінчення фарму, якщо ця функція активна, ASF також запускатиме `loot` після кожного сповіщення про новий предмет (якщо фарм призупинено), і після кожного обміну, котрий призводить до появи нових предметів (завжди). Це особливо корисно для переадресації предметів, отриманих від інших людей, на наш обліковий запис.
 
-Typically you'll want to use **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication)** together with this feature, although it's not a requirement if you intend to confirm manually in timely fashion. Якщо ви не впевнені, яке значення встановити цьому параметру, залиште йому значення за замовчуванням `false`.
+Зазвичай вам потрібно використовувати **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication)** разом із цією функцією, хоча це не є обов'язковою вимогою, якщо ви маєте намір своєчасно обробляти запити 2FA вручну. Якщо ви не впевнені, яке значення встановити цьому параметру, залиште йому значення за замовчуванням `false`.
 
 ---
 
@@ -740,7 +740,7 @@ Typically you'll want to use **[ASF 2FA](https://github.com/JustArchiNET/ArchiSt
 
 параметр типу `byte` зі значенням за замовчуванням `0`. This property works very similar to `SendOnFarmingFinished` property, with one difference - instead of sending trade when farming is done, we can also send it every `SendTradePeriod` hours, regardless of how much we have to farm left. This is useful if you want to `loot` your alt accounts on usual basis instead of waiting for it to finish farming. Default value of `0` disables this feature, if you want your bot to send you trade e.g. every day, you should put `24` here.
 
-Typically you'll want to use **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication)** together with this feature, although it's not a requirement if you intend to confirm manually in timely fashion. If you're not sure how to set this property, leave it with default value of `0`.
+Зазвичай вам потрібно використовувати **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication)** разом із цією функцією, хоча це не є обов'язковою вимогою, якщо ви маєте намір своєчасно обробляти запити 2FA вручну. If you're not sure how to set this property, leave it with default value of `0`.
 
 ---
 
@@ -860,7 +860,7 @@ For further explanation of ASF trading logic, and description of every available
 | 15    | KeyboardSkin          | Special keyboard skin for Steam deck                          |
 | 16    | StartupVideo          | Special startup video for Steam deck                          |
 
-Please note that regardless of the settings above, ASF will only ask for Steam (`appID` of 753) community (`contextID` of 6) items, so all game items, gifts and likewise, are excluded from the trade offer by definition.
+Please note that regardless of the settings above, ASF will only ask for **[Steam community items](https://steamcommunity.com/my/inventory/#753_6)** (`appID` of 753, `contextID` of 6), so all game items, gifts and likewise, are excluded from the trade offer by definition.
 
 Default ASF setting is based on the most common usage of the bot, with transfering only booster packs, and trading cards (including foils). The property defined here allows you to alter that behaviour in whatever way that satisfies you. Please keep in mind that all types not defined above will show as `Unknown` type, which is especially important when Valve releases some new Steam item, that will be marked as `Unknown` by ASF as well, until it's added here (in the future release). That's why in general it's not recommended to include `Unknown` type in your `TransferableTypes`, unless you know what you're doing, and you also understand that ASF will send your entire inventory in a trade offer if Steam Network gets broken again and reports all your items as `Unknown`. My strong suggestion is to not include `Unknown` type in the `TransferableTypes`, even if you expect to transfer everything.
 
@@ -900,10 +900,8 @@ ASF is using quite simple file structure.
 │     ├── ASF.db
 │     ├── Bot1.json
 │     ├── Bot1.db
-│     ├── Bot1.bin
 │     ├── Bot2.json
 │     ├── Bot2.db
-│     ├── Bot2.bin
 │     └── ...
 ├── ArchiSteamFarm.dll
 ├── log.txt
@@ -925,8 +923,6 @@ Apart from config files, ASF also uses `config` directory for storing databases.
 `ASF.db` is a global ASF database file. It acts as a global persistent storage and is used for saving various information related to ASF process, such as IPs of local Steam servers. **You should not edit this file**.
 
 `BotName.db` is a database of given bot instance. This file is used for storing crucial data about given bot instance in persistent storage, such as login keys or ASF 2FA. **You should not edit this file**.
-
-`BotName.bin` is a special file of given bot instance, which holds information about Steam sentry hash. Sentry hash is used for authenticating using `SteamGuard` mechanism, very similar to Steam `ssfn` file. **You should not edit this file**.
 
 `BotName.keys` is a special file that can be used for importing keys into **[background games redeemer](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Background-games-redeemer)**. It's not mandatory and not generated, but recognized by ASF. This file is automatically deleted after keys are successfully imported.
 
@@ -1047,7 +1043,7 @@ Due to above, ASF will automatically migrate/optimize your configs by reformatti
 
 ## Автоматичне перезавантаження
 
-Starting with ASF V2.1.6.2+, the program is now aware of configs being modified "on-the-fly" - thanks to that, ASF will automatically:
+ASF is aware of configs being modified "on-the-fly" - thanks to that, ASF will automatically:
 - Create (and start, if needed) new bot instance, when you create its config
 - Stop (if needed) and remove old bot instance, when you delete its config
 - Stop (and start, if needed) any bot instance, when you edit its config

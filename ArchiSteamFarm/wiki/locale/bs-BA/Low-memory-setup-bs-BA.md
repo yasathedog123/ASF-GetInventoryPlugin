@@ -58,13 +58,19 @@ The "hard" memory limit for ASF process, this setting tunes GC to use only a sub
 
 On the other hand, setting this value high enough is a perfect way to ensure that ASF will never use more memory than you can realistically afford, giving your machine some breathing room even under heavy load, while still allowing the program to do its job as efficiently as possible.
 
+### [`GCConserveMemory`](https://learn.microsoft.com/dotnet/core/runtime-config/garbage-collector#conserve-memory)
+
+> Configures the garbage collector to conserve memory at the expense of more frequent garbage collections and possibly longer pause times.
+
+A value between 0-9 can be used. The bigger the value, the more GC will optimize memory over performance.
+
 ### [`GCHighMemPercent`](https://docs.microsoft.com/dotnet/core/run-time-config/garbage-collector#high-memory-percent)
 
 > Specifies the amount of memory used after which GC becomes more aggressive.
 
 This setting configures the memory threshold of your whole OS, which once passed, causes GC to become more aggressive and attempt to help the OS lower the memory load by running more intensive GC process and in result releasing more free memory back to the OS. It's a good idea to set this property to maximum amount of memory (as percentage) which you consider "critical" for your whole OS performance. Default is 90%, and usually you want to keep it in 80-97% range, as too low value will cause unnecessary aggression from the GC and performance degradation for no reason, while too high value will put unnecessary load on your OS, considering ASF could release some of its memory to help.
 
-### **[`GCLatencyLevel`](https://github.com/dotnet/runtime/blob/4b90e803262cb5a045205d946d800f9b55f88571/src/coreclr/gc/gcpriv.h#L375-L398)**
+### **[`GCLatencyLevel`](https://github.com/dotnet/runtime/blob/a1d48d6c00b5aecc063d1a58b0d9281c611ada91/src/coreclr/gc/gcpriv.h#L445-L468)**
 
 > Specifies the GC latency level that you want to optimize for.
 
@@ -78,13 +84,14 @@ This offers little improvement, but may make GC even more aggressive when system
 
 ---
 
-You can enable selected properties by setting appropriate environment variables. For example, on Linux (shell):
+You can enable selected properties by setting appropriate environment variables. Naprimjer, na Linuxu (shell):
 
 ```shell
 # Don't forget to tune those if you're planning to make use of them
 export DOTNET_GCHeapHardLimitPercent=0x4B # 75% as hex
 export DOTNET_GCHighMemPercent=0x50 # 80% as hex
 
+export DOTNET_GCConserveMemory=9
 export DOTNET_GCLatencyLevel=0
 export DOTNET_gcTrimCommitOnLowMemory=1
 
@@ -92,13 +99,14 @@ export DOTNET_gcTrimCommitOnLowMemory=1
 ./ArchiSteamFarm.sh # For generic build
 ```
 
-Or on Windows (powershell):
+Ili na Windowsu (powershell):
 
 ```powershell
 # Don't forget to tune those if you're planning to make use of them
 $Env:DOTNET_GCHeapHardLimitPercent=0x4B # 75% as hex
 $Env:DOTNET_GCHighMemPercent=0x50 # 80% as hex
 
+$Env:DOTNET_GCConserveMemory=9
 $Env:DOTNET_GCLatencyLevel=0
 $Env:DOTNET_gcTrimCommitOnLowMemory=1
 
@@ -118,7 +126,7 @@ Below tricks **involve serious performance degradation** and should be used with
 
 ---
 
-## Recommended optimization
+## Preporučena optimizacija
 
 - Start from simple ASF setup tricks, use **[generic ASF variant](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Setting-up#generic-setup)** and check if perhaps you're just using your ASF in a wrong way such as starting the process several times for all of your bots, or keeping all of them active if you need just one or two to autostart.
 - If it's still not enough, enable all configuration properties listed above by setting appropriate `DOTNET_` environment variables. Especially `GCLatencyLevel` offers significant runtime improvements for little cost on performance.

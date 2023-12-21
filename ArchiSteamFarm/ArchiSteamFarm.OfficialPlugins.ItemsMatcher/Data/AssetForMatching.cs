@@ -26,9 +26,6 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal class AssetForMatching {
-	[JsonProperty("a", Required = Required.Always)]
-	internal readonly uint Amount;
-
 	[JsonProperty("c", Required = Required.Always)]
 	internal readonly ulong ClassID;
 
@@ -43,6 +40,9 @@ internal class AssetForMatching {
 
 	[JsonProperty("p", Required = Required.Always)]
 	internal readonly Asset.EType Type;
+
+	[JsonProperty("a", Required = Required.Always)]
+	internal uint Amount { get; set; }
 
 	[JsonConstructor]
 	protected AssetForMatching() { }

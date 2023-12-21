@@ -15,7 +15,7 @@ ASF 支持各种命令，用来控制程序和机器人实例的行为。
 
 ### 交互式控制台
 
-自 V4.0.0.9 版本开始，ASF 支持交互式控制台，只要您没有让 ASF 在 [**`Headless`**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-CN#headless) 模式下运行。 只需要按下 `c` 键就可以启用命令模式，此时您可以输入命令，并按回车键确认。
+ASF 支持交互式控制台，只要您没有让 ASF 在 [**`Headless`**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-CN#headless) 模式下运行。 只需要按下 `c` 键就可以启用命令模式，此时您可以输入命令，并按回车键确认。
 
 ![屏幕截图](https://i.imgur.com/bH5Gtjq.png)
 
@@ -48,7 +48,7 @@ ASF 支持各种命令，用来控制程序和机器人实例的行为。
 | 命令                                                                   | 权限              | 描述                                                                                                                                                             |
 | -------------------------------------------------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `2fa [Bots]`                                                         | `Master`        | 为指定机器人生成临时的&#8203;**[两步验证](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-CN)**&#8203;令牌。                                    |
-| `2fafinalize [Bots] <ActivationCode>`                          | `Master`        | 使用短信验证码，完成为指定机器人绑定新[**两步验证**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-CN#创建)凭据的流程。                                    |
+| `2fafinalize [Bots] <ActivationCode>`                          | `Master`        | 使用短信或邮件验证码，完成为指定机器人绑定新[**两步验证**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-CN#创建)凭据的流程。                                 |
 | `2fafinalized [Bots] <ActivationCode>`                         | `Master`        | 为指定机器人导入已创建完成的[**两步验证**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-CN#创建)凭据，并用两步验证令牌代码验证。                               |
 | `2fafinalizedforce [Bots]`                                           | `Master`        | 为指定机器人导入已创建完成的[**两步验证**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-CN#创建)凭据，并跳过两步验证令牌代码验证。                              |
 | `2fainit [Bots]`                                                     | `Master`        | 开始为指定机器人绑定新[**两步验证**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-CN#创建)凭据的流程。                                            |
@@ -94,7 +94,7 @@ ASF 支持各种命令，用来控制程序和机器人实例的行为。
 | `start [Bots]`                                                       | `Master`        | 启动指定机器人。                                                                                                                                                       |
 | `stats`                                                              | `Owner`         | 显示进程统计信息，例如托管内存用量。                                                                                                                                             |
 | `status [Bots]`                                                      | `FamilySharing` | 显示指定机器人的状态。                                                                                                                                                    |
-| `std`                                                                | `Owner`         | 控制 **[`SteamTokenDumperPlugin`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/SteamTokenDumperPlugin-zh-CN)** 的特殊命令，用于立即提交数据。                            |
+| `std [Bots]`                                                         | `Master`        | 控制 **[`SteamTokenDumperPlugin`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/SteamTokenDumperPlugin-zh-CN)** 的特殊命令，用于触发刷新指定的机器人并立即提交数据。                 |
 | `stop [Bots]`                                                        | `Master`        | 停止指定机器人。                                                                                                                                                       |
 | `tb [Bots]`                                                          | `Master`        | 列出指定机器人的交易黑名单用户。                                                                                                                                               |
 | `tbadd [Bots] <SteamIDs64>`                                    | `Master`        | 将给定的 `SteamIDs` 加入指定机器人的交易黑名单。                                                                                                                                 |

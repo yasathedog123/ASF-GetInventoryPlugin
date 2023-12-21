@@ -58,7 +58,7 @@ En raison de la nature de cette propriété, il est également possible de défi
 
 ---
 
-`--cryptkey-file <path>` or `--cryptkey-file=<path>` - will start ASF with custom cryptographic key read from `<path>` file. This serves the same purpose as `--cryptkey <key>` explained above, only the mechanism differs, as this property will read `<key>` from provided `<path>` instead.
+`--cryptkey-file <path>` or `--cryptkey-file=<path>` - will start ASF with custom cryptographic key read from `<path>` file. This serves the same purpose as `--cryptkey <key>` explained above, only the mechanism differs, as this property will read `<key>` from provided `<path>` instead. If you're using this together with `--path`, consider declaring `--path` first so relative paths can work correctly.
 
 Due to the nature of this property, it's also possible to set cryptkey file by declaring `ASF_CRYPTKEY_FILE` environment variable, which may be more appropriate for people that would want to avoid sensitive details in the process arguments.
 
@@ -66,7 +66,7 @@ Due to the nature of this property, it's also possible to set cryptkey file by d
 
 ---
 
-`--ignore-unsupported-environment` - fera ignorer à ASF les problèmes liés à l'exécution dans un environnement non pris en charge, ce qui est normalement signalisé avec une erreur et une sortie forcée. L'environnement non pris en charge inclut par exemple l'exécution de la compilation .NET Framework sur une plate-forme qui pourrait exécuter la compilation .NET (Core) à la place. Même si ce flag laissera ASF s'exécuter dans de tels scénarios, soyez avertis; Nous ne prenons pas en charge ces éléments officiellement et vous forcez ASF à le faire entièrement **à vos risques et périls**. Aujourd'hui, **tous** les scénarios d'environnement non pris en charge peuvent être corrigés, par exemple, exécuter la version `générique` au lieu de `generic-netf`. Nous recommandons fortement de résoudre les problèmes précédents plutôt que d'utiliser cet argument.
+`--ignore-unsupported-environment` - fera ignorer à ASF les problèmes liés à l'exécution dans un environnement non pris en charge, ce qui est normalement signalisé avec une erreur et une sortie forcée. Unsupported environment includes for example running `win-x64` OS-specific build on `linux-x64`. Même si ce flag laissera ASF s'exécuter dans de tels scénarios, soyez avertis; Nous ne prenons pas en charge ces éléments officiellement et vous forcez ASF à le faire entièrement **à vos risques et périls**. As of today, **all** of the unsupported environment scenarios can be corrected. Nous recommandons fortement de résoudre les problèmes précédents plutôt que d'utiliser cet argument.
 
 
 

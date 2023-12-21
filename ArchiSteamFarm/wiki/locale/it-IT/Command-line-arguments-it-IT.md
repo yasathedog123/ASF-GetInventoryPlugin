@@ -54,13 +54,13 @@ A causa della natura di questa proprietà, è anche possibile impostare la chiav
 
 ---
 
-`--cryptkey-file <path>` or `--cryptkey-file=<path>` - will start ASF with custom cryptographic key read from `<path>` file. This serves the same purpose as `--cryptkey <key>` explained above, only the mechanism differs, as this property will read `<key>` from provided `<path>` instead.
+`--cryptkey-file <path>` or `--cryptkey-file=<path>` - will start ASF with custom cryptographic key read from `<path>` file. This serves the same purpose as `--cryptkey <key>` explained above, only the mechanism differs, as this property will read `<key>` from provided `<path>` instead. If you're using this together with `--path`, consider declaring `--path` first so relative paths can work correctly.
 
 Due to the nature of this property, it's also possible to set cryptkey file by declaring `ASF_CRYPTKEY_FILE` environment variable, which may be more appropriate for people that would want to avoid sensitive details in the process arguments.
 
 ---
 
-`--ignore-unsupported-environment`, causerà l'ignoramento del rilevamento degli ambienti non supportati di ASF, che normalmente è segnalato con un errore e l'uscita forzata. L'ambiente non supportato include per esempio l'esecuzione di build versione .NET Framework su piattaforme che potrebbero eseguire build versione .NET (Core). Mentre questo parametro permetterà a ASF di provare a essere eseguito in tali scenari, avvisiamo che non lo supportiamo ufficialmente e stai costringendo ASF a eseguito interamente **a tuo rischio e pericolo**. A partire da oggi, **tutti** gli ambienti non supportati possono essere corretti, come ad esempio l'esecuzione di build `generic` invece di `generic-netf`. Raccomandiamo vivamente di risolvere i problemi in sospeso invece di usare questo parametro.
+`--ignore-unsupported-environment`, causerà l'ignoramento del rilevamento degli ambienti non supportati di ASF, che normalmente è segnalato con un errore e l'uscita forzata. Unsupported environment includes for example running `win-x64` OS-specific build on `linux-x64`. Mentre questo parametro permetterà a ASF di provare a essere eseguito in tali scenari, avvisiamo che non lo supportiamo ufficialmente e stai costringendo ASF a eseguito interamente **a tuo rischio e pericolo**. As of today, **all** of the unsupported environment scenarios can be corrected. Raccomandiamo vivamente di risolvere i problemi in sospeso invece di usare questo parametro.
 
 ---
 

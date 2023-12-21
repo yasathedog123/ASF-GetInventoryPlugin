@@ -49,7 +49,7 @@ internal static class Logging {
 
 	internal static bool LogFileExists => File.Exists(SharedInfo.LogFile);
 
-	private static readonly ConcurrentHashSet<LoggingRule> ConsoleLoggingRules = new();
+	private static readonly ConcurrentHashSet<LoggingRule> ConsoleLoggingRules = [];
 	private static readonly SemaphoreSlim ConsoleSemaphore = new(1, 1);
 
 	private static string Backspace => "\b \b";
@@ -79,9 +79,7 @@ internal static class Logging {
 			throw new InvalidEnumArgumentException(nameof(userInputType), (int) userInputType, typeof(ASF.EUserInputType));
 		}
 
-		if (string.IsNullOrEmpty(botName)) {
-			throw new ArgumentNullException(nameof(botName));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botName);
 
 		if (Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless)) {
 			ASF.ArchiLogger.LogGenericWarning(Strings.ErrorUserInputRunningInHeadlessMode);
@@ -108,8 +106,7 @@ internal static class Logging {
 							Console.Write(Bot.FormatBotResponse(Strings.UserInputDeviceConfirmation, botName));
 							result = ConsoleReadLine();
 
-							// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-							if (string.IsNullOrEmpty(result) || result!.Equals("Y", StringComparison.OrdinalIgnoreCase) || result.Equals("N", StringComparison.OrdinalIgnoreCase)) {
+							if (string.IsNullOrEmpty(result) || result.Equals("Y", StringComparison.OrdinalIgnoreCase) || result.Equals("N", StringComparison.OrdinalIgnoreCase)) {
 								break;
 							}
 						}
@@ -161,8 +158,7 @@ internal static class Logging {
 			ConsoleSemaphore.Release();
 		}
 
-		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-		return !string.IsNullOrEmpty(result) ? result!.Trim() : null;
+		return !string.IsNullOrEmpty(result) ? result.Trim() : null;
 	}
 
 	internal static void InitCoreLoggers(bool uniqueInstance) {
@@ -275,9 +271,7 @@ internal static class Logging {
 	}
 
 	private static async Task BeepUntilCanceled(CancellationToken cancellationToken, byte secondsDelay = 30) {
-		if (secondsDelay == 0) {
-			throw new ArgumentOutOfRangeException(nameof(secondsDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(secondsDelay);
 
 		while (!cancellationToken.IsCancellationRequested) {
 			try {
@@ -317,15 +311,16 @@ internal static class Logging {
 			while (true) {
 				ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 
-				switch (keyInfo.Key) {
-					case 0:
-						// Linux terminal closing STDIN, we're done here
-						return result.ToString();
-					case ConsoleKey.Enter:
-						// User finishing input, as expected
-						Console.WriteLine();
+				if (keyInfo.KeyChar == '\u0004') {
+					// Linux terminal closing STDIN, we're done here
+					return result.ToString();
+				}
 
-						return result.ToString();
+				if (keyInfo.Key == ConsoleKey.Enter) {
+					// User finishing input, as expected
+					Console.WriteLine();
+
+					return result.ToString();
 				}
 
 				// User continues input
@@ -350,8 +345,8 @@ internal static class Logging {
 	}
 
 	private static async Task HandleConsoleInteractively() {
-		while (!Program.ShutdownSequenceInitialized) {
-			try {
+		try {
+			while (!Program.ShutdownSequenceInitialized) {
 				if (IsWaitingForUserInput || !Console.KeyAvailable) {
 					await Task.Delay(ConsoleResponsivenessDelay).ConfigureAwait(false);
 
@@ -363,16 +358,14 @@ internal static class Logging {
 				try {
 					ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 
-					switch (keyInfo.Key) {
-						case 0:
-							// Linux terminal closing STDIN, we're done here
-							return;
-						case ConsoleKey.C:
-							// User hitting 'c', as expected
-							break;
-						default:
-							// Any other input, ignored
-							continue;
+					if (keyInfo.KeyChar == '\u0004') {
+						// Linux terminal closing STDIN, we're done here
+						return;
+					}
+
+					if (keyInfo.Key != ConsoleKey.C) {
+						// Console input other than 'c', ignored
+						continue;
 					}
 
 					OnUserInputStart();
@@ -387,12 +380,8 @@ internal static class Logging {
 
 						string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
 
-						// ReSharper disable RedundantSuppressNullableWarningExpression - required for .NET Framework
-						if (!string.IsNullOrEmpty(commandPrefix) && command!.StartsWith(commandPrefix!, StringComparison.Ordinal)) {
-							// ReSharper restore RedundantSuppressNullableWarningExpression - required for .NET Framework
-
-							// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-							if (command.Length == commandPrefix!.Length) {
+						if (!string.IsNullOrEmpty(commandPrefix) && command.StartsWith(commandPrefix, StringComparison.Ordinal)) {
+							if (command.Length == commandPrefix.Length) {
 								// If the message starts with command prefix and is of the same length as command prefix, then it's just empty command trigger, useless
 								continue;
 							}
@@ -410,8 +399,7 @@ internal static class Logging {
 
 						Console.WriteLine($@"<> {Strings.Executing}");
 
-						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-						string? response = await targetBot.Commands.Response(EAccess.Owner, command!).ConfigureAwait(false);
+						string? response = await targetBot.Commands.Response(EAccess.Owner, command).ConfigureAwait(false);
 
 						if (string.IsNullOrEmpty(response)) {
 							ASF.ArchiLogger.LogNullError(response);
@@ -427,11 +415,9 @@ internal static class Logging {
 				} finally {
 					ConsoleSemaphore.Release();
 				}
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
-
-				return;
 			}
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
 		}
 	}
 

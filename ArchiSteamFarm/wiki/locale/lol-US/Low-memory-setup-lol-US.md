@@ -58,13 +58,19 @@ TEH "HARD" MEMS LIMIT 4 ASF PROCES, DIS SETTIN TUNEZ GC 2 USE ONLY SUBSET OV TOT
 
 ON TEH OTHR HAND, SETTIN DIS VALUE HIGH ENOUGH IZ PERFIK WAI 2 ENSURE DAT ASF WILL NEVR USE MOAR MEMS THAN U CAN REALISTICALLY AFFORD, GIVIN UR MACHINE SUM BREATHIN ROOM EVEN UNDR HEAVY LOAD, WHILE STILL ALLOWIN TEH PROGRAM 2 DO ITZ JOB AS EFFICIENTLY AS POSIBLE.
 
+### [`GCConserveMemory`](https://learn.microsoft.com/dotnet/core/runtime-config/garbage-collector#conserve-memory)
+
+> Configures the garbage collector to conserve memory at the expense of more frequent garbage collections and possibly longer pause times.
+
+A value between 0-9 can be used. The bigger the value, the more GC will optimize memory over performance.
+
 ### [`GCHighMemPercent`](https://docs.microsoft.com/dotnet/core/run-time-config/garbage-collector#high-memory-percent)
 
 > SPECIFIEZ TEH AMOUNT OV MEMS USD AFTR WHICH GC BECOMEZ MOAR AGGRESIV.
 
 DIS SETTIN CONFIGUREZ TEH MEMS THRESHOLD OV UR WHOLE OS, WHICH ONCE PASD, CAUSEZ GC 2 BECOME MOAR AGGRESIV AN ATTEMPT 2 HALP TEH OS LOWR TEH MEMS LOAD BY RUNNIN MOAR INTENSIV GC PROCES AN IN RESULT RELEASIN MOAR FREE MEMS BAK 2 TEH OS. IT BE GUD IDEA 2 SET DIS PROPERTY 2 MAXIMUM AMOUNT OV MEMS (AS PERSENTAGE) WHICH U CONSIDR "CRITICAL" 4 UR WHOLE OS PERFORMANCE. DEFAULT IZ 90%, AN USUALLY U WANTS 2 KEEP IT IN 80-97% RANGE, AS 2 LOW VALUE WILL CAUSE UNNECESARY AGGRESHUN FRUM TEH GC AN PERFORMANCE DEGRADASHUN 4 NO REASON, WHILE 2 HIGH VALUE WILL PUT UNNECESARY LOAD ON UR OS, CONSIDERIN ASF CUD RELEASE SUM OV ITZ MEMS 2 HALP.
 
-### **[`GCLatencyLevel`](https://github.com/dotnet/runtime/blob/4b90e803262cb5a045205d946d800f9b55f88571/src/coreclr/gc/gcpriv.h#L375-L398)**
+### **[`GCLatencyLevel`](https://github.com/dotnet/runtime/blob/a1d48d6c00b5aecc063d1a58b0d9281c611ada91/src/coreclr/gc/gcpriv.h#L445-L468)**
 
 > SPECIFIEZ TEH GC LATENCY LEVEL DAT U WANTS 2 OPTIMIZE 4.
 
@@ -81,29 +87,31 @@ DIS OFFERS LIL IMPROOVEMENT, BUT CUD MAK GC EVEN MOAR AGGRESIV WHEN SISTEM WILL 
 U CAN ENABLE SELECTD PROPERTIEZ BY SETTIN APPROPRIATE ENVIRONMENT VARIABLEZ. 4 EXAMPLE, ON LINUX (SHELL):
 
 ```shell
-# DOAN FORGET 2 TUNE DOSE IF URE PLANNIN 2 MAK USE OV THEM
+# Don't forget to tune those if you're planning to make use of them
 export DOTNET_GCHeapHardLimitPercent=0x4B # 75% as hex
 export DOTNET_GCHighMemPercent=0x50 # 80% as hex
 
+export DOTNET_GCConserveMemory=9
 export DOTNET_GCLatencyLevel=0
 export DOTNET_gcTrimCommitOnLowMemory=1
 
-./ArchiSteamFarm # 4 OS-SPECIFIC BUILD
-./ArchiSteamFarm.sh # 4 GENERIC BUILD
+./ArchiSteamFarm # For OS-specific build
+./ArchiSteamFarm.sh # For generic build
 ```
 
 OR ON WINDOWS (POWERSHELL):
 
 ```powershell
-# DOAN FORGET 2 TUNE DOSE IF URE PLANNIN 2 MAK USE OV THEM
+# Don't forget to tune those if you're planning to make use of them
 $Env:DOTNET_GCHeapHardLimitPercent=0x4B # 75% as hex
 $Env:DOTNET_GCHighMemPercent=0x50 # 80% as hex
 
+$Env:DOTNET_GCConserveMemory=9
 $Env:DOTNET_GCLatencyLevel=0
 $Env:DOTNET_gcTrimCommitOnLowMemory=1
 
-.\ArchiSteamFarm.exe # 4 OS-SPECIFIC BUILD
-.\ArchiSteamFarm.cmd # 4 GENERIC BUILD
+.\ArchiSteamFarm.exe # For OS-specific build
+.\ArchiSteamFarm.cmd # For generic build
 ```
 
 ESPECIALLY `GCLatencyLevel` WILL COME VRY USEFUL AS WE VERIFID DAT TEH RUNTIME INDED OPTIMIZEZ CODE 4 MEMS AN THEREFORE DROPS AVERAGE MEMS USAGE SIGNIFICANTLY, EVEN WIF SERVR GC. IZ WAN OV TEH BEST TRICKZ DAT U CAN APPLY IF U WANTS 2 SIGNIFICANTLY LOWR ASF MEMS USAGE WHILE NOT DEGRADIN PERFORMANCE 2 MUTCH WIF `OptimizationMode`.

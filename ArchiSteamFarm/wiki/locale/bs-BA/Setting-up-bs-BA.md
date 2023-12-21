@@ -1,4 +1,4 @@
-# Setting up
+# Podešavanje
 
 If you arrived here for the first time, welcome! We're very happy to see yet another traveler that is interested in our project, although bear in mind that with great power comes great responsibility - ASF is capable of doing a lot of different Steam-related things, but only as long as you **care enough to learn how to use it**. There is a steep learning curve involved here, and we expect from you to read the wiki in this regard, which explains in detail how everything operates.
 
@@ -38,21 +38,21 @@ Package names depend on the Linux distribution that you're using, we've listed t
 
 - `ca-certificates` (standard trusted SSL certificates to make HTTPS connections)
 - `libc6` (`libc`)
-- `libgcc1` (`libgcc`)
-- `libicu` (`icu-libs`, latest version for your distribution, for example `libicu67`)
+- `libgcc-s1`（`libgcc1`、`libgcc`）
+- `libicu` (`icu-libs`, latest version for your distribution, for example `libicu72`)
 - `libgssapi-krb5-2` (`libkrb5-3`, `krb5-libs`)
-- `libssl1.1` (`libssl`, `openssl-libs`, latest version for your distribution, at least `1.1.X` as `1.0.X` may no longer work)
-- `libstdc++6` (`libstdc++`, in version `5.0` or higher)
+- `libssl1.1` (`libssl`, `openssl-libs`, latest version for your distribution, at least `1.1.X`)
+- `libstdc++6` (`libstdc++`, u verziji `5.0` ili većoj)
 - `zlib1g` (`zlib`)
 
-At least a majority of those should be already natively available on your system. The minimal installation of Debian stable required only `libicu67`.
+At least a majority of those should be already natively available on your system. The minimal installation of Debian stable required only `libicu72`.
 
 #### **[macOS](https://docs.microsoft.com/dotnet/core/install/macos)**:
 - None for now, but you should have latest version of macOS installed, at least 10.15+
 
 ---
 
-### Downloading
+### Preuzimanje
 
 Since we have all required dependencies already, the next step is downloading **[latest ASF release](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)**. ASF is available in many variants, but you're interested in package that matches your operating system and architecture. For example, if you're using `64`-bit `Win`dows, then you want `ASF-win-x64` package. For more information about available variants, visit **[compatibility](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compatibility)** section. ASF is also able to run on OSes that we're not building OS-specific package for, such as **32-bit Windows**, head over to **[generic setup](#generic-setup)** for that.
 
@@ -81,7 +81,7 @@ C:\ASF (where you put your own things)
 
 ---
 
-### Configuration
+### Konfiguracija
 
 We're now ready to do the very last step, the configuration. This is by far the most complicated step, since it involves a lot of new information you're not familiar with yet, so we'll try to provide some easy to understand examples and simplified explanation here.
 
@@ -125,7 +125,7 @@ Congratulations! You've just finished the very basic ASF bot configuration. We'l
 
 ---
 
-### Running ASF
+### Pokretanje ASF-a
 
 You're now ready to launch the program for the first time. Simply double-click `ArchiSteamFarm` binary in ASF directory. You can also start it from the console.
 
@@ -160,7 +160,7 @@ In other words, simply jump to configuration again and do exactly the same, just
 
 ---
 
-#### Changing settings
+#### Promjena postavki
 
 You change existing settings in exactly the same way - by generating a new config file. If you didn't close our web config generator yet, click on "toggle advanced settings" and see what is there for you to discover. For this tutorial we'll change `CustomGamePlayedWhileFarming` setting, which allows you to set custom name being displayed when ASF is farming, instead of showing actual game.
 
@@ -184,11 +184,11 @@ Editing your ASF configs can be done much easier by using our ASF-ui frontend, w
 
 ---
 
-#### Using ASF-ui
+#### Korištenje ASF-ui
 
 ASF is a console app and doesn't include a graphical user interface. However, we're actively working on **[ASF-ui](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC#asf-ui)** frontend to our IPC interface, which can be a very decent and user-friendly way to access various ASF features.
 
-In order to use ASF-ui, you need to have `IPC` enabled, which is the default option starting with ASF V5.1.0.0. Once you launch ASF, you should be able to confirm that it properly started the IPC interface automatically:
+In order to use ASF-ui, you need to have `IPC` enabled, which is the default option. Once you launch ASF, you should be able to confirm that it properly started the IPC interface automatically:
 
 ![IPC](https://i.imgur.com/ZmkO8pk.png)
 

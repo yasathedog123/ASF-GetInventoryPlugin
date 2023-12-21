@@ -1,12 +1,12 @@
 # 사용 중단
 
-ASF V3.1.2.2 버전부터 개발과 사용이 더욱 일관되도록 일관된 사용 중단 정책을 따르고 있습니다.
+We're doing our best to follow consistent deprecation policy in order to make both development as well as usage far more consistent.
 
 ---
 
 ## 사용 중단이란?
 
-사용 중단은 이전에 사용되던 옵션, 인자, 기능이나 사용되지 않는 사용례를 변경하는 작거나 큰 변화의 과정입니다. 사용 중단은 보통 주어진 것이 단순히 다른 유사한 형태로 다시 쓰여졌다는 것을 뜻하고, 이를 적절한 시기에 적절히 전환해야 합니다. 이 경우 더 적절한 장소로 기능을 단순히 옮겼습니다.
+Deprecation is the process of smaller or bigger breaking changes that render previously used options, arguments, functionalities or usage cases obsolete. 사용 중단은 보통 주어진 것이 단순히 다른 유사한 형태로 다시 쓰여졌다는 것을 뜻하고, 이를 적절한 시기에 적절히 전환해야 합니다. 이 경우 더 적절한 장소로 기능을 단순히 옮겼습니다.
 
 ASF는 급속히 변화하고 항상 더 나아집니다. 이는 슬프게도 새로운 기능, 호환성 또는 안정성을 위해 우리가 기존의 기능을 변경하거나 프로그램의 다른 부분으로 옮길수도 있다는 뜻입니다. 그 덕에 쓰이지 않거나 단순히 몇년전의 잘못된 의사결정에 매달리지 않아도 됩니다. 우리는 항상 기존에 가능했던 기능의 예상되는 사용법에 맞는 합리적인 대체를 제공하려고 노력하고 있습니다. 따라서 사용 중단은 대부분 무해하고 이전의 사용법에 작은 수정만을 필요로 합니다.
 
@@ -28,7 +28,7 @@ ASF는 사용 중단을 2단계로 하여 이전을 더욱 쉽게하고 문제�
 
 ---
 
-## Summary
+## 요약
 
 적절한 전환을 위해서는 약 **한 달** 정도가 있고, 일반적인 ASF 사용자라면 전환에 충분한 시간입니다. 그 기간이 지나면, ASF는 당신에게 알리지 않고 특정 기능을 작동 중단함으로써 더 이상 구 설정 값이 효과가 있을지를 보장하지 않습니다 (2단계). ASF를 실행 하지 않은지 한 달 이상이 지난 후에 ASF를 실행했다면 다시 **[처음부터 시작](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Setting-up)**하거나, 놓쳤던 모든 변경사항을 읽고 현재의 사용법을 수동으로 적용하는 것을 추천합니다.
 
@@ -36,7 +36,7 @@ ASF는 사용 중단을 2단계로 하여 이전을 더욱 쉽게하고 문제�
 
 ---
 
-## Example
+## 예시
 
 우리는 pre-V3.1.2.2 버전의 `--server` **[명령줄 인자](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Command-line-arguments)** 를 `IPC` **[전역 설정](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#global-config)**으로 옮겼습니다.
 

@@ -1,0 +1,13 @@
+C:\Users\yanie\RiderProjects\ASF-PluginTemplate\GetInventoryPlugin\bin\Debug\net8.0\GetInventoryPlugin.deps.json
+C:\Users\yanie\RiderProjects\ASF-PluginTemplate\GetInventoryPlugin\bin\Debug\net8.0\GetInventoryPlugin.dll
+C:\Users\yanie\RiderProjects\ASF-PluginTemplate\GetInventoryPlugin\bin\Debug\net8.0\GetInventoryPlugin.pdb
+C:\Users\yanie\RiderProjects\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net8.0\GetInventoryPlugin.csproj.AssemblyReference.cache
+C:\Users\yanie\RiderProjects\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net8.0\GetInventoryPlugin.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yanie\RiderProjects\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net8.0\GetInventoryPlugin.AssemblyInfoInputs.cache
+C:\Users\yanie\RiderProjects\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net8.0\GetInventoryPlugin.AssemblyInfo.cs
+C:\Users\yanie\RiderProjects\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net8.0\GetInventoryPlugin.csproj.CoreCompileInputs.cache
+C:\Users\yanie\RiderProjects\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net8.0\GetInventoryPlugin.sourcelink.json
+C:\Users\yanie\RiderProjects\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net8.0\GetInventoryPlugin.dll
+C:\Users\yanie\RiderProjects\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net8.0\refint\GetInventoryPlugin.dll
+C:\Users\yanie\RiderProjects\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net8.0\GetInventoryPlugin.pdb
+C:\Users\yanie\RiderProjects\ASF-PluginTemplate\GetInventoryPlugin\obj\Debug\net8.0\ref\GetInventoryPlugin.dll

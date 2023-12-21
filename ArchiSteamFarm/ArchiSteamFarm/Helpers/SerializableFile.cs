@@ -89,7 +89,7 @@ public abstract class SerializableFile : IDisposable {
 			string newFilePath = $"{FilePath}.new";
 
 			if (File.Exists(FilePath)) {
-				string currentJson = await File.ReadAllTextAsync(FilePath!).ConfigureAwait(false);
+				string currentJson = await File.ReadAllTextAsync(FilePath).ConfigureAwait(false);
 
 				if (json == currentJson) {
 					return;
@@ -97,11 +97,11 @@ public abstract class SerializableFile : IDisposable {
 
 				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
-				File.Replace(newFilePath, FilePath!, null);
+				File.Replace(newFilePath, FilePath, null);
 			} else {
 				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
-				File.Move(newFilePath, FilePath!);
+				File.Move(newFilePath, FilePath);
 			}
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
@@ -129,13 +129,8 @@ public abstract class SerializableFile : IDisposable {
 	}
 
 	internal static async Task<bool> Write(string filePath, string json) {
-		if (string.IsNullOrEmpty(filePath)) {
-			throw new ArgumentNullException(nameof(filePath));
-		}
-
-		if (string.IsNullOrEmpty(json)) {
-			throw new ArgumentNullException(nameof(json));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
+		ArgumentException.ThrowIfNullOrEmpty(json);
 
 		string newFilePath = $"{filePath}.new";
 

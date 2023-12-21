@@ -54,7 +54,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	private const byte HoursToIgnore = 1; // How many hours we ignore unreleased appIDs and don't bother checking them again
 
 	[PublicAPI]
-	public static readonly ImmutableHashSet<uint> SalesBlacklist = ImmutableHashSet.Create<uint>(267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800, 876740, 991980, 1195670, 1343890, 1465680, 1658760, 1797760, 2021850, 2243720, 2459330);
+	public static readonly ImmutableHashSet<uint> SalesBlacklist = ImmutableHashSet.Create<uint>(267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800, 876740, 991980, 1195670, 1343890, 1465680, 1658760, 1797760, 2021850, 2243720, 2459330, 2640280);
 
 	private static readonly ConcurrentDictionary<uint, DateTime> GloballyIgnoredAppIDs = new(); // Reserved for unreleased games
 
@@ -86,7 +86,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 			// More advanced calculation, the above AND hours required for bumps
 			uint cardsRemaining = 0;
-			List<float> totalHoursClocked = new();
+			List<float> totalHoursClocked = [];
 
 			foreach (Game gameToFarm in GamesToFarm) {
 				cardsRemaining += gameToFarm.CardsRemaining;
@@ -119,11 +119,11 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	}
 
 	private readonly Bot Bot;
-	private readonly ConcurrentHashSet<Game> CurrentGamesFarming = new();
+	private readonly ConcurrentHashSet<Game> CurrentGamesFarming = [];
 	private readonly SemaphoreSlim EventSemaphore = new(1, 1);
 	private readonly SemaphoreSlim FarmingInitializationSemaphore = new(1, 1);
 	private readonly SemaphoreSlim FarmingResetSemaphore = new(0, 1);
-	private readonly ConcurrentList<Game> GamesToFarm = new();
+	private readonly ConcurrentList<Game> GamesToFarm = [];
 	private readonly Timer? IdleFarmingTimer;
 
 	private readonly ConcurrentDictionary<uint, DateTime> LocallyIgnoredAppIDs = new();
@@ -148,7 +148,9 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	private bool ShouldSkipNewGamesIfPossible;
 
 	internal CardsFarmer(Bot bot) {
-		Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+		ArgumentNullException.ThrowIfNull(bot);
+
+		Bot = bot;
 
 		byte idleFarmingPeriod = ASF.GlobalConfig?.IdleFarmingPeriod ?? GlobalConfig.DefaultIdleFarmingPeriod;
 
@@ -416,17 +418,9 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	}
 
 	private async Task CheckGame(uint appID, string name, float hours, byte badgeLevel) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
-
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (hours < 0) {
-			throw new ArgumentOutOfRangeException(nameof(hours));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentOutOfRangeException.ThrowIfNegative(hours);
 
 		Game? game = await GetGameCardsInfo(appID).ConfigureAwait(false);
 
@@ -476,8 +470,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 				continue;
 			}
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			string[] appIDSplitted = appIDText!.Split('_');
+			string[] appIDSplitted = appIDText.Split('_');
 
 			if (appIDSplitted.Length < 5) {
 				Bot.ArchiLogger.LogNullError(appIDSplitted);
@@ -730,7 +723,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 						break;
 					default:
-						backgroundTasks ??= new HashSet<Task>();
+						backgroundTasks ??= [];
 
 						backgroundTasks.Add(task);
 
@@ -746,10 +739,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	}
 
 	private async Task<bool> CheckPage(byte page, ISet<uint> parsedAppIDs) {
-		if (page == 0) {
-			throw new ArgumentOutOfRangeException(nameof(page));
-		}
-
+		ArgumentOutOfRangeException.ThrowIfZero(page);
 		ArgumentNullException.ThrowIfNull(parsedAppIDs);
 
 		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
@@ -989,9 +979,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	}
 
 	private async Task<Game?> GetGameCardsInfo(uint appID) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
 		using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
 
@@ -1153,7 +1141,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 
 		GamesToFarm.Clear();
 
-		ConcurrentHashSet<uint> parsedAppIDs = new();
+		ConcurrentHashSet<uint> parsedAppIDs = [];
 
 		Task mainTask = CheckPage(htmlDocument, parsedAppIDs);
 
@@ -1350,9 +1338,7 @@ public sealed class CardsFarmer : IAsyncDisposable, IDisposable {
 	}
 
 	private bool ShouldIdle(uint appID) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
 		if (SalesBlacklist.Contains(appID) || (ASF.GlobalConfig?.Blacklist.Contains(appID) == true) || Bot.IsBlacklistedFromIdling(appID) || (Bot.BotConfig.FarmPriorityQueueOnly && !Bot.IsPriorityIdling(appID))) {
 			// We're configured to ignore this appID, so skip it

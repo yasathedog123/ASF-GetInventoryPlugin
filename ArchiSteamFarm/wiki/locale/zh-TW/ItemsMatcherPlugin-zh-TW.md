@@ -8,7 +8,7 @@
 
 顧名思義，公開名單是當前可供使用的ASF STM Bot的名單。 它&#8203;**[位於我們的網站上](https://asf.justarchi.net/STM)**&#8203;進行自動管理，並作為一項公共服務，提供使用&#8203;`MatchActively`&#8203;的ASF使用者及手動比對的ASF與非ASF使用者使用。
 
-如果要被列在名單中，您需要滿足一系列的需求。 您必須至少在&#8203;`RemoteCommunication`&#8203;中允許&#8203;`PublicListing`&#8203;（預設設定）、在&#8203;`TradingPreferences`&#8203;中啟用&#8203;`SteamTradeMatcher`&#8203;、設定成&#8203;**[公開物品庫](https://steamcommunity.com/my/edit/settings)**&#8203;的隱私設定、&#8203;**[不受限制的](https://support.steampowered.com/kb_article.php?ref=3330-IAGK-7663)**&#8203;帳號，且啟用了&#8203;**[ASF雙重驗證](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-TW#asf-雙重驗證)**&#8203;。 額外需求包含了至少啟用15天的雙重驗證、5天以內未更改密碼、沒有任何帳號限制，例如功能限制、商業行為封鎖或交易封鎖等。 當然，您需要至少擁有一件符合&#8203;`MatchableTypes`&#8203;的物品，例如交換卡片。 除此之外，考量到會造成過重的負擔，我們不接受擁有超過&#8203;`500000`&#8203;物品的Bot。我們建議您遇到這種情形時，將您的物品庫拆分至數個帳號中。
+如果要被列在名單中，您需要滿足一系列的需求。 您必須至少在&#8203;`RemoteCommunication`&#8203;中允許&#8203;`PublicListing`&#8203;（預設設定）、在&#8203;`TradingPreferences`&#8203;中啟用&#8203;`SteamTradeMatcher`&#8203;、設定成&#8203;**[公開物品庫](https://steamcommunity.com/my/edit/settings)**&#8203;的隱私設定、&#8203;**[不受限制的](https://help.steampowered.com/zh-tw/faqs/view/71D3-35C2-AD96-AA3A)**&#8203;帳號，且啟用了&#8203;**[ASF雙重驗證](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-TW#asf-雙重驗證)**&#8203;。 額外需求包含了至少啟用15天的雙重驗證、5天以內未更改密碼、沒有任何帳號限制，例如功能限制、商業行為封鎖或交易封鎖等。 當然，您需要至少擁有一件符合&#8203;`MatchableTypes`&#8203;的物品，例如交換卡片。 除此之外，考量到會造成過重的負擔，我們不接受擁有超過&#8203;`500000`&#8203;物品的Bot。我們建議您遇到這種情形時，將您的物品庫拆分至數個帳號中。
 
 雖然&#8203;`PublicListing`&#8203;預設為啟用，但請注意，如果您沒有滿足所有要求，您將&#8203;**不會**&#8203;被顯示在網站上，特別是要注意&#8203;`SteamTradeMatcher`&#8203;，它在預設情形下並未啟用。 對於不滿足條件的人，即使他們保持啟用&#8203;`PublicListing`&#8203;，ASF也不會以任何方式與伺服器通訊。 公開名單也只會與ASF最新的穩定版相容，並可能拒絕顯示過時的Bot，特別是如果它們缺少只能在新版本中找到的核心功能。
 
@@ -50,7 +50,7 @@ ASF STM名單暫時只接受ASF Bot。 目前無法在我們的名單中顯示�
 
 `MatchActively`&#8203;設定是&#8203;**[`SteamTradeMatcher`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Trading-zh-TW#steamtradematcher)**&#8203;的主動版本，包含Bot發送交易給其他使用者的交互式比對。 它可以單獨運作，亦可結合&#8203;`SteamTradeMatcher`&#8203;設定一起運作。 本功能需要設定&#8203;`LicenseID`&#8203;，因為它使用了第三方伺服器及付費資源來維持運作。
 
-為了使用這個選項，您需要滿足一系列的需求。 您至少應保證帳號&#8203;**[不受限制](https://support.steampowered.com/kb_article.php?ref=3330-IAGK-7663)**&#8203;、啟用&#8203;**[ASF雙重驗證](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-TW#asf-雙重驗證)**&#8203;，並在&#8203;`MatchableTypes`&#8203;中設定至少一種有效類型，例如交換卡片。 額外需求包含了至少啟用15天的雙重驗證、5天以內未更改密碼、沒有任何帳號限制，例如功能限制、商業行為封鎖或交易封鎖等。
+為了使用這個選項，您需要滿足一系列的需求。 您至少應保證帳號&#8203;**[不受限制](https://help.steampowered.com/zh-tw/faqs/view/71D3-35C2-AD96-AA3A)**&#8203;、啟用&#8203;**[ASF雙重驗證](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-TW#asf-雙重驗證)**&#8203;，並在&#8203;`MatchableTypes`&#8203;中設定至少一種有效類型，例如交換卡片。 額外需求包含了至少啟用15天的雙重驗證、5天以內未更改密碼、沒有任何帳號限制，例如功能限制、商業行為封鎖或交易封鎖等。
 
 若您滿足了上述需求，ASF將會定期與我們的&#8203;**[ASF STM公開名單](#publiclisting)**&#8203;通訊，以主動比對當前可用的Bot。
 
@@ -72,7 +72,7 @@ ASF也會盡力使交易提案順利完成。 在下一輪比對中（通常在6
 
 ASF是也仍是免費且開源的，如同在2015年10月專案建立時所確立的那樣。 `ItemsMatcher`&#8203;外掛程式的原始碼與&#8203;`MatchActively`&#8203;在我們的儲存庫中提供，且ASF完全屬於非商業性程式，我們不會從對它的貢獻、組建或發布中獲取任何利益。 在過去7年多的時間裡，ASF得到了巨大的發展，且在每個月的穩定版本中仍不斷地改進與增強，這主要由一個人⸺**[JustArchi](https://github.com/JustArchi)**&#8203;⸺來完成的，無償付出。 我們唯一的資金來源來自於使用者的非強制性捐贈。
 
-在很長的一段時間內，直到2022年10月前，&#8203;`MatchActively`&#8203;功能一直是ASF核心的一部分，來提供所有人使用。 在2022年10月時，Steam背後的公司，Valve，對提取其他Bot的物品庫設定了非常嚴格的速率限制，使得原先的功能完全崩潰，且沒有任何可行的解決方案。 因此，由於該功能已完全失效且無法修復，作為過時功能，已在5.4.1.0版本從ASF核心中移除。
+在很長的一段時間內，直到2022年10月前，&#8203;`MatchActively`&#8203;功能一直是ASF核心的一部分，來提供所有人使用。 在2022年10月時，Steam背後的公司，Valve，對提取其他Bot的物品庫設定了非常嚴格的速率限制，使得原先的功能完全崩潰，且沒有任何可行的解決方案。 因此，由於該功能已完全失效且無法修復，作為過時功能，已從ASF核心中移除。
 
 `MatchActively`&#8203;作為官方&#8203;`ItemsMatcher`&#8203;外掛程式的一部分涅槃重生，該外掛程式進一步增強了ASF的交換卡片主動比對功能。 恢復&#8203;`MatchActively`&#8203;功能需要我們&#8203;**大量的工作**&#8203;來建立ASF後端，這是代管在伺服器上的全新服務，加入了超過一百個用於解析物品庫的付費代理節點，而所有的這些都是為了讓ASF用戶端能像以前一樣使用&#8203;`MatchActively`&#8203;。 因為涉及的工作量過大，且所用資源並不是免費的，需要我們每月付款（網域、伺服器、網路代理），我們決定只向我們的贊助者提供此功能，也就是說，那些已在每個月支援ASF專案的人。感謝他們，我們才能夠使用並提供這些付費資源。
 

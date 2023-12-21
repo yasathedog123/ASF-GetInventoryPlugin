@@ -42,14 +42,14 @@ Hay dos escenarios posibles para añadir un autenticador de dos factores con el 
 No importa si planeas usar ASF como autenticador independiente o quieres el mismo autenticador en la aplicación oficial de Steam, necesitas seguir estos pasos de inicialización:
 
 1. Crea un bot de ASF para la cuenta objetivo, inicia el bot e inicia sesión, lo que probablemente ya hayas hecho.
-2. Asigna un número de teléfono funcional a la cuenta desde **[aquí](https://store.steampowered.com/phone/manage)** para ser usado por el bot. Un número de teléfono es absolutamente necesario, ya que no hay forma de añadir 2FA sin él.
+2. Opcionalmente, asigna un número de teléfono funcional a la cuenta desde **[aquí](https://store.steampowered.com/phone/manage)** para ser usado por el bot. Esto te permitirá recibir un código SMS y permite la recuperación de ser necesario, pero no es obligatorio.
 3. Asegúrate de que no estás usando 2FA para tu cuenta, si lo haces, primero deshabilítalo.
 4. Ejecuta el comando `2fainit [Bot]`, reemplazando `[Bot]` con el nombre de tu bot.
 
 Suponiendo que tengas una respuesta exitosa, las siguientes dos cosas deben haber ocurrido:
 
 - Un nuevo archivo `<Bot>.maFile.PENDING` fue generado por ASF en tu directorio `config`.
-- Un SMS fue enviado por Steam al número de teléfono que asignaste para la cuenta.
+- Un SMS fue enviado por Steam al número de teléfono que asignaste para la cuenta. Si no estableciste un número de teléfono, entonces se envió un correo a la dirección de correo electrónico de la cuenta.
 
 Los detalles del autenticador todavía no son funcionales, sin embargo, puedes revisar el archivo generado si lo deseas. Si quieres estar doblemente seguro, puedes anotar el código de revocación. Los siguientes pasos dependerán de tu escenario seleccionado.
 
@@ -57,13 +57,13 @@ Los detalles del autenticador todavía no son funcionales, sin embargo, puedes r
 
 Si quieres usar ASF como tu principal (o incluso único) autenticador, ahora necesitas hacer el paso de finalización:
 
-5. Ejecuta el comando `2fafinalize [Bot] <ActivationCode>`, reemplazando `[Bot]` con el nombre de tu bot y `<ActivationCode>` con el código que recibiste por SMS en el paso anterior.
+5. Ejecuta el comando `2fafinalize [Bot] <ActivationCode>`, reemplazando `[Bot]` con el nombre de tu bot y `<ActivationCode>` con el código que recibiste por SMS o correo electrónico en el paso anterior.
 
 ### Autenticador conjunto
 
 Si quieres tener el mismo autenticador tanto en ASF como en la aplicación oficial de Steam, ahora necesitas hacer los siguientes pasos:
 
-5. Ignora el SMS que recibiste después del paso anterior.
+5. Ignora el código por SMS o correo electrónico que recibiste después del paso previo.
 6. Instala la aplicación de Steam si aún no lo has hecho, y ábrela. Dirígete a la pestaña de Steam Guard y añade un nuevo autenticador siguiente las instrucciones de la aplicación.
 7. Después de añadir tu autenticador en la aplicación y que esté funcionando, regresa a ASF. Ahora necesitas decirle a ASF que la finalización está lista con uno de los dos comandos siguientes:
  - Espera hasta que se muestre el siguiente código 2fa en la aplicación de Steam, y usa el comando `2fafinalized [Bot] <2fa_code_from_app>`, reemplazando `[Bot]` con el nombre de tu bot y `<2fa_code_from_app>` con el código que veas en la aplicación de Steam. Si el código generado por ASF y el código que proporcionaste son el mismo, ASF asume que un autenticador fue añadido correctamente y procederá a importar tu autenticador recién creado.

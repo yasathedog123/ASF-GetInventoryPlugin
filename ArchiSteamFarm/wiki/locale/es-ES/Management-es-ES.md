@@ -134,7 +134,7 @@ Eso sería hacerlo manualmente, es mucho más fácil usar nuestro **servicio [`s
 
 ### Yo sé más y todavía quiero ejecutar como `root`
 
-A partir de V5.2.0.10, ASF ya no te lo impedirá, solo mostrará una advertencia con un breve aviso. Solo no te sorprendas si un día debido a un error en el programa hace estallar todo tu sistema operativo con una pérdida total de datos - has sido avisado.
+ASF no evitará que lo hagas, solamente mostrará una advertencia con un pequeño aviso. Solo no te sorprendas si un día debido a un error en el programa hace estallar todo tu sistema operativo con una pérdida total de datos - has sido avisado.
 
 ---
 

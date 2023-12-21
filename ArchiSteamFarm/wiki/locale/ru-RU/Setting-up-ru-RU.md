@@ -38,14 +38,14 @@
 
 - `ca-сертификатов` (стандартные надежные SSL-сертификаты для создания HTTPS соединений)
 - `libc6` (`libc`)
-- `libgcc1` (`libgcc`)
-- `libicu` (`icu-libs`, последняя версия для вашего дистрибутива, например `libicu67`)
+- `libgcc-s1` (`libgcc1`, `libgcc`)
+- `libicu` (`icu-libs`, latest version for your distribution, for example `libicu72`)
 - `libgssapi-krb5-2` (`libkrb5-3`, `krb5-libs`)
-- `libssl1.1` (`libssl`, `openssl-libs`, последняя версия для вашего дистрибутива, как минимум `1.1.X` или `1.0.X`)
+- `libssl1.1` (`libssl`, `openssl-libs`, latest version for your distribution, at least `1.1.X`)
 - `libstdc++6` (`libstdc++`, версии `5.0` или выше)
 - `zlib1g` (`zlib`)
 
-Если не все, то большинство этих пакетов должны изначально присутствовать в вашей системе. В минимальной установке стабильной ветки Debian требуется только `libicu63`.
+Если не все, то большинство этих пакетов должны изначально присутствовать в вашей системе. The minimal installation of Debian stable required only `libicu72`.
 
 #### **[macOS](https://docs.microsoft.com/dotnet/core/install/macos)**:
 - На данный момент никаких дополнительных требований нет, но у вас должна быть установлена последняя версия OS X, как минимум 10.15+
@@ -188,7 +188,7 @@ ASF поддерживает фарм на нескольких аккаунта
 
 ASF - консольное приложение и не имеет графического интерфейса пользователя. Однако мы активно работаем над интерфейсом **[ASF-ui](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC-ru-RU#asf-ui)** для нашего интерфейса IPC, и он может служить практичным и удобным способом доступа к различным возможностям ASF.
 
-Чтобы использовать ASF-ui, вам необходимо включить `IPC`, что является параметром по умолчанию, начиная с ASF V5.1.0.0. После запуска ASF вы сможете убедиться, что он автоматически запустил интерфейс IPC:
+In order to use ASF-ui, you need to have `IPC` enabled, which is the default option. После запуска ASF вы сможете убедиться, что он автоматически запустил интерфейс IPC:
 
 ![IPC](https://i.imgur.com/ZmkO8pk.png)
 

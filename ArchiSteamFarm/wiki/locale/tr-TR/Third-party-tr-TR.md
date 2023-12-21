@@ -8,6 +8,12 @@ Lütfen aşağıdaki programların ASF geliştiricileri tarafından **sağlanmad
 
 ## ASF eklentileri
 
+### **[Citrinate](https://github.com/Citrinate)**
+
+- **[BoosterManager](https://github.com/Citrinate/BoosterManager)**, plugin for ASF providing an easy-to-use interface for turning gems into booster packs as well as various features for managing inventories and market listings.
+- **[CS2Interface](https://github.com/Citrinate/CS2Interface)**, plugin for ASF that allows you to interact with Counter-Strike 2 using **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)**.
+- **[FreePackages](https://github.com/Citrinate/FreePackages)**, plugin for ASF that finds free packages on Steam and adds them to your account.
+
 ### **[Rudokhvist](https://github.com/Rudokhvist)**
 
 - **[ASF Başarım Yöneticisi](https://github.com/Rudokhvist/ASF-Achievement-Manager)**, Steam başarımlarını yönetmenize izin veren ASF eklentisidir.
@@ -29,6 +35,7 @@ Lütfen aşağıdaki programların ASF geliştiricileri tarafından **sağlanmad
 ### Diğer
 
 - **[ASFEnhance](https://github.com/chr233/ASFEnhance)**, ASF için özellikle komutlar olmak üzere çeşitli yeni özelliklerle geliştiren eklenti.
+- **[ASFFreeGames](https://github.com/maxisoft/ASFFreeGames)**, plugin for ASF allowing one to automatically collect free steam games posted on reddit.
 
 ---
 
@@ -58,7 +65,7 @@ Lütfen aşağıdaki programların ASF geliştiricileri tarafından **sağlanmad
 
 ## Araçlar
 
-- **[Keys extractor](https://ske.xpixv.com)**, anahtarları çeşitli biçimlerde kopyalayıp yapıştırmanızı sağlayan ve `ürün kodunu aktifleştir` komutunu oluşturan ASF aracı. Daha fazla bilgi için **[GitHub repo](https://github.com/PixvIO/SKE)**'sunu ziyaret edin.
+- **[Keys extractor](https://umaim.github.io/SKE)**, anahtarları çeşitli biçimlerde kopyalayıp yapıştırmanızı sağlayan ve `ürün kodunu aktifleştir` komutunu oluşturan ASF aracı. Daha fazla bilgi için **[GitHub repo](https://github.com/PixvIO/SKE)**'sunu ziyaret edin.
 - **[ASF Mass Config Editor](https://github.com/genesix-eu/ASF_MCE)**, birden çok ASF yapılandırmasını daha kolay yönetmenizi sağlayan ASF aracı.
 
 ---

@@ -8,6 +8,12 @@ Xin lưu ý rằng các chương trình bên dưới **không** được duy tr�
 
 ## Phần mở rộng của ASF
 
+### **[Citrinate](https://github.com/Citrinate)**
+
+- **[BoosterManager](https://github.com/Citrinate/BoosterManager)**, plugin for ASF providing an easy-to-use interface for turning gems into booster packs as well as various features for managing inventories and market listings.
+- **[CS2Interface](https://github.com/Citrinate/CS2Interface)**, plugin for ASF that allows you to interact with Counter-Strike 2 using **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)**.
+- **[FreePackages](https://github.com/Citrinate/FreePackages)**, plugin for ASF that finds free packages on Steam and adds them to your account.
+
 ### **[Rudokhvist](https://github.com/Rudokhvist)**
 
 - **[ASF-Achievement-Manager](https://github.com/Rudokhvist/ASF-Achievement-Manager)**, phần bổ trợ dành cho ASF cho phép bạn quản lý thành tựu Steam.
@@ -29,6 +35,7 @@ Xin lưu ý rằng các chương trình bên dưới **không** được duy tr�
 ### Khác
 
 - **[ASFEnhance](https://github.com/chr233/ASFEnhance)**, phần bổ trợ cho ASF nâng cao nó với nhiều tính năng mới, đặc biệt là các lệnh.
+- **[ASFFreeGames](https://github.com/maxisoft/ASFFreeGames)**, plugin for ASF allowing one to automatically collect free steam games posted on reddit.
 
 ---
 
@@ -58,7 +65,7 @@ Xin lưu ý rằng các chương trình bên dưới **không** được duy tr�
 
 ## Công cụ
 
-- **[Trình trích mã](https://ske.xpixv.com)**, cho phép bạn sao-dán mã ở nhiều định dạng khác nhau và tạo lệnh `redeem` cho ASF. Kiểm tra **[kho GitHub](https://github.com/PixvIO/SKE)** để biết thêm chi tiết.
+- **[Trình trích mã](https://umaim.github.io/SKE)**, cho phép bạn sao-dán mã ở nhiều định dạng khác nhau và tạo lệnh `redeem` cho ASF. Kiểm tra **[kho GitHub](https://github.com/PixvIO/SKE)** để biết thêm chi tiết.
 - **[Trình biên tập Cấu hình ASF Hàng loạt](https://github.com/genesix-eu/ASF_MCE)**, cho phép quản lý nhiều cấu hình ASF dễ dàng hơn.
 
 ---

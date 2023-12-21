@@ -1,6 +1,6 @@
 # Plugins
 
-A partir de ASF V4, el programa incluye soporte para plugins personalizados que pueden ser cargados durante el tiempo de ejecución. Los plugins permiten personalizar el comportamiento de ASF, por ejemplo añadiendo comandos personalizados, lógica de intercambio personalizada o integración con servicios de terceros y APIs.
+ASF incluye soporte para plugins personalizados que pueden ser cargados durante el tiempo de ejecución. Los plugins permiten personalizar el comportamiento de ASF, por ejemplo añadiendo comandos personalizados, lógica de intercambio personalizada o integración con servicios de terceros y APIs.
 
 ---
 
@@ -28,7 +28,7 @@ Los plugins son bibliotecas .NET estándar que heredan la interfaz común `IPlug
 
 Hemos preparado **[ASF-PluginTemplate](https://github.com/JustArchiNET/ASF-PluginTemplate)** para ti, el cual puedes usar como base para tu proyecto de plugin. Usar la plantilla no es un requisito (ya que puedes hacer todo desde cero), pero recomendamos encarecidamente elegirlo ya que puede poner en marcha significativamente tu desarrollo y reducir el tiempo requerido para hacer todo bien. Simplemente echa un vistazo all **[README](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/README.md)** de la plantilla y te dará más indicaciones. Sin embargo, cubriremos los conceptos básicos abajo en caso de que quieras empezar desde cero, o entender mejor los conceptos usados en la plantilla de plugin.
 
-Tu proyecto debe ser una biblioteca .NET estándar que tenga como objetivo el entorno de trabajo apropiado para tu versión de ASF, como se especifica en la **[compilación](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compilation-es-ES)**. Recomendamos que apuntes a .NET (Core), pero los plugins en .NET Framework también están disponibles.
+Tu proyecto debe ser una biblioteca .NET estándar que tenga como objetivo el entorno de trabajo apropiado para tu versión de ASF, como se especifica en la **[compilación](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compilation-es-ES)**.
 
 El proyecto debe hacer referencia al ensamblado principal `ArchiSteamFarm`, ya sea una biblioteca `ArchiSteamFarm.dll` precompilada que hayas descargado como parte de la versión, o el proyecto fuente (por ejemplo, si decides añadir el árbol de ASF como submódulo). Esto te permitirá acceder y descubrir estructuras, métodos y propiedades de ASF, especialmente la interfaz `IPlugin` la que necesitarás para heredar en el siguiente paso. El proyecto también debe referenciar `System.Composition.AttributedModel` como mínimo, lo que te permite exportar `[Export]` tu `IPlugin` para que lo use ASF. Además, tal vez quieras/necesites referenciar otras bibliotecas comunes para interpretar las estructuras de datos que se te presentan en algunas interfaces, pero a menos que las necesites explícitamente, eso sería suficiente por ahora.
 
@@ -37,18 +37,18 @@ Si hiciste todo correctamente, tu `csproj` será similar al siguiente:
 ```csproj
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" Version="7.0.0" />
+    <PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="ArchiSteamFarm" HintPath="C:\\Path\To\Downloaded\ArchiSteamFarm.dll" />
+    <ProjectReference Include="C:\\Path\To\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="false" />
 
-    <!-- Si estás compilando como parte del árbol fuente de ASF, usa esto en lugar del <Reference> de arriba -->
-    <!-- <ProjectReference Include="C:\\Path\To\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="false" /> -->
+    <!-- Si se compila con el DLL descargado, usa esto en lugar de <ProjectReference> -->
+    <!-- <Reference Include="ArchiSteamFarm" HintPath="C:\\Path\To\Downloaded\ArchiSteamFarm.dll" /> -->
   </ItemGroup>
 </Project>
 ```

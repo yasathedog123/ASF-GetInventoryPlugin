@@ -38,14 +38,14 @@ Os nomes dos pacotes dependem da distribuição do Linux que você esteja usando
 
 - `ca-certificates` (certificados SSL padrão confiáveis para fazer conexões HTTPS)
 - `libc6` (`libc`)
-- `libgcc1` (`libgcc`)
-- `libicu` (`icu-libs`, versão mais recente para a sua distribuição, por exemplo `libicu67`)
+- `libgcc-s1` (`libgcc1`, `libgcc`)
+- `libicu` (`icu-libs`, latest version for your distribution, for example `libicu72`)
 - `libgssapi-krb5-2` (`libkrb5-3`, `krb5-libs`)
-- `libssl1.1` (`libssl`, `openssl-libs`, versão mais recente para a sua distribuição, pelo menos `1.1.X`, já que a `1.0.X` pode não funcionar mais)
+- `libssl1.1` (`libssl`, `openssl-libs`, latest version for your distribution, at least `1.1.X`)
 - `libstdc++6` (`libstdc++`, na versão `5.0` ou superior)
 - `zlib1g` (`zlib`)
 
-Pelo menos a maioria deles já deve estar disponível nativamente no seu sistema. A instalação mínima do Debian estável requer apenas `libicu67`.
+Pelo menos a maioria deles já deve estar disponível nativamente no seu sistema. The minimal installation of Debian stable required only `libicu72`.
 
 #### **[macOS](https://docs.microsoft.com/dotnet/core/install/macos)**:
 - None for now, but you should have latest version of macOS installed, at least 10.15+
@@ -188,7 +188,7 @@ A edição das configurações do ASF pode ser feita de uma forma muito fácil u
 
 O ASF é um aplicativo de console e não inclui uma interface gráfica de usuário (GUI). No entanto, estamos trabalhando ativamente em nossa interface IPC, o **[ASF-ui](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC-pt-BR#asf-ui)** que pode ser uma forma muito boa e amigável de acessar vários recursos do ASF.
 
-In order to use ASF-ui, you need to have `IPC` enabled, which is the default option starting with ASF V5.1.0.0. Once you launch ASF, you should be able to confirm that it properly started the IPC interface automatically:
+In order to use ASF-ui, you need to have `IPC` enabled, which is the default option. Once you launch ASF, you should be able to confirm that it properly started the IPC interface automatically:
 
 ![IPC](https://i.imgur.com/ZmkO8pk.png)
 

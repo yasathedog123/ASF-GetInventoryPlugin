@@ -32,7 +32,7 @@ ASF 默认使用工作站 GC。 这主要是因为其在内存消耗和性能之
 
 ### **[`DOTNET_TieredPGO`](https://docs.microsoft.com/zh-cn/dotnet/core/run-time-config/compilation#profile-guided-optimization)**
 
-> 此选项在 .NET 6 及更高版本中启用动态或分层的按配置优化（PGO）。
+> 此设置在 .NET 6 及更高版本中 (PGO) 启用动态或分层按配置优化。
 
 默认禁用。 简而言之，这会导致 JIT 花费更多时间分析 ASF 的代码及其模式，以便为您的典型使用方式生成深度优化的代码。 如果您想了解更多此选项的信息，请访问 **[performance improvements in .NET 6](https://devblogs.microsoft.com/dotnet/performance-improvements-in-net-6)**。
 

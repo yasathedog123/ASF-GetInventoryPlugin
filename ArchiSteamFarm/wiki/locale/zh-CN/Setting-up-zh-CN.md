@@ -38,14 +38,14 @@
 
 - `ca-certificates`（标准可信 SSL 证书，用于 HTTPS 连接）
 - `libc6`（`libc`）
-- `libgcc1`（`libgcc`）
-- `libicu`（`icu-libs`，您的发行版上的最新版，例如 `libicu67`）
+- `libgcc-s1`（`libgcc1`、`libgcc`）
+- `libicu`（`icu-libs`，您的发行版上的最新版，例如 `libicu72`）
 - `libgssapi-krb5-2`（`libkrb5-3`、`krb5-libs`）
-- `libssl1.1`（`libssl`、`openssl-libs`，或您的发行版上的最新版本，并且至少应为 `1.1.X`，因为 `1.0.X` 版本可能无法工作）
+- `libssl1.1`（`libssl`、`openssl-libs`，您的发行版上的最新版本，并最低为 `1.1.X`）
 - `libstdc++6`（`libstdc++`，`5.0` 或更高版本）
 - `zlib1g`（`zlib`）
 
-其中的大多数项目应该已经安装在您的系统中了。 Debian 稳定版的最小化安装流程仅需要您再手动安装 `libicu67`。
+其中的大多数项目应该已经安装在您的系统中了。 Debian 稳定版的最小化安装流程仅需要您再手动安装 `libicu72`。
 
 #### **[macOS](https://docs.microsoft.com/dotnet/core/install/macos)**：
 - 目前没有，但您应该安装最新版本的 macOS，至少应为 10.15+
@@ -188,7 +188,7 @@ ASF 支持同时挂多个帐户，这也是它的主要功能之一。 您可以
 
 ASF 是一个控制台应用程序，没有图形用户界面。 然而，我们正在积极开发 IPC 接口的前端 **[ASF-ui](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC-zh-CN#asf-ui)**，它是访问各种 ASF 功能的一种非常简便的、适合用户的方式。
 
-要使用 ASF-ui，您需要启用 `IPC`，自 V5.1.0.0 版本开始，ASF 已经默认启用。 运行 ASF 后，您应该能看到表明 IPC 接口成功启动的确认消息：
+要使用 ASF-ui，您需要启用 `IPC`，这也是 ASF 的默认行为。 运行 ASF 后，您应该能看到表明 IPC 接口成功启动的确认消息：
 
 ![IPC](https://i.imgur.com/ZmkO8pk.png)
 

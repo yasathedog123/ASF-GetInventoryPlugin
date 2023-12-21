@@ -8,6 +8,12 @@ PLZ NOWT DAT BELOW PROGRAMS R **NOT** MAINTAIND BY ASF DEVELOPERS AN THEREFORE *
 
 ## ASF PLUGINS
 
+### **[Citrinate](https://github.com/Citrinate)**
+
+- **[BoosterManager](https://github.com/Citrinate/BoosterManager)**, plugin for ASF providing an easy-to-use interface for turning gems into booster packs as well as various features for managing inventories and market listings.
+- **[CS2Interface](https://github.com/Citrinate/CS2Interface)**, plugin for ASF that allows you to interact with Counter-Strike 2 using **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)**.
+- **[FreePackages](https://github.com/Citrinate/FreePackages)**, plugin for ASF that finds free packages on Steam and adds them to your account.
+
 ### **[Rudokhvist](https://github.com/Rudokhvist)**
 
 - **[ASF-Achievement-Manager](https://github.com/Rudokhvist/ASF-Achievement-Manager)**, PLUGIN 4 ASF DAT ALLOWS U 2 MANAGE STEAM ACHIEVEMENTS.
@@ -29,6 +35,7 @@ PLZ NOWT DAT BELOW PROGRAMS R **NOT** MAINTAIND BY ASF DEVELOPERS AN THEREFORE *
 ### OTHR
 
 - **[ASFEnhance](https://github.com/chr233/ASFEnhance)**, PLUGIN 4 ASF ENHANCIN IT WIF VARIOUS NEW FEATUREZ, ESPECIALLY COMMANDZ.
+- **[ASFFreeGames](https://github.com/maxisoft/ASFFreeGames)**, plugin for ASF allowing one to automatically collect free steam games posted on reddit.
 
 ---
 
@@ -58,7 +65,7 @@ PLZ NOWT DAT BELOW PROGRAMS R **NOT** MAINTAIND BY ASF DEVELOPERS AN THEREFORE *
 
 ## TOOLS
 
-- **[KEYS EXTRACTOR](https://ske.xpixv.com)**, ALLOWS U 2 COPY-PASTE KEYS IN VARIOUS FORMATS AN CREATE `redeem` COMMAND 4 ASF. CHECK **[GITHUB REPO](https://github.com/PixvIO/SKE)** 4 MOAR DETAILS.
+- **[KEYS EXTRACTOR](https://umaim.github.io/SKE)**, ALLOWS U 2 COPY-PASTE KEYS IN VARIOUS FORMATS AN CREATE `redeem` COMMAND 4 ASF. CHECK **[GITHUB REPO](https://github.com/PixvIO/SKE)** 4 MOAR DETAILS.
 - **[ASF MAS CONFIG EDITOR](https://github.com/genesix-eu/ASF_MCE)**, WHICH ALLOWS 2 MANAGE MULTIPLE ASF CONFIGS MOAR EASILY.
 
 ---

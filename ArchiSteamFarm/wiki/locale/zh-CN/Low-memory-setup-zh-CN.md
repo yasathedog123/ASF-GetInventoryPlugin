@@ -52,11 +52,17 @@ ASF 中使用的&#8203;**[垃圾收集](https://en.wikipedia.org/wiki/Garbage_co
 
 ### [`GCHeapHardLimitPercent`](https://docs.microsoft.com/zh-cn/dotnet/core/run-time-config/garbage-collector#heap-limit-percent)
 
-> 以内存百分比形式指定允许 GC 堆空间使用物理内存总量。
+> 指定允许的 GC 堆使用量占总物理内存的百分比。
 
 对 ASF 进程设置的硬性内存限制，此选项会调整 GC 仅使用一部分而不是全部内存。 这在各种服务器环境下可能非常有用，您可以为服务器上的 ASF 分配固定大小的内存，使 ASF 无法占用更多。 需要注意的是，限制 ASF 的可用内存不会神奇地减少它实际需要的内存，因此，如果将此选项设置得过低，就可能导致内存用尽，进而强制中止 ASF 进程。
 
 另一方面，如果您希望 ASF 不会使用超出您可接受范围的内存，让您的设备在高负载的情况下依然有喘息的空间，但仍然允许程序尽可能高效率地完成它的任务，就可以合理调高这个选项。
+
+### [`GCConserveMemory`](https://learn.microsoft.com/dotnet/core/runtime-config/garbage-collector#conserve-memory)
+
+> 配置垃圾回收器来节省内存，但代价是垃圾回收更频繁，并且暂停时间可能更长。
+
+可以使用 0-9 之间的值。 值越大，GC 越会优化内存而不是性能。
 
 ### [`GCHighMemPercent`](https://docs.microsoft.com/zh-cn/dotnet/core/run-time-config/garbage-collector#high-memory-percent)
 
@@ -64,7 +70,7 @@ ASF 中使用的&#8203;**[垃圾收集](https://en.wikipedia.org/wiki/Garbage_co
 
 此选项设置您整个操作系统可供使用的内存上限，设置后，GC 将会更加积极，更频繁地运行 GC 进程，借此向操作系统释放更多空闲内存，以尝试帮助操作系统降低内存负载。 推荐将此属性设置为您认为将会严重影响操作系统性能的最大内存占用（百分比形式）。 默认值为 90%，通常您会希望保持其在 80-97% 范围内，因为过低的值会造成不必要的激进 GC 并降低性能，而过高的值可能会导致操作系统负担过重，应该让 ASF 释放一些内存以缓解。
 
-### **[`GCLatencyLevel`](https://github.com/dotnet/runtime/blob/4b90e803262cb5a045205d946d800f9b55f88571/src/coreclr/gc/gcpriv.h#L375-L398)**
+### **[`GCLatencyLevel`](https://github.com/dotnet/runtime/blob/a1d48d6c00b5aecc063d1a58b0d9281c611ada91/src/coreclr/gc/gcpriv.h#L445-L468)**
 
 > 指定您要优化的 GC 延迟级别。
 
@@ -85,6 +91,7 @@ ASF 中使用的&#8203;**[垃圾收集](https://en.wikipedia.org/wiki/Garbage_co
 export DOTNET_GCHeapHardLimitPercent=0x4B # 75% 的十六进制表示
 export DOTNET_GCHighMemPercent=0x50 # 80% 的十六进制表示
 
+export DOTNET_GCConserveMemory=9
 export DOTNET_GCLatencyLevel=0
 export DOTNET_gcTrimCommitOnLowMemory=1
 
@@ -99,6 +106,7 @@ export DOTNET_gcTrimCommitOnLowMemory=1
 $Env:DOTNET_GCHeapHardLimitPercent=0x4B # 75% 的十六进制表示
 $Env:DOTNET_GCHighMemPercent=0x50 # 80% 的十六进制表示
 
+$Env:DOTNET_GCConserveMemory=9
 $Env:DOTNET_GCLatencyLevel=0
 $Env:DOTNET_gcTrimCommitOnLowMemory=1
 

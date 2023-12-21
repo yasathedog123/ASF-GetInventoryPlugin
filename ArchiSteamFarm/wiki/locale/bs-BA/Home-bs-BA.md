@@ -1,8 +1,8 @@
-# Home
+# Početna
 
-Welcome to ASF wiki. Wiki is an online help that covers many different subjects such as frequently asked questions, possible issues, usage, setting up, and many more. This is what you should follow if you want to learn how ASF works, especially how to install, configure, and use it.
+Dobrodošli u ASF Wiki. Wiki je online pomoćnik koji pokriva razne teme kao što su najčešće postavljena pitanja, mogući problemi, način korišćenja, podešavanje, i mnogo ostalog. Ovo je ono što trebate pratiti ako želite da naučite kako ASF radi, posebno kako da ga instalirate, podesite i koristite.
 
-You can change wiki language by adding `-locale` string to any visited page. For example, instead of visiting **[Home](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Home)**, you can visit **[Home-ru-RU](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Home-ru-RU)** that contains home page translated into Russian (if available). Languages that are localized by our community in 90% or more will also be available on our wiki sidebar (on the right) for easy access.
+Možete promijeniti jezik wiki-a ako promijenite `-locale` dio bilo koje posjećene stranice. Npr. umjesto da posjetite **[Home](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Home)** stranicu, možete dodati **[Home-ru-RU](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Home-ru-RU)** da bi posjetili početnu stranicu na ruskom(ako je prevedena). Jezici koji su prevedeni više od 90% biće dodati u listi pored (desno) za lakši pristup.
 
 All wiki pages always apply to **[latest ASF release](https://github.com/JustArchiNET/ArchiSteamFarm/releases)** only, unless stated otherwise (like "V2"). If you'd like to see a wiki page in given fixed point of time (for example for a bit older ASF release), use **[revisions](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/_history)** that are available on top of each page and pick a date that is appropriate for the date of your ASF release. We keep all pages available for current, as well as previous major ASF version.
 

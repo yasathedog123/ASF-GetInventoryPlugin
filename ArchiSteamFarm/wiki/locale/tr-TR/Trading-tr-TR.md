@@ -1,6 +1,6 @@
 # Takas
 
-ASF, Steam'in etkileşimli olmayan (çevrimdışı) takaslarına destek sağlar. Hem alım (kabul/reddetme) hem de takas gönderme hemen yapılabilir ve özel yapılandırma gerektirmez, ancak şüphesiz bir şekilde sınırlandırılmamış (mağazada 5$ harcamış olan) Steam hesabı gerektirir. Sınırlandırılmış hesaplarda takas modülüne erişilemez.
+ASF, Steam'in etkileşimli olmayan (çevrimdışı) takaslarına destek sağlar. Hem alım (kabul/reddetme) hem de takas gönderme hemen yapılabilir ve özel yapılandırma gerektirmez, ancak şüphesiz bir şekilde sınırlandırılmamış (mağazada 5$ harcamış olan) Steam hesabı gerektirir. Only limited trading functionality is available for restricted accounts.
 
 ---
 

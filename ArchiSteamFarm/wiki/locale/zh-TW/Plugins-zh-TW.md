@@ -1,6 +1,6 @@
 # 外掛程式
 
-從ASF V4版本開始，程式支援可在執行期間載入的自訂外掛程式。 外掛程式使您能夠自訂ASF的行為，例如加入自訂指令、自訂交易邏輯，或與第三方服務或是API進行整體整合。
+ASF支援可在執行期間載入的自訂外掛程式。 外掛程式使您能夠自訂ASF的行為，例如加入自訂指令、自訂交易邏輯，或與第三方服務或是API進行整體整合。
 
 ---
 
@@ -28,7 +28,7 @@ ASF會從您的ASF資料夾中的&#8203;`plugins`&#8203;資料夾載入外掛程
 
 我們為您準備了&#8203;**[ASF外掛程式模板](https://github.com/JustArchiNET/ASF-PluginTemplate)**&#8203;，您可以把它當作您外掛程式專案的基礎。 使用模板並非強制性（因為您可以從頭開始建立），但我們強烈建議使用，因為它能夠極大加速您的開發過程，節省各種事情所需的時間。 參閱模板的&#8203;**[README](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/README.md)**&#8203;，來進一步了解詳細資訊。 不論如何，若您仍想從頭開始，或希望更理解外掛程式模板裡面所使用的概念，我們也會在接下來介紹相關基礎。
 
-您的專案應該是一個標準.NET程式庫，以您想要的ASF版本為目標來選取適合的Framework，如&#8203;**[編譯](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compilation-zh-TW)**&#8203;中所述。 我們建議您以.NET (Core)作為目標，但.NET Framework外掛程式也是可以使用的。
+您的專案應該是一個標準.NET程式庫，以您想要的ASF版本為目標來選取適合的Framework，如&#8203;**[編譯](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compilation-zh-TW)**&#8203;中所述。
 
 專案必須引用&#8203;`ArchiSteamFarm`&#8203;主程式集，或您先前下載的發布中所包含的預組建&#8203;`ArchiSteamFarm.dll`&#8203;程式庫，或原始專案（例如您決定將ASF Tree作為子模組）。 這將使您可以存取與檢查ASF的結構、方法及屬性，特別是您接下來將需要繼承的&#8203;`IPlugin`&#8203;核心介面。 專案也必須至少引用&#8203;`System.Composition.AttributedModel`&#8203;，使您能夠&#8203;`[Export]`&#8203;您的&#8203;`IPlugin`&#8203;給ASF使用。 除此之外，您可能還希望／需要引用其他公開程式庫，來解譯在某些介面中提供給您的資料結構，但除非您確實需要它們，否則現在這樣就夠了。
 
@@ -37,18 +37,18 @@ ASF會從您的ASF資料夾中的&#8203;`plugins`&#8203;資料夾載入外掛程
 ```csproj
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" Version="7.0.0" />
+    <PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="ArchiSteamFarm" HintPath="C:\\Path\To\Downloaded\ArchiSteamFarm.dll" />
+    <ProjectReference Include="C:\\Path\To\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="false" />
 
-    <!-- 若要作為 ASF 的 Source Tree 組建的一部份，使用這個來取代上面的 <Reference> -->
-    <!-- <ProjectReference Include="C:\\Path\To\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="false" /> -->
+    <!-- 若要使用下載的 DLL 二進制檔案來組建，使用下列設定來取代上方的 <ProjectReference> 引數 -->
+    <!-- <Reference Include="ArchiSteamFarm" HintPath="C:\\Path\To\Downloaded\ArchiSteamFarm.dll" /> -->
   </ItemGroup>
 </Project>
 ```

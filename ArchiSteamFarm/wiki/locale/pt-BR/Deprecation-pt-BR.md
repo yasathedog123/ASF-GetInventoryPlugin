@@ -1,12 +1,12 @@
 # Depreciação
 
-Desde o ASF V3.1.2.2 estamos seguindo uma política de depreciação a fim de manter tanto o desenvolvimento quanto o uso mais consistente.
+We're doing our best to follow consistent deprecation policy in order to make both development as well as usage far more consistent.
 
 ---
 
 ## O que é depreciação?
 
-Depreciação é o processo de fazer pequenas ou grandes alterações que tornam obsoletos as opções, argumentos, funcionalidades ou casos de uso anteriores. Depreciação costuma significar que determinada coisa simplesmente foi reescrita de outra forma (semelhante), e você deve garantir em tempo hábil que você fará a mudança apropriada. Neste caso, é simplesmente mover determinada funcionalidade para o local mais apropriado.
+Deprecation is the process of smaller or bigger breaking changes that render previously used options, arguments, functionalities or usage cases obsolete. Depreciação costuma significar que determinada coisa simplesmente foi reescrita de outra forma (semelhante), e você deve garantir em tempo hábil que você fará a mudança apropriada. Neste caso, é simplesmente mover determinada funcionalidade para o local mais apropriado.
 
 O ASF muda rápido e sempre em busca de se tornar melhor. Infelizmente, isto significa que podemos mudar ou mover algumas funcionalidades existentes para outro segmento do programa a fim de que elas possam se beneficiar de novos recursos, compatibilidade ou estabilidade. Graças a isso, não precisamos nos atar a decisões de desenvolvimento obsoletas ou dolorosamente erradas que fizemos anos atrás. Sempre buscamos trazer substituições sensatas que se encaixam ao uso esperado de funções anteriormente disponíveis, esse é motivo pelo qual a depreciação é geralmente inofensiva e requer pequenas correções no uso anterior.
 

@@ -38,14 +38,14 @@ Imena paketa zavise od Linux distribucije koju koristite, mi smo naveli najčeš
 
 - `ca-certificates` (standard trusted SSL certificates to make HTTPS connections)
 - `libc6` (`libc`)
-- `libgcc1` (`libgcc`)
-- `libicu` (`icu-libs`, poslednju verziju za vašu distribuciju, npr. `libicu67`)
+- `libgcc-s1` (`libgcc1`, `libgcc`)
+- `libicu` (`icu-libs`, latest version for your distribution, for example `libicu72`)
 - `libgssapi-krb5-2` (`libkrb5-3`, `krb5-libs`)
-- `libssl1.1` (`libssl`, `openssl-libs`, latest version for your distribution, at least `1.1.X` as `1.0.X` may no longer work)
+- `libssl1.1` (`libssl`, `openssl-libs`, latest version for your distribution, at least `1.1.X`)
 - `libstdc++6` (`libstdc++`, u verziji `5.0` ili većoj)
 - `zlib1g` (`zlib`)
 
-Većina, ako ne i sve, bi trebalo da su već instalirane na vašem sistemi. The minimal installation of Debian stable required only `libicu67`.
+Većina, ako ne i sve, bi trebalo da su već instalirane na vašem sistemi. The minimal installation of Debian stable required only `libicu72`.
 
 #### **[macOS](https://docs.microsoft.com/dotnet/core/install/macos)**:
 - None for now, but you should have latest version of macOS installed, at least 10.15+
@@ -188,7 +188,7 @@ Editing your ASF configs can be done much easier by using our ASF-ui frontend, w
 
 ASF je aplikacija u konsoli i ne sadrži grafički korisnički interfejs. Ipak, mi aktivno radimo na **[ASF-ui](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC#asf-ui)** interfejsu za naš IPC, koji je veoma lak za korišćenje i pristup raznim ASF mogućnostima.
 
-In order to use ASF-ui, you need to have `IPC` enabled, which is the default option starting with ASF V5.1.0.0. Once you launch ASF, you should be able to confirm that it properly started the IPC interface automatically:
+In order to use ASF-ui, you need to have `IPC` enabled, which is the default option. Once you launch ASF, you should be able to confirm that it properly started the IPC interface automatically:
 
 ![IPC](https://i.imgur.com/ZmkO8pk.png)
 

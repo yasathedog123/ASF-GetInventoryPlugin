@@ -1,6 +1,6 @@
 # Docker
 
-Начиная с версии 3.0.3.2, ASF также доступен в формате **[контейнера docker](https://www.docker.com/what-container)**. Наши Docker-пакеты доступны на **[ghcr.io](https://github.com/orgs/JustArchiNET/packages/container/archisteamfarm/versions)** а также **[Docker Hub](https://hub.docker.com/r/justarchi/archisteamfarm)**.
+ASF is available as **[docker container](https://www.docker.com/what-container)**. Наши Docker-пакеты доступны на **[ghcr.io](https://github.com/orgs/JustArchiNET/packages/container/archisteamfarm/versions)** а также **[Docker Hub](https://hub.docker.com/r/justarchi/archisteamfarm)**.
 
 Важно отметить, что запуск ASF в Docker-контейнере считается **расширенной установкой**,что **не требуется** для подавляющего большинства пользователей и обычно **не дает никаких преимуществ** по сравнению с установкой без контейнеров. Если вы рассматриваете Docker в качестве решения для запуска ASF в качестве службы, например заставляя его автоматически запускаться с вашей ОС, то вы должны подумать над чтением раздела **[управления](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Management-ru-RU#systemd-service-for-linux)** и установкой соответствующего `сервиса`, который будет **почти всегда** лучшей идеей, чем запуск ASF в контейнере Docker.
 
@@ -47,7 +47,7 @@ We generally discourage trying `main` builds, as those are here for us to mark c
 
 ASF docker image is currently built on `linux` platform targetting 3 architectures - `x64`, `arm` and `arm64`. Вы можете прочитать больше об этом в разделе **[Совместимость](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compatibility-ru-RU)**.
 
-Since ASF version V5.0.2.2, our tags are using multi-platform manifest, which means that Docker installed on your machine will automatically select the proper image for your platform when pulling the image. If by any chance you'd like to pull a specific platform image which doesn't match the one you're currently running, you can do that through `--platform` switch in appropriate docker commands, such as `docker run`. Смотрите документацию docker на **[image manifest](https://docs.docker.com/registry/spec/manifest-v2-2)** для получения дополнительной информации.
+Our tags are using multi-platform manifest, which means that Docker installed on your machine will automatically select the proper image for your platform when pulling the image. If by any chance you'd like to pull a specific platform image which doesn't match the one you're currently running, you can do that through `--platform` switch in appropriate docker commands, such as `docker run`. Смотрите документацию docker на **[image manifest](https://docs.docker.com/registry/spec/manifest-v2-2)** для получения дополнительной информации.
 
 ---
 
@@ -85,7 +85,7 @@ docker run -it --name asf --pull always --rm justarchi/archisteamfarm:released
 docker run -it -v /home/archi/ASF/config:/app/config --name asf --pull always justarchi/archisteamfarm
 ```
 
-Вот и всё, теперь ваш контейнер docker с ASF будет использовать общую папку с вашей локальной машины в режиме чтения и записи, а это всё что вам нужно для конфигурирования ASF. Аналогичным образом вы можете смонтировать другие тома, которые вы хотите сделать общими с ASF, например `/app/logs` или `/app/plugins/MyCustomPluginDirectory`.
+Вот и всё, теперь ваш контейнер docker с ASF будет использовать общую папку с вашей локальной машины в режиме чтения и записи, а это всё что вам нужно для конфигурирования ASF. In similar way you can mount other volumes that you'd like to share with ASF, such as `/app/logs` or `/app/plugins/MyCustomPluginDirectory` (you don't want to override `/app/plugins` itself, since this way you'll remove plugins that ship with ASF by default).
 
 Разумеется, это только один из возможных способов получить желаемое, никто не мешает вам, к примеру, создать свой собственный `Dockerfile` который будет копировать файлы конфигурации в папку `/app/config` в контейнере docker с ASF. В этой инструкции мы описываем только основы использования.
 
@@ -148,7 +148,7 @@ ASF позволяет передавать **[аргументы командн
 docker run -it -e "ASF_CRYPTKEY=MyPassword" -e "ASF_ARGS=--no-config-migrate" --name asf --pull always justarchi/archisteamfarm
 ```
 
-Этот пример корректно передаст ваш аргумент `--cryptkey` процессу ASF, запущенному внутри контейнера docker, а также передаст остальные аргументы. Разумеется, если вы продвинутый пользователь, вы также можете изменить `ENTRYPOINT` или добваить `CMD` и передавать нужные аргументы командной строки самостоятельно.
+Этот пример корректно передаст ваш аргумент `--cryptkey` процессу ASF, запущенному внутри контейнера docker, а также передаст остальные аргументы. Of course, if you're advanced user, then you can also modify `ENTRYPOINT` or add `CMD` and pass your custom arguments yourself.
 
 Если вы не хотите предоставлять пользовательский ключ шифрования или другие расширенные опции, обычно вам не нужно включать никаких специальных переменных среды, так как наши контейнеры docker уже настроены на запуск с ожидаемыми параметрами по умолчанию `--no-restart` `--process-required` `--system-required`, так что эти флаги не должны быть чётко указаны в `ASF_ARGS`.
 
@@ -189,10 +189,10 @@ docker run -it -p 127.0.0.1:1242:1242 -p [::1]:1242:1242 --name asf --pull alway
 Объединив знания, полученные выше, мы можем сделать полный пример конфигурации, он будет выглядеть примерно так:
 
 ```shell
-docker run -p 127.0.0.1:1242:1242 -p [::1]:1242:1242 -v /home/archi/ASF/config:/app/config --name asf --pull always justarchi/archisteamfarm
+docker run -p 127.0.0.1:1242:1242 -p [::1]:1242:1242 -v /home/archi/ASF/config:/app/config -v /home/archi/ASF/plugins:/app/plugins/custom --name asf --pull always justarchi/archisteamfarm
 ```
 
-Предполагается, что вы будете использовать один ASF контейнер со всеми конфигурационными файлами ASF в `/home/archi/ASF/config`. Вам нужно изменить путь к конфигурационным файлам на соответствующий вашей машине. Эта конфигурация также готова к использованию IPC если вы решите включить в вашу папку конфигурации файл `IPC.config` со следующим содержимым:
+Предполагается, что вы будете использовать один ASF контейнер со всеми конфигурационными файлами ASF в `/home/archi/ASF/config`. Вам нужно изменить путь к конфигурационным файлам на соответствующий вашей машине. It's also possible to provide custom plugins for ASF, which you can put in `/home/archi/ASF/plugins`. Эта конфигурация также готова к использованию IPC если вы решите включить в вашу папку конфигурации файл `IPC.config` со следующим содержимым:
 
 ```json
 {

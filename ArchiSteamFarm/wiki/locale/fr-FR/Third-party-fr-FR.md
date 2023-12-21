@@ -8,6 +8,12 @@ Please note that below programs are **not** maintained by ASF developers and the
 
 ## ASF plugins
 
+### **[Citrinate](https://github.com/Citrinate)**
+
+- **[BoosterManager](https://github.com/Citrinate/BoosterManager)**, plugin for ASF providing an easy-to-use interface for turning gems into booster packs as well as various features for managing inventories and market listings.
+- **[CS2Interface](https://github.com/Citrinate/CS2Interface)**, plugin for ASF that allows you to interact with Counter-Strike 2 using **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)**.
+- **[FreePackages](https://github.com/Citrinate/FreePackages)**, plugin for ASF that finds free packages on Steam and adds them to your account.
+
 ### **[Rudokhvist](https://github.com/Rudokhvist)**
 
 - **[ASF-Achievement-Manager](https://github.com/Rudokhvist/ASF-Achievement-Manager)**, plugin for ASF that allows you to manage Steam achievements.
@@ -29,6 +35,7 @@ Please note that below programs are **not** maintained by ASF developers and the
 ### Autres
 
 - **[ASFEnhance](https://github.com/chr233/ASFEnhance)**, plugin pour ASF l'améliorant avec de nouvelles fonctionnalités, en particulier des commandes.
+- **[ASFFreeGames](https://github.com/maxisoft/ASFFreeGames)**, plugin for ASF allowing one to automatically collect free steam games posted on reddit.
 
 ---
 
@@ -58,7 +65,7 @@ Please note that below programs are **not** maintained by ASF developers and the
 
 ## Outils
 
-- **[Keys extractor](https://ske.xpixv.com)**, permet de copier-coller les clés dans divers formats et créer la commande de `redeem` pour ASF. Vérifiez sur le **[GitHub repo](https://github.com/PixvIO/SKE)** pour plus de détails.
+- **[Keys extractor](https://umaim.github.io/SKE)**, permet de copier-coller les clés dans divers formats et créer la commande de `redeem` pour ASF. Vérifiez sur le **[GitHub repo](https://github.com/PixvIO/SKE)** pour plus de détails.
 - **[ASF Mass Config Editor](https://github.com/genesix-eu/ASF_MCE)**, permet de gérer plusieurs configs ASF plus facilement.
 
 ---

@@ -54,13 +54,13 @@ Devido à natureza desta propriedade, também é possível definir a cryptkey de
 
 ---
 
-`--cryptkey-file <path>` ou `--cryptkey-file=<path>` - inicializará o ASF com uma chave de criptografia personalizado lida à partir do arquivo `<path>`. Isso tem a mesma função que `--cryptkey <key>` explicado acima, apenas o mecanismo difere, já que esta propriedade vai ler a `<key>` dà partir do `<path>` indicado.
+`--cryptkey-file <path>` ou `--cryptkey-file=<path>` - inicializará o ASF com uma chave de criptografia personalizado lida à partir do arquivo `<path>`. Isso tem a mesma função que `--cryptkey <key>` explicado acima, apenas o mecanismo difere, já que esta propriedade vai ler a `<key>` dà partir do `<path>` indicado. If you're using this together with `--path`, consider declaring `--path` first so relative paths can work correctly.
 
 Devido à natureza desta propriedade, também é possível definir ao arquivo cryptkey' declarando a variável de ambiente `ASF_CRYPTKEY_FILE`, que pode ser mais apropriada para pessoas que gostariam de evitar dados confidenciais nos argumentos do processo.
 
 ---
 
-`--ignore-unsupported-environment` - fará com que o ASF ignore problemas decorrentes de rodar em um ambiente não suportado, o que geralmente é sinalizado com um erro e uma saída forçada. Um ambiente não suportado inclui, por exemplo, rodar a compilação .NET Framework na plataforma que deveria estar rodando a compilação .NET (Core). Esse sinalizador permitirá que o ASF tente rodar em tais cenários, esteja ciente de que não damos suporte a isso e que você está forçando o ASF a fazer isso **por sua conta e risco**. Hoje **todos** os ambientes não suportados podem ser corrigidos, tal como rodar a compilação `genérica` ao invés da `generic-netf`. Recomendamos intensamente resolver os problemas pendentes em vez de declarar este argumento.
+`--ignore-unsupported-environment` - fará com que o ASF ignore problemas decorrentes de rodar em um ambiente não suportado, o que geralmente é sinalizado com um erro e uma saída forçada. Unsupported environment includes for example running `win-x64` OS-specific build on `linux-x64`. Esse sinalizador permitirá que o ASF tente rodar em tais cenários, esteja ciente de que não damos suporte a isso e que você está forçando o ASF a fazer isso **por sua conta e risco**. As of today, **all** of the unsupported environment scenarios can be corrected. Recomendamos intensamente resolver os problemas pendentes em vez de declarar este argumento.
 
 ---
 

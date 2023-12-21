@@ -1,12 +1,12 @@
 # Zastarenje
 
-Od ASF V3.1.2.2, pratićemo konstantnu politiku zastarenja da bi usavršili razvijanje i da bi napravili korišćenje više konzistentnim.
+We're doing our best to follow consistent deprecation policy in order to make both development as well as usage far more consistent.
 
 ---
 
 ## Šta je zastarenje?
 
-Zastarenje je proces dodavanja manjih ili većih promjena koji pravi prethodno korišćene opcije, komande, funkcionalnosti ili načine korišćenja zastarelim. Zastarenje najčešće znači da je postojeća opcija prebačena u drugu (sličnu) formu, i da se treba omogućiti odrešeno vrijeme da napravite prelaz ka toj formi. U tom slučaju, to je premještanje date funkcionalnosti u prikladnijem mjestu.
+Deprecation is the process of smaller or bigger breaking changes that render previously used options, arguments, functionalities or usage cases obsolete. Zastarenje najčešće znači da je postojeća opcija prebačena u drugu (sličnu) formu, i da se treba omogućiti odrešeno vrijeme da napravite prelaz ka toj formi. U tom slučaju, to je premještanje date funkcionalnosti u prikladnijem mjestu.
 
 ASF se brzo mijenja i uvijek cilja da postane bolji. Ovo nažalost znači da ćemo možda promijeniti ili pomjeriti postojeće funkcionalnosti u drugi segmenat programa da bi koristio od novih mogućnosti, kompatabilnosti ili stabilnosti. Zahvaljujući tome ne moramo da se zadržavamo na zastarelim ili pogrešnim odlukama developovanja koje smo davno napravili. Uvijek pokušavamo da damo razumne zamjene koje su prikladne očekivanim već postojećim funkcionalnostima, zbog čega je zastarenje najčešće bezopasno i zahtijeva male popravke prethodnog korišćenja.
 

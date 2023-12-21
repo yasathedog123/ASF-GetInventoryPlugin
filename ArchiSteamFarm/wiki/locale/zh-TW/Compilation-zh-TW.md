@@ -17,7 +17,7 @@
 假設您已擁有適合的.NET SDK版本，只需前往ASF原始碼資料夾（Clone或下載並解壓縮後的ASF儲存庫）並執行：
 
 ```shell
-dotnet publish ArchiSteamFarm -c "Release" -f "net7.0" -o "out/generic"
+dotnet publish ArchiSteamFarm -c "Release" -o "out/generic"
 ```
 
 若您使用Linux/macOS，則可以改用&#8203;`cc.sh`&#8203;腳本，以稍複雜的方法執行相同的操作。
@@ -29,24 +29,10 @@ dotnet publish ArchiSteamFarm -c "Release" -f "net7.0" -o "out/generic"
 若您有需要，也可以生成適用於特定作業系統的.NET套件。 在一般情形下，不需要這樣做，因為您剛剛編譯了&#8203;`generic`&#8203;版本，您可以使用已安裝用於編譯的.NET執行環境來執行，但以防萬一您想要：
 
 ```shell
-dotnet publish ArchiSteamFarm -c "Release" -f "net7.0" -o "out/linux-x64" -r "linux-x64"
+dotnet publish ArchiSteamFarm -c "Release" -o "out/generic"
 ```
 
 當然，您需要將&#8203;`linux-x64`&#8203;取代成您所需目標的作業系統架構，例如&#8203;`win-x64`&#8203;。 這個組建版本也將停用自動更新。
-
-### .NET Framework
-
-在極少見的情形下，若您想要組建&#8203;`generic-netf`&#8203;套件，您可以將目標框架從&#8203;`net7.0`&#8203;更改成&#8203;`net481`&#8203;。 請注意，您需要適合的&#8203;**[.NET Framework](https://dotnet.microsoft.com/download/visual-studio-sdks)**&#8203;開發人員套件與.NET SDK才能編譯&#8203;`netf`&#8203;變體版本，所以下列只適用於Windows：
-
-```shell
-dotnet publish ArchiSteamFarm -c "Release" -f "net481" -o "out/generic-netf"
-```
-
-若無法安裝.NET Framework或甚至.NET SDK自身（例如在&#8203;`linux-x86`&#8203;上使用`mono`組建版本），您可以直接呼叫&#8203;`msbuild`&#8203;。 您還需要手動指定&#8203;`ASFNetFramework`&#8203;，因為ASF在非Windows平台上預設停用&#8203;`netf`&#8203;組建版本：
-
-```shell
-msbuild /m /r /t:Publish /p:Configuration=Release /p:TargetFramework=net481 /p:PublishDir=out/generic-netf /p:ASFNetFramework=true ArchiSteamFarm
-```
 
 ### ASF-ui
 
@@ -63,7 +49,7 @@ npm ci --prefix ASF-ui
 npm run-script deploy --prefix ASF-ui
 
 rm -rf "out/generic/www" # 確保我們的組建輸出不會含有舊檔案
-dotnet publish ArchiSteamFarm -c "Release" -f "net7.0" -o "out/generic" # 或依據上文選擇您所需的
+dotnet publish ArchiSteamFarm -c "Release" -o "out/generic" # 或依據上文選擇您所需的
 ```
 
 您現在應該可以在&#8203;`out/generic/www`&#8203;資料夾中找到ASF-ui檔案了。 ASF能向您的瀏覽器伺服這些檔案。
@@ -90,6 +76,6 @@ dotnet publish ArchiSteamFarm -c "Release" -f "net7.0" -o "out/generic" # 或依
 
 ## 官方發布版本
 
-官方ASF發布版本由&#8203;**[GitHub](https://github.com/JustArchiNET/ArchiSteamFarm/actions)**&#8203;在Windows上編譯，並帶有符合ASF&#8203;**[執行環境](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compatibility-zh-TW#執行環境需求)**&#8203;的最新.NET SDK。 通過測試後，所有套件會都作為發布版本部署，並放置在GitHub上。 這也保證了透明度，因為GitHub都會使用官方開源來進行所有的組建，並且您也可以檢查GitHub部件的核對和及GitHub的發布資源。 除了私人的開發過程及除錯外，ASF開發人員不會自行編譯或發布組建版本。
+官方ASF發布版本由&#8203;**[GitHub](https://github.com/JustArchiNET/ArchiSteamFarm/actions)**&#8203;編譯，並帶有符合ASF&#8203;**[執行環境](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compatibility-zh-TW#執行環境需求)**&#8203;的最新.NET SDK。 通過測試後，所有套件會都作為發布版本部署，並放置在GitHub上。 這也保證了透明度，因為GitHub都會使用官方開源來進行所有的組建，並且您也可以檢查GitHub部件的核對和及GitHub的發布資源。 除了私人的開發過程及除錯外，ASF開發人員不會自行編譯或發布組建版本。
 
-從ASF V5.2.0.5開始，除了上述情形外，ASF維護人員會在獨立於GitHub的遠端伺服器上手動驗證並發布組建核對和，作為額外的安全措施。 現有的ASF必須執行此步驟，才能將該版本視為自動更新功能的有效候選版本。
+除了上述情形外，ASF維護人員會在獨立於GitHub的遠端ASF伺服器上手動驗證並發布組建核對和，作為額外的安全措施。 現有的ASF必須執行此步驟，才能將該版本視為自動更新功能的有效候選版本。

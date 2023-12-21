@@ -8,7 +8,7 @@
 
 公共列表，顾名思义，是列出当前可用 ASF STM 机器人的列表。 它位于[**我们的网站**](https://asf.justarchi.net/STM)，它是一项面向启用 `MatchActively` 的 ASF 用户的全自动公开服务，同时也供 ASF 用户与非 ASF 用户进行手动匹配。
 
-要出现在列表中，您需要满足一系列需求。 最低要求是在 `RemoteCommunication` 中允许 `PublicListing`（默认设置）、在 `TradingPreferences` 中启用 `SteamTradeMatcher`、[**公开库存**](https://steamcommunity.com/my/edit/settings)、帐户[**不受限**](https://support.steampowered.com/kb_article.php?ref=3330-IAGK-7663)，并且启用 **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-CN#asf-两步验证)**。 额外要求包括至少已启用 15 天 2FA，5 天之内未修改过密码，没有任何帐户限制如锁定、商业封禁、交易封禁等。 很自然地，您还必须拥有至少一个符合您设定的 `MatchableTypes` 的物品，例如集换式卡牌。 除此之外，由于开销过大，我们不接受拥有超过 `500000`  件物品的机器人，我们建议在这种情况下将库存分散到多个帐户下。
+要出现在列表中，您需要满足一系列需求。 最低要求是在 `RemoteCommunication` 中允许 `PublicListing`（默认设置）、在 `TradingPreferences` 中启用 `SteamTradeMatcher`、[**公开库存**](https://steamcommunity.com/my/edit/settings)、帐户[**不受限**](https://help.steampowered.com/faqs/view/71D3-35C2-AD96-AA3A)，并且启用 **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-CN#asf-两步验证)**。 额外要求包括至少已启用 15 天 2FA，5 天之内未修改过密码，没有任何帐户限制如锁定、商业封禁、交易封禁等。 很自然地，您还必须拥有至少一个符合您设定的 `MatchableTypes` 的物品，例如集换式卡牌。 除此之外，由于开销过大，我们不接受拥有超过 `500000`  件物品的机器人，我们建议在这种情况下将库存分散到多个帐户下。
 
 尽管 `PublicListing` 默认启用，但请注意，如果您没有满足所有要求，特别是默认禁用的 `SteamTradeMatcher`，您将**不会**被显示在网站上。 对于未满足要求的用户，即使他们保持 `PublicListing` 启用，ASF 也不会以任何方式与服务器通信。 公开列表也仅与最新稳定版本的 ASF 兼容，并且可能拒绝显示过时的机器人，特别是如果它们缺少只能在较新版本中找到的核心功能。
 
@@ -50,7 +50,7 @@ ASF STM 列表暂时只接受 ASF 机器人。 目前无法在我们的列表中
 
 `MatchActively`（主动匹配）是 **[`SteamTradeMatcher`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Trading-zh-CN#steamtradematcher)** 的主动版本，包括互动式匹配，机器人同时会向其他人发送交易报价。 它可以单独运行，也可以与 `SteamTradeMatcher` 设置一起运行。 此功能需要设置 `LicenseID`，因为它需要使用第三方服务器和付费资源才能工作。
 
-为了使用该选项，您需要满足一系列需求。 您至少应该保证帐户[**不受限**](https://support.steampowered.com/kb_article.php?ref=3330-IAGK-7663)、**[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-CN#asf-两步验证)** 启用，并且在 `MatchableTypes` 中设置了至少一种有效的类型，例如集换式卡牌。 额外要求包括至少已启用 15 天 2FA，5 天之内未修改过密码，没有任何帐户限制如锁定、商业封禁、交易封禁等。
+为了使用该选项，您需要满足一系列需求。 您至少应该保证帐户[**不受限**](https://help.steampowered.com/faqs/view/71D3-35C2-AD96-AA3A)、**[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-CN#asf-两步验证)** 启用，并且在 `MatchableTypes` 中设置了至少一种有效的类型，例如集换式卡牌。 额外要求包括至少已启用 15 天 2FA，5 天之内未修改过密码，没有任何帐户限制如锁定、商业封禁、交易封禁等。
 
 如果您满足上述所有要求，ASF 将会定期与我们的[**公共 ASF STM 列表**](#publiclisting公共列表)通信，以主动匹配当前在线的机器人。
 
@@ -72,7 +72,7 @@ ASF 也会尽力确保交易报价完成。 在大约 6 小时后的下一轮匹
 
 ASF 是并且现在仍然是免费、开放源代码的，一如在 2015 年 10 月项目创立时所确定的那样。 包括 `MatchActively` 功能的 `ItemsMatcher` 插件源代码在我们的仓库中提供，因为 ASF 程序是完全非商业性质的，我们不会从对它的贡献、构建或发布中获利。 在过去 7 年多的时间里，ASF 获得了巨大的发展，而且仍然每月发布稳定版对程序进行改进和增强，这一切主要由一个人完成，**[JustArchi](https://github.com/JustArchi)**——没有提出任何附加条件。 我们唯一的资金来源是来自用户的非强制性捐款。
 
-在 2022 年 10 月以前的很长一段时间里，`MatchActively` 功能都是 ASF 核心的一部分，供所有人使用。 在 2022 年 10 月，Steam 背后的公司 Valve 对拉取其他机器人的库存实施了非常严格的速率限制，使之前的功能几乎完全失效，没有可能的办法解决该问题。 因此，由于此功能已经完全失效并且无法修复的事实，自 5.4.1.0 版本起，因为已经过时，它必须从 ASF 核心功能中删除。
+在 2022 年 10 月以前的很长一段时间里，`MatchActively` 功能都是 ASF 核心的一部分，供所有人使用。 在 2022 年 10 月，Steam 背后的公司 Valve 对拉取其他机器人的库存实施了非常严格的速率限制，使之前的功能几乎完全失效，没有可能的办法解决该问题。 因此，由于此功能已经完全失效并且无法修复的事实，它必须从 ASF 核心功能中删除。
 
 `MatchActively` 以官方 `ItemsMatcher` 插件的形式复活，使 ASF 仍然有能力进行主动卡牌匹配。 复活的 `MatchActively` 功能需要我们在 ASF 后端进行**巨量的工作**，包括全新的托管服务器和上百个用于解析库存的付费代理，一切都专门用来让 ASF 客户端能像以前一样使用 `MatchActively`。 由于涉及的工作量非常大，并且相关资源（域名、服务器、代理）并非免费，而是需要我们每月付费，我们决定仅将此功能提供给我们的赞助者，也就是已经每月支持 ASF 项目的人，没有他们的支持，我们就无法提供这些付费资源。
 

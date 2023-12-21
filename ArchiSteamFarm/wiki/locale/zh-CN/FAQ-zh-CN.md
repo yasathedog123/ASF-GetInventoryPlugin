@@ -28,7 +28,7 @@
 - **您需要在自己的 Steam 帐户上拥有相应游戏，才有资格获得此游戏掉落的卡牌。 家庭共享的游戏不算在内。**
 - **您不能无限挂卡，每款游戏只会掉落固定数量的卡牌。 一旦您挂完了所有可掉落的卡牌（整套卡牌的一半），这款游戏就无法再挂卡。 无论您是否出售、交易、合成或对您已获得的卡牌进行任何操作，一旦卡牌掉落完毕，这款游戏就算挂完了。**
 - **如果您不在免费游戏中消费，就无法从中获得卡牌掉落。 这一点涉及到永久免费的游戏，例如 Team Fortress 2 或 Dota 2。 拥有免费游戏不会给您带来卡牌掉落。**
-- **[受限帐户](https://support.steampowered.com/kb_article.php?ref=3330-iagk-7663)&#8203;无法掉落卡牌，无论其是否拥有游戏。 在过去不是这样，但是现在情况发生了变化。**
+- **[受限帐户](https://help.steampowered.com/faqs/view/71D3-35C2-AD96-AA3A)&#8203;无法掉落卡牌，无论其是否拥有游戏。 在过去不是这样，但是现在情况发生了变化。**
 - **您在促销活动期间获得的付费游戏无法掉落卡牌，无论其商店页面显示为何。 在过去不是这样，但是现在情况发生了变化。**
 
 如您所见，Steam 卡牌是对您玩游戏或者在免费游戏中消费的奖励。 如果您花足够长时间玩一款游戏，所有的可掉落卡牌都会掉落到您的库存中，使您有机会合成一个徽章（在获取另外半套卡牌之后）、卖掉卡牌或者随便您如何处理它们。
@@ -117,7 +117,7 @@ ASF 是一个 C# 程序，需要安装正常工作的 .NET 环境实现。 自 .
 
 ### ASF 类似于 Idle Master 吗？
 
-二者之间的唯一相似之处就是它们的目标，即挂机 Steam 游戏以获取掉落的卡牌。 任何其他方面，包括实际的挂机方法、使用的算法、程序的结构、功能、兼容性以及源代码本身都完全不同，二者之间毫无共同之处，甚至连程序的核心也是如此——IM 运行于 .NET 框架，而 ASF 运行于 .NET（Core）。 ASF 是为了解决 IM 的问题而编写的，这些问题无法通过简单地给 IM 代码打补丁来解决——这也是为何 ASF 完全从零开始，没有使用一行 IM 的代码，也没有借鉴它的程序逻辑，因为 IM 的代码与逻辑在一开始就存在缺陷。 IM 和 ASF 就好像 Windows 与 Linux——两者都是可以安装在您的 PC 上的操作系统，但除了这一目标之外，二者之间几乎毫无相似之处。
+二者之间的唯一相似之处就是它们的目标，即挂机 Steam 游戏以获取掉落的卡牌。 任何其他方面，包括实际的挂机方法、程序的结构、功能、兼容性、使用的算法，特别是源代码本身都完全不同，二者之间毫无共同之处，甚至连程序的核心也是如此——IM 运行于 .NET 框架，而 ASF 运行于 .NET（Core）。 ASF 是为了解决 IM 的问题而编写的，这些问题无法通过简单地给 IM 代码打补丁来解决——这也是为何 ASF 完全从零开始，没有使用一行 IM 的代码，也没有借鉴它的程序逻辑，因为 IM 的代码与逻辑在一开始就存在缺陷。 IM 和 ASF 就好像 Windows 与 Linux——两者都是可以安装在您的 PC 上的操作系统，但除了这一目标之外，二者之间几乎毫无相似之处。
 
 这也是为何您不应该根据对 IM 的期望比较 ASF 与 IM。 您应该将 ASF 与 IM 视为各有独特功能的完全独立的程序。 您可以在二者中找到一些重叠的功能，但很少，因为 ASF 使用与 IM 完全不同的方法来实现目标。
 
@@ -135,7 +135,7 @@ ASF 的逻辑还能够正确处理**系列**视频。 Steam 上有许多视频�
 
 这是 3 点使用 ASF 的**重要**理由，因为它们直接影响到每个人的挂卡过程，谁也无法肯定“这与我无关”，因为 Steam 的维护和故障会影响到所有人。 在下文中，您可以了解到一些或重要或不重要的额外理由。 因此，一句话来说，**是的**，即使您不需要 ASF 比 IM 多的额外功能，也应该考虑使用 ASF。
 
-除此之外，IM 项目已经正式停止，在将来会完全失效，因为现在已有更强大的解决方案（不仅仅有 ASF），没有人愿意继续修复 IM。 无法使用 IM 的用户已经有很多，这个数字只会上升而不会下降。 您应该始终避免使用过时的软件，不仅仅有 IM，也包括任何其他已被废弃的程序。 无人维护意味着没有人在乎它还是否有效，没有人验证，也**没有人对其功能负责**，这在安全性方面是一个至关重要的问题。 其中可能存在对 Steam 基础设施有害的致命错误——没有人修复，如果 Steam 进行另一波封禁，使用者就会受到影响，而完全不知道原因是什么，猜猜谁曾经经历过这样的事情？正是使用过时版本 ASF 的用户。
+除此之外，IM 项目已经正式停止，在将来会完全失效，因为现在已有更强大的解决方案（不仅仅有 ASF），没有人愿意继续修复 IM。 无法使用 IM 的用户已经有很多，这个数字只会上升而不会下降。 您应该始终避免使用过时的软件，不仅仅有 IM，也包括任何其他已被废弃的程序。 无人维护意味着没有人在乎它还是否有效，也**没有人对其功能负责**，这在安全性方面是一个至关重要的问题。 其中可能存在对 Steam 基础设施有害的致命错误——没有人修复，如果 Steam 进行另一波封禁，使用者就会受到影响，而完全不知道原因是什么，猜猜谁曾经经历过这样的事情？正是使用过时版本 ASF 的用户。
 
 ---
 
@@ -145,7 +145,7 @@ ASF 的逻辑还能够正确处理**系列**视频。 Steam 上有许多视频�
 
 首先，如果您的目标仅仅是挂卡，**[上述](#我现在正在使用-idle-master并且它很好用我有必要换成-asf-吗)**&#8203;的内置挂卡核心功能通常已经可以满足需求。 但您已经知道这一点了，我们需要看看更有趣的功能：
 
-- **您可以离线挂卡**（设置 `OnlineStatus` 为 `Offline`）。 离线挂卡使您可以完全隐藏 Steam 的“游戏中”状态，在 Steam 显示您“在线”的同时，ASF 仍可以继续挂卡，您的朋友不会发现 ASF 正在代替您玩游戏。 这是一个超赞的功能，您可以保持 Steam 客户端为在线状态，不再有经常变化的游戏提醒来烦扰您的朋友，或者使您的朋友误认为您正在玩游戏。 如果您尊重您的朋友，仅凭这一点，就应该使用 ASF，但这仅仅是个开始。 值得注意的是，这个特性与您的 Steam 隐私设置无关——如果您自己运行游戏，仍然会向您的朋友展示正确的游戏状态，只有 ASF 部分是隐藏的，不会影响您的帐户。
+- **您可以离线挂卡**（`OnlineStatus` 中的 `Offline` 设置）。 离线挂卡使您可以完全隐藏 Steam 的“游戏中”状态，在 Steam 显示您“在线”的同时，ASF 仍可以继续挂卡，您的朋友不会发现 ASF 正在代替您玩游戏。 这是一个超赞的功能，您可以保持 Steam 客户端为在线状态，不再有经常变化的游戏提醒来烦扰您的朋友，或者使您的朋友误认为您正在玩游戏。 如果您尊重您的朋友，仅凭这一点，就应该使用 ASF，但这仅仅是个开始。 值得注意的是，这个特性与您的 Steam 隐私设置无关——如果您自己运行游戏，仍然会向您的朋友展示正确的游戏状态，只有 ASF 部分是隐藏的，不会影响您的帐户。
 
 - **您可以跳过仍可退款的游戏**（`SkipRefundableGames` 功能）。 ASF 的内部逻辑能够正确处理可退款的游戏，您可以设置 ASF 不自动开始挂仍可以退款的游戏。 这样您就可以自己检查从 Steam 商店购买的游戏是否值得您花的钱，而不是让 ASF 尽快挂完游戏的卡牌。 如果您玩了 2 小时以上，或者已经购买超过 2 周，那么 ASF 将继续挂此游戏，因为此时它不再可以无条件退款。 在此之前，您对此游戏有完全的控制权，如果您不喜欢，可以直接退款，整个过程都不需要您将该游戏加入挂卡黑名单，也不需要避免在此期间打开 ASF。
 
@@ -217,7 +217,7 @@ ASF 不基于 Steam 客户端，而是使用自己的 Steam 客户端实现。 �
 
 ---
 
-### ASF 会像[**这里**](https://support.steampowered.com/kb_article.php?ref=2117-ilzv-2837)所提到的那样，导致我无法加入 VAC 安全服务器吗？
+### ASF 会像[**这里**](https://help.steampowered.com/faqs/view/22C0-03D0-AE4B-04E8)所提到的那样，导致我无法加入 VAC 安全服务器吗？
 
 ASF 根本不需要您运行，甚至都不需要安装 Steam 客户端。 根据这一概念，它应该**无法**造成任何 VAC 相关的问题，因为 ASF 保证不干扰 Steam 客户端及其所有进程——这是讨论 ASF 的 VAC 安全保证的要点。
 
@@ -239,7 +239,7 @@ ASF 根本不需要您运行，甚至都不需要安装 Steam 客户端。 根�
 
 ### 我会因此受到封禁吗？
 
-要回答这个问题，我们首先应该仔细阅读 **[Steam 订户协议](https://store.steampowered.com/subscriber_agreement)**。 Steam 不禁止用户使用多个帐户，事实上，Steam **[允许](https://support.steampowered.com/kb_article.php?ref=8625-WRAH-9030#share)**&#8203;您为多个帐户使用同一个手机验证器。 但他们不允许与其他人共享帐户，而我们并没有这样做。
+要回答这个问题，我们首先应该仔细阅读 **[Steam 订户协议](https://store.steampowered.com/subscriber_agreement)**。 Steam 不禁止用户使用多个帐户，事实上，Steam [**允许**](https://help.steampowered.com/faqs/view/7EFD-3CAE-64D3-1C31#share)您为多个帐户使用同一个手机验证器。 但他们不允许与其他人共享帐户，而我们并没有这样做。
 
 ASF 真正需要关注的重点是：
 > You may not use Cheats, automation software (bots), mods, hacks, or any other unauthorized third-party software, to modify or automate any Subscription Marketplace process.（参考译文：您不得使用作弊软件、自动化软件、机器人、模组、破解或任何其他未经授权的第三方软件来修改或自动执行任何订购市场流程。）
@@ -257,11 +257,17 @@ ASF 真正需要关注的重点是：
 特别是因为：
 > In regard to all Subscriptions, Content and Services that are not authored by Valve, Valve does not screen such third-party content available on Steam or through other sources.（参考译文：对于不是由 Valve 创作的订阅、内容和服务，Valve 不会在 Steam 或其他来源上屏蔽此类第三方内容。） Valve assumes no responsibility or liability for such third party content.（参考译文：Valve 对此类第三方内容不承担任何责任。） Some third-party application software is capable of being used by businesses for business purposes - however, you may only acquire such software via Steam for private personal use.（参考译文：某些第三方应用软件能够被企业用于商业目的——但是，您通过 Steam 购买的此类软件仅供私人个人使用。）
 
-然而，如&#8203;**[此文章](https://support.steampowered.com/kb_article.php?ref=2117-ilzv-2837)**&#8203;所述，Valve 明确知晓“Steam 挂机工具”的存在，因此，如果您问我，我很确定如果他们认为这种行为不妥，就早已采取措施来阻止，而不是指出这种行为会造成 VAC 的故障了。 这里的关键词是 **Steam** 挂机工具，例如 ASF，而不是**游戏**挂机工具。
+然而，如[**此文章**](https://help.steampowered.com/faqs/view/22C0-03D0-AE4B-04E8)所述，Valve 明确知晓“Steam 挂机工具”的存在，因此，如果您问我，我很确定如果他们认为这种行为不妥，就早已采取措施来阻止，而不是指出这种行为会造成 VAC 的故障了。 这里的关键词是 **Steam** 挂机工具，例如 ASF，而不是**游戏**挂机工具。
 
 请注意，上文只是我们对 **[Steam 订户协议](https://store.steampowered.com/subscriber_agreement)**&#8203;及其各条目的解释——ASF 本身依据 Apache 2.0 许可证授权，其中明确规定：
 
-> Unless required by applicable law or agreed to in writing, ASF is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.（参考译文：除非适用法律要求或书面同意，否则 ASF 将按“原样”分发，不附带任何明示或暗示的担保或条件。）
+```
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+（参考译文：除非适用法律要求或书面同意，否则以此许可证发布的软件将按“原样”分发，
+不附带任何明示或暗示的担保或条件。）
+```
 
 您使用此软件的风险由您自己承担。 您不可能因此受到封禁，但如果您被封禁了，原因只能是您自己。
 
@@ -275,7 +281,7 @@ ASF 真正需要关注的重点是：
 
 > Hello XXX, Thank you for contacting Steam Support.（译文：感谢您联系 Steam 客服。） It looks like this account was used to manage a network of bot accounts.（译文：看起来您的帐户被用于管理一个机器人帐户网络。） Botting is a violation of the Steam Subscriber Agreement.（译文：使用机器人违反了 Steam 订户协议。）
 
-请您了解一些常识，不要因为 ASF 允许您做，就做这种疯狂的事情。 对超过 1000 个机器人发起 `loot ASF` 请求完全可以视为一次 **[DDoS](https://en.wikipedia.org/wiki/DDoS)** 攻击，就我个人而言，我并不惊讶有人因为这种事情被封禁。 请了解有关 Steam 服务的一些基本常识，只要您不滥用 Steam 服务，就**几乎不可能**遇到问题。
+请您了解一些常识，不要因为 ASF 允许您做，就做这种疯狂的事情。 对超过 1000 个机器人发起 `loot ASF` 请求完全可以视为一次 **[DDoS](https://en.wikipedia.org/wiki/DDoS)** 攻击，就我个人而言，我并不惊讶有人因为这种事情被封禁。 只要保证在合理范围内使用 Steam 服务，就**几乎不可能**遇到问题。
 
 第二起事件是一名拥有超过 170 个机器人的用户在 2017 年 Steam 冬季特卖期间被封禁。
 
@@ -553,7 +559,7 @@ InternalRequest() Forbidden <- HEAD https://steamcommunity.com/my/edit/settings
 
 ### ASF 无法接受或者发送交易报价！
 
-首先是最明显的事实——新帐户受到交易限制。 ASF 无法使用新帐户接受或者发送交易，直到您在商店中充值或者花费 5 美元来解锁此帐户的限制。 在这种情况下，ASF 会认为库存是空的，因为其中每一张卡牌都不可交易。 接受交易也是不可能的，因为这需要 ASF 有能力获取 API 密钥，但受限用户的 API 功能是禁用的。 简而言之——所有受限用户都无法交易，没有例外。
+首先是最明显的事实——新帐户受到交易限制。 ASF 无法使用新帐户接受或者发送交易，直到您在商店中充值或者花费 5 美元来解锁此帐户的限制。 在这种情况下，ASF 会认为库存是空的，因为其中每一张卡牌都不可交易。
 
 接下来，如果您没有使用 **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-CN)** ，可能 ASF 实际上已经接受/发送了交易报价，但是您还需要通过电子邮件确认交易。 同样地，如果您使用经典 2FA，就需要在手机验证器中确认交易。 目前，交易确认是一项**强制**措施，所以如果您不想手动接受它们，就需要将您的验证器导入为 ASF 2FA。
 

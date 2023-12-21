@@ -1,6 +1,6 @@
 # Steam 親友同享
 
-ASF從2.1.5.5+版本開始，支援Steam親友同享。 想要了解ASF是如何支援Steam親友同享的，您應先閱讀Steam商店中提供的&#8203;**[親友同享](https://store.steampowered.com/promotion/familysharing)**&#8203;介紹。
+ASF支援Steam親友同享⸺想要了解ASF是如何支援Steam親友同享的，您應先閱讀Steam商店中提供的&#8203;**[親友同享](https://store.steampowered.com/promotion/familysharing)**&#8203;介紹。
 
 ---
 

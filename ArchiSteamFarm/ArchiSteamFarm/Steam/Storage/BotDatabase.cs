@@ -38,22 +38,22 @@ namespace ArchiSteamFarm.Steam.Storage;
 
 public sealed class BotDatabase : GenericDatabase {
 	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> FarmingBlacklistAppIDs = new();
+	internal readonly ConcurrentHashSet<uint> FarmingBlacklistAppIDs = [];
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> FarmingPriorityQueueAppIDs = new();
+	internal readonly ConcurrentHashSet<uint> FarmingPriorityQueueAppIDs = [];
 
 	[JsonProperty(Required = Required.DisallowNull)]
 	internal readonly ObservableConcurrentDictionary<uint, DateTime> FarmingRiskyIgnoredAppIDs = new();
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> FarmingRiskyPrioritizedAppIDs = new();
+	internal readonly ConcurrentHashSet<uint> FarmingRiskyPrioritizedAppIDs = [];
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> MatchActivelyBlacklistAppIDs = new();
+	internal readonly ConcurrentHashSet<uint> MatchActivelyBlacklistAppIDs = [];
 
 	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<ulong> TradingBlacklistSteamIDs = new();
+	internal readonly ConcurrentHashSet<ulong> TradingBlacklistSteamIDs = [];
 
 	internal uint GamesToRedeemInBackgroundCount {
 		get {
@@ -133,9 +133,7 @@ public sealed class BotDatabase : GenericDatabase {
 	private string? BackingSteamGuardData;
 
 	private BotDatabase(string filePath) : this() {
-		if (string.IsNullOrEmpty(filePath)) {
-			throw new ArgumentNullException(nameof(filePath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		FilePath = filePath;
 	}
@@ -221,9 +219,7 @@ public sealed class BotDatabase : GenericDatabase {
 	}
 
 	internal static async Task<BotDatabase?> CreateOrLoad(string filePath) {
-		if (string.IsNullOrEmpty(filePath)) {
-			throw new ArgumentNullException(nameof(filePath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		if (!File.Exists(filePath)) {
 			return new BotDatabase(filePath);
@@ -277,9 +273,7 @@ public sealed class BotDatabase : GenericDatabase {
 	}
 
 	internal void RemoveGameToRedeemInBackground(string key) {
-		if (string.IsNullOrEmpty(key)) {
-			throw new ArgumentNullException(nameof(key));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(key);
 
 		lock (GamesToRedeemInBackground) {
 			if (!GamesToRedeemInBackground.Contains(key)) {

@@ -48,7 +48,7 @@ No momento não existem falhas de segurança conhecidas e sem correção no ASF,
 
 ### Como faço para verificar se os arquivos baixados são genuínos?
 
-Como parte de nossas versões no GitHub, utilizamos um processo de verificação muito semelhante ao usado pelo **[Debian](https://www.debian.org/CD/verify)**. Em todas as versões oficiais à partir do ASF V5.1.3., além do arquivo `zip` você também encontrará os arquivos `SHA512SUMS` e `SHA512SUMS.sign`. Faça o download deles para fins de verificação, junto com os arquivos `zip` que escolher.
+Como parte de nossas versões no GitHub, utilizamos um processo de verificação muito semelhante ao usado pelo **[Debian](https://www.debian.org/CD/verify)**. In every official release, in addition to `zip` build assets, you can find `SHA512SUMS` and `SHA512SUMS.sign` files. Faça o download deles para fins de verificação, junto com os arquivos `zip` que escolher.
 
 Primeiro, você deve usar o arquivo `SHA512SUMS` para verificar se a soma de verificação `SHA-512` dos arquivos `zip` selecionados corresponde ao arquivo que nós mesmos calculamos. No Linux, você pode usar `sha512sum` para esse fim.
 

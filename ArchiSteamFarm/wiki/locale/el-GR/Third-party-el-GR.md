@@ -8,6 +8,12 @@
 
 ## ASF plugins
 
+### **[Citrinate](https://github.com/Citrinate)**
+
+- **[BoosterManager](https://github.com/Citrinate/BoosterManager)**, plugin for ASF providing an easy-to-use interface for turning gems into booster packs as well as various features for managing inventories and market listings.
+- **[CS2Interface](https://github.com/Citrinate/CS2Interface)**, plugin for ASF that allows you to interact with Counter-Strike 2 using **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)**.
+- **[FreePackages](https://github.com/Citrinate/FreePackages)**, plugin for ASF that finds free packages on Steam and adds them to your account.
+
 ### **[Rudokhvist](https://github.com/Rudokhvist)**
 
 - **[ASF-Achievement-Manager](https://github.com/Rudokhvist/ASF-Achievement-Manager)**, plugin για το ASF που σας επιτρέπει να διαχειριστείτε τα Steam achievements.
@@ -29,6 +35,7 @@
 ### Άλλο
 
 - **[ASFEnhance](https://github.com/chr233/ASFEnhance)**, πρόσθετο για ASF, για ενίσχυση με διάφορα νέα χαρακτηριστικά, ειδικά εντολές.
+- **[ASFFreeGames](https://github.com/maxisoft/ASFFreeGames)**, plugin for ASF allowing one to automatically collect free steam games posted on reddit.
 
 ---
 
@@ -58,7 +65,7 @@
 
 ## Εργαλεία
 
-- **[Keys extractor](https://ske.xpixv.com)**, σας επιτρέπει να αντιγράψετε τα κλειδιά σε διάφορες μορφές και να δημιουργήσετε `redeem` εντολή για το ASF. Ελέγξτε το **[GitHub repo](https://github.com/PixvIO/SKE)** για περισσότερες λεπτομέρειες.
+- **[Keys extractor](https://umaim.github.io/SKE)**, σας επιτρέπει να αντιγράψετε τα κλειδιά σε διάφορες μορφές και να δημιουργήσετε `redeem` εντολή για το ASF. Ελέγξτε το **[GitHub repo](https://github.com/PixvIO/SKE)** για περισσότερες λεπτομέρειες.
 - **[ASF Mass Config Editor](https://github.com/genesix-eu/ASF_MCE)**, το οποίο επιτρέπει την εύκολη διαχείριση πολλαπλών ASF ρυθμίσεων.
 
 ---

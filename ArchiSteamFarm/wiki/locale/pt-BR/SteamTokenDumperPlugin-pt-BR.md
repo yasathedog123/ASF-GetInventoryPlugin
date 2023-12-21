@@ -1,6 +1,6 @@
 # SteamTokenDumperPlugin
 
-`SteamTokenDumperPlugin` é o **[plugin](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Plugins)** oficial do ASF, desenvolvido por nós e disponível desde o ASF V.4.2.2.2, ele permite que você contríbua para o projeto **[SteamDB](https://steamdb.info)**, compartilhando pacotes de tokens, tokens de aplicativos e códigos de armazenamento aos quais sua conta Steam tem acesso. As informações na integra sobre o porque o SteamDB precisa de tais dados podem ser encontrado na página de **[Depósito de Tokens](https://steamdb.info/tokendumper)** do SteamDB. Os dados enviados não incluem qualquer informação potencialmente sensível, e não possui qualquer risco à sua segurança ou privacidade, como especificado acima.
+`SteamTokenDumperPlugin` is official ASF **[plugin](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Plugins)** developed by us, which allows you to contribute to **[SteamDB](https://steamdb.info)** project by sharing package tokens, app tokens and depot keys that your Steam account has access to. As informações na integra sobre o porque o SteamDB precisa de tais dados podem ser encontrado na página de **[Depósito de Tokens](https://steamdb.info/tokendumper)** do SteamDB. Os dados enviados não incluem qualquer informação potencialmente sensível, e não possui qualquer risco à sua segurança ou privacidade, como especificado acima.
 
 ---
 
@@ -36,9 +36,17 @@ De qualquer forma, a equipe do SteamDB gostaria de agradecer antecipadamente pel
 
 ---
 
+## Comando
+
+STD plugin comes with extra ASF command, `!std [Bots]`, which allows you to trigger refresh and submission for selected bots on demand. Using the command doesn't require enabled config, which allows you to skip automatic gathering and submission, and control the process yourself manually. Naturally it can also be executed with enabled config, which will simply trigger the usual gathering and submission procedures earlier than expected.
+
+We recommend `!std ASF` in order to trigger refresh for all available bots. However, you can also trigger it for selected ones if you'd like to.
+
+---
+
 ## Configuração avançada
 
-A partir da versão 5.1.0.0 do ASF, nosso plugin suporta configuração avançada que pode ser útil para pessoas que gostariam de ajustar os internamente à sua preferência.
+Our plugin supports advanced config which might come useful for people that would like to tweak the internals to their preference.
 
 A configuração avançada tem a seguinte estrutura localizada dentro do `ASF.json`:
 

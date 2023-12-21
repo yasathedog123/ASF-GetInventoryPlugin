@@ -1,6 +1,6 @@
 # Steam 家庭库共享
 
-ASF 从 2.1.5.5+ 版本开始支持 Steam 家庭库共享。 想要理解 ASF 这一功能的原理，您应该先阅读 Steam 商店提供的 **[Steam 家庭共享](https://store.steampowered.com/promotion/familysharing)**&#8203;介绍。
+ASF 支持 Steam 家庭库共享——想要理解 ASF 这一功能的原理，您应该先阅读 Steam 商店提供的 **[Steam 家庭共享](https://store.steampowered.com/promotion/familysharing)**&#8203;介绍。
 
 ---
 

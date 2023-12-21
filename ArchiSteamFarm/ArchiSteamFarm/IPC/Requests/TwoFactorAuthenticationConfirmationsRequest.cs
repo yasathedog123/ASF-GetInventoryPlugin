@@ -57,11 +57,12 @@ public sealed class TwoFactorAuthenticationConfirmationsRequest {
 	/// </summary>
 	[JsonProperty($"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(AcceptedCreatorIDs)}", Required = Required.DisallowNull)]
 	public ImmutableHashSet<string> SAcceptedCreatorIDs {
-		get => AcceptedCreatorIDs.Select(static creatorID => creatorID.ToString(CultureInfo.InvariantCulture)).ToImmutableHashSet();
-		set {
+		get => AcceptedCreatorIDs.Select(static creatorID => creatorID.ToString(CultureInfo.InvariantCulture)).ToImmutableHashSet(StringComparer.Ordinal);
+
+		private set {
 			ArgumentNullException.ThrowIfNull(value);
 
-			HashSet<ulong> acceptedCreatorIDs = new();
+			HashSet<ulong> acceptedCreatorIDs = [];
 
 			foreach (string creatorIDText in value) {
 				if (!ulong.TryParse(creatorIDText, out ulong creatorID) || (creatorID == 0)) {

@@ -1,6 +1,6 @@
 # Steam Token 輸出外掛程式
 
-`SteamTokenDumperPlugin`&#8203;是由我們所開發的ASF官方&#8203;**[外掛程式](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Plugins-zh-TW)**，從ASF V4.2.2.2版本開始提供，它可以使您透過分享組合包權杖、應用程式權杖及Depot金鑰，來對&#8203;**[SteamDB](https://steamdb.info)**&#8203;專案提供貢獻。 關於所收集的資料的進一步說明，以及為什麼SteamDB需要這些資訊，可以在SteamDB的&#8203;**[Token Dumper](https://steamdb.info/tokendumper)**&#8203;頁面上查看。 如上所述，提交的資料不包含任何敏感資訊，也不存在安全／隱私風險。
+`SteamTokenDumperPlugin`&#8203;是由我們所開發的ASF官方&#8203;**[外掛程式](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Plugins-zh-TW)**，它可以使您透過分享組合包權杖、應用程式權杖及Depot金鑰，來對&#8203;**[SteamDB](https://steamdb.info)**&#8203;專案提供貢獻。 關於所收集的資料的進一步說明，以及為什麼SteamDB需要這些資訊，可以在SteamDB的&#8203;**[Token Dumper](https://steamdb.info/tokendumper)**&#8203;頁面上查看。 如上所述，提交的資料不包含任何敏感資訊，也不存在安全／隱私風險。
 
 ---
 
@@ -36,9 +36,17 @@ ASF會在請求中包含貢獻者的&#8203;`steamID`&#8203;，即您在ASF中設
 
 ---
 
+## 指令
+
+STD外掛程式提供額外的ASF指令⸺&#8203;`!std [Bots]`&#8203;⸺使您能夠依需求觸發所選Bot的重新整理及提交。 使用本指令毋須啟用設定，它使您能夠跳過自動收集與提交，並能讓您手動控制整個過程。 它一直都能在啟用設定的情形下使用，如此只會將原先就有的收集及提交過程提前進行。
+
+我們建議使用&#8203;`!std ASF`&#8203;，將觸發所有可使用的Bot的重新整理。 但若您需要，也能指定要觸發哪些Bot。
+
+---
+
 ## 進階設定
 
-從ASF V5.1.0.0版本開始，我們的外掛程式支援進階設定，這對於希望依據自己的偏好調整內部結構的人可能會很有用。
+我們的外掛程式支援進階設定，這對於希望依據自己的偏好調整內部結構的人可能會很有用。
 
 進階設定在&#8203;`ASF.json`&#8203;中有下列結構：
 

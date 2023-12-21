@@ -1,6 +1,6 @@
 # Plugins
 
-À partir do ASF V4, o programa inclui suporte para plugins customizados que podem ser carregados durante a execução. Plugins permitem que você personalize o comportamento do ASF, adicionando comandos e lógicas de troca personalizados ou mesmo uma completa integração com serviços de terceiros e APIs.
+ASF includes support for custom plugins that can be loaded during runtime. Plugins permitem que você personalize o comportamento do ASF, adicionando comandos e lógicas de troca personalizados ou mesmo uma completa integração com serviços de terceiros e APIs.
 
 ---
 
@@ -28,7 +28,7 @@ Plugins são bibliotecas padrão .NET que herdam a interface `IPlugin` em comum 
 
 Nós preparamos o **[ASF-PluginTemplate](https://github.com/JustArchiNET/ASF-PluginTemplate)** para você, que você poderá usar como base para o seu projeto de plugin. Usar o template não é obrigatório (já que você pode fazer tudo do zero), mas nós recomendamos usá-lo pois ele pode facilitar drasticamente o seu desenvolvimento e economizar bastante tempo para acertar todas as coisas. Simplesmente confira o **[README](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/README.md)** do template e ele vai guiá-lo ao caminho certo. Independentemente disso, nós abordaremos o básico abaixo caso você queira começar do zero ou entender melhor os conceitos usados no template de plugin.
 
-Seu projeto deve ser uma biblioteca padrão .NET que vise o framework da sua versão alvo do ASF, como especificado em **[compilação](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compilation-pt-BR)**. Nós recomendamos que você use .NET (Core), mas plugins .NET Framework também são aceitos.
+Seu projeto deve ser uma biblioteca padrão .NET que vise o framework da sua versão alvo do ASF, como especificado em **[compilação](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compilation-pt-BR)**.
 
 O projeto deve fazer referência a arquitetura principal `ArchiSteamFarm`, a biblioteca pré-compilada `ArchiSteamFarm.dll` que você baixou como parte do lançamento, ou o projeto fonte (por exemplo, se você decidiu adicionar a árvore do ASF como submódulo). Isso permitirá que você acesse e descubra as estruturas do ASF, seus métodos e propriedades, especialmente a interface núcleo do `IPlugin` que você precisará herdar para o próximo passo. O projeto deve também fazer referência, no mínimo, ao `System.Composition.AttributedModel`, que permite que você use o `[Export]` para exportar seu `IPlugin` para ser usado no ASF. Além disso, você pode querer/precisar fazer referência a outras bibliotecas comuns a fim de interpretar as estruturas de dados que são dadas a você em algumas interfaces, mas a menos que você realmente precise delas, isso é suficiente por enquanto.
 
@@ -37,18 +37,18 @@ Se você fez tudo certo, seu `csproj` será semelhante ao exemplo abaixo:
 ```csproj
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" Version="7.0.0" />
+    <PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="ArchiSteamFarm" HintPath="C:\\Path\To\Downloaded\ArchiSteamFarm.dll" />
+    <ProjectReference Include="C:\\Path\To\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="false" />
 
-    <!-- Se estiver construindo como parte da árvore de origem do ASF, use isto em vez de <Reference> acima -->
-    <!-- <ProjectReference Include="C:\\Caminho\Para\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="false" /> -->
+    <!-- If building with downloaded DLL binary, use this instead of <ProjectReference> above -->
+    <!-- <Reference Include="ArchiSteamFarm" HintPath="C:\\Path\To\Downloaded\ArchiSteamFarm.dll" /> -->
   </ItemGroup>
 </Project>
 ```

@@ -17,7 +17,7 @@ Independente da plataforma, você precisa do SDK completo do .NET Core (e não a
 Assumindo que você tenha o SDK .NET na versão apropriada, simplesmente navegue para o diretório raiz do ASF (copiado ou baixado e descompactado do repositório do ASF) e execute:
 
 ```shell
-dotnet publish ArchiSteamFarm -c "Release" -f "net7.0" -o "out/generic"
+dotnet publish ArchiSteamFarm -c "Release" -o "out/generic"
 ```
 
 Se você estiver usando Linux/macOS, você pode usar o código `cc.sh`, que fará o mesmo de uma maneira um pouco mais complexa.
@@ -29,24 +29,10 @@ Se a compilação obteve sucesso você poderá encontrar a `source` da sua vers�
 Você também pode gerar um pacote .NET específico para OS se você tiver uma necessidade particular. Em geral, você não deverá fazer isso, pois você já compilou o tipo `genérico` que você pode rodar em seu já instalado tempo de execução .NET, que você usou para a compilação, mas caso você queira:
 
 ```shell
-dotnet publish ArchiSteamFarm -c "Release" -f "net7.0" -o "out/linux-x64" -r "linux-x64"
+dotnet publish ArchiSteamFarm -c "Release" -o "out/linux-x64" -r "linux-x64"
 ```
 
 Claro, troque `linux-x64` pela arquitetura de SO que você quer atender, tal como `win-x64`. Essa compilação também terá as atualizações desabilitadas.
-
-### .NET framework
-
-Em casos muito raros em que você quiser compilar um pacote `generic-netf`, você pode mudar a estrutura desejada de `net7.0` para `net481`. Tenha em mente que você vai precisar do pacote de desenvolvedor **[.NET Framework](https://dotnet.microsoft.com/download/visual-studio-sdks)** apropriado para compilar a variante `netf`, além do SDK do .NET, então a instrução abaixo funcionará apenas no Windows:
-
-```shell
-dotnet publish ArchiSteamFarm -c "Release" -f "net481" -o "out/generic-netf"
-```
-
-No caso de você não conseguir instalar o .NET Framework ou mesmo o próprio SDK do .NET (p. ex., por estar compilando no `linux-x86` com `mono`), você pode chamar `msbuild` diretamente. Você também precisará especificar o `ASFNetFramework` manualmente, já que o ASF desativa por padrão a compilação `netf` em plataformas não-Windows:
-
-```shell
-msbuild /m /r /t:Publish /p:Configuration=Release /p:TargetFramework=net481 /p:PublishDir=out/generic-netf /p:ASFNetFramework=true ArchiSteamFarm
-```
 
 ### ASF-ui
 
@@ -57,13 +43,13 @@ A ASF-ui é parte da árvore raíz do ASF como um **[submódulo git](https://git
 Além do script `cc.sh`, também anexamos as instruções de compilação simplificadas abaixo, consulte o **[repositório ASF-ui](https://github.com/JustArchiNET/ASF-ui)** para documentação adicional. Da árvore raíz do ASF, como antes, execute os seguintes comandos:
 
 ```shell
-rm -rf "ASF-ui/dist" # O ASF-ui não apaga os arquivos antigos após atualização
+rm -rf "ASF-ui/dist" # ASF-ui doesn't clean itself after old build
 
 npm ci --prefix ASF-ui
 npm run-script deploy --prefix ASF-ui
 
-rm -rf "out/generic/www" # Garante que a saída da compilação está limpa de qualquer arquivo antigo
-dotnet publish ArchiSteamFarm -c "Release" -f "net7.0" -o "out/generic" # Ou de acordo com sua necessidade segundo anteriormente
+rm -rf "out/generic/www" # Ensure that our build output is clean of the old files
+dotnet publish ArchiSteamFarm -c "Release" -o "out/generic" # Or accordingly to what you need as per the above
 ```
 
 Agora você deve encontrar os arquivos da ASF-ui na pasta `out/generic/www`. O ASF será capaz de enviar esses arquivos para o seu navegador.
@@ -90,6 +76,6 @@ Não é garantido que a ramificação `main` esteja em um estado que propicie um
 
 ## Versões oficiais
 
-Os lançamentos oficiais do ASF são compilados pelo **[GitHub](https://github.com/JustArchiNET/ArchiSteamFarm/actions)** no Windows, com o SDK .NET mais recente que corresponde com os **[requisitos de tempo de execução](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compatibility-pt-BR#requisitos-do-tempo-de-execução)** do ASF. Depois de passar nos testes, todos os pacotes são implantados no lançamento, assim como no GitHub. Isto também garante transparência, pois o GitHub sempre usa uma fonte pública oficial para todas as compilações, e você pode comparar as somas de verificação (checksums) dos artefatos do GitHub com os ativos lançados no GitHub. Os desenvolvedores do ASF não compilam ou publicam as compilações por conta própria, exceto para o processo de desenvolvimento privado e depuração.
+Official ASF releases are compiled by **[GitHub](https://github.com/JustArchiNET/ArchiSteamFarm/actions)**, with latest .NET SDK that matches ASF **[runtime requirements](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compatibility#runtime-requirements)**. Depois de passar nos testes, todos os pacotes são implantados no lançamento, assim como no GitHub. Isto também garante transparência, pois o GitHub sempre usa uma fonte pública oficial para todas as compilações, e você pode comparar as somas de verificação (checksums) dos artefatos do GitHub com os ativos lançados no GitHub. Os desenvolvedores do ASF não compilam ou publicam as compilações por conta própria, exceto para o processo de desenvolvimento privado e depuração.
 
-Desde o ASF V5.2.0.5, além do mencionado acima, os mantenedores do ASF validam manualmente e publicam somas de virificação de forma independente do GitHub, o servidor remoto, como forma adicional de seguramça. Esta etapa é obrigatória para que as versões do ASFs existentes sejam consideradas como um candidato válido para a funcionalidade de atualização automática.
+In addition to the above, ASF maintainers manually validate and publish build checksums on independent from GitHub, remote ASF server, as additional security measure. Esta etapa é obrigatória para que as versões do ASFs existentes sejam consideradas como um candidato válido para a funcionalidade de atualização automática.

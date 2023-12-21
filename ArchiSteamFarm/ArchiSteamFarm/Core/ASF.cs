@@ -30,7 +30,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Helpers;
@@ -78,7 +77,7 @@ public static class ASF {
 	internal static ICrossProcessSemaphore? RateLimitingSemaphore { get; private set; }
 	internal static ImmutableDictionary<Uri, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>? WebLimitingSemaphores { get; private set; }
 
-	private static readonly ImmutableHashSet<string> AssembliesNeededBeforeUpdate = ImmutableHashSet.Create("System.IO.Pipes");
+	private static readonly ImmutableHashSet<string> AssembliesNeededBeforeUpdate = ImmutableHashSet.Create(StringComparer.Ordinal, "System.IO.Pipes");
 	private static readonly SemaphoreSlim UpdateSemaphore = new(1, 1);
 
 	private static Timer? AutoUpdatesTimer;
@@ -102,7 +101,7 @@ public static class ASF {
 		return fileType switch {
 			EFileType.Config => Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName),
 			EFileType.Database => Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName),
-			_ => throw new ArgumentOutOfRangeException(nameof(fileType))
+			_ => throw new InvalidOperationException(nameof(fileType))
 		};
 	}
 
@@ -146,9 +145,7 @@ public static class ASF {
 	}
 
 	internal static bool IsValidBotName(string botName) {
-		if (string.IsNullOrEmpty(botName)) {
-			throw new ArgumentNullException(nameof(botName));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botName);
 
 		if (botName[0] == '.') {
 			return false;
@@ -270,7 +267,7 @@ public static class ASF {
 			}
 
 			string targetFile = $"{SharedInfo.ASF}-{SharedInfo.BuildInfo.Variant}.zip";
-			GitHub.ReleaseResponse.Asset? binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name!.Equals(targetFile, StringComparison.OrdinalIgnoreCase));
+			GitHub.ReleaseResponse.Asset? binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name.Equals(targetFile, StringComparison.OrdinalIgnoreCase));
 
 			if (binaryAsset == null) {
 				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssetForThisVersion);
@@ -300,7 +297,7 @@ public static class ASF {
 			}
 
 			if (!string.IsNullOrEmpty(releaseResponse.ChangelogPlainText)) {
-				ArchiLogger.LogGenericInfo(releaseResponse.ChangelogPlainText!);
+				ArchiLogger.LogGenericInfo(releaseResponse.ChangelogPlainText);
 			}
 
 			ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));
@@ -312,7 +309,7 @@ public static class ASF {
 			BinaryResponse? response;
 
 			try {
-				response = await WebBrowser.UrlGetToBinary(binaryAsset.DownloadURL!, progressReporter: progressReporter).ConfigureAwait(false);
+				response = await WebBrowser.UrlGetToBinary(binaryAsset.DownloadURL, progressReporter: progressReporter).ConfigureAwait(false);
 			} finally {
 				progressReporter.ProgressChanged -= OnProgressChanged;
 			}
@@ -325,7 +322,7 @@ public static class ASF {
 
 			byte[] responseBytes = response.Content as byte[] ?? response.Content.ToArray();
 
-			string checksum = Convert.ToHexString(SHA512.HashData(responseBytes));
+			string checksum = Utilities.GenerateChecksumFor(responseBytes);
 
 			if (!checksum.Equals(remoteChecksum, StringComparison.OrdinalIgnoreCase)) {
 				ArchiLogger.LogGenericError(Strings.ChecksumWrong);
@@ -386,9 +383,7 @@ public static class ASF {
 	}
 
 	private static async Task<bool> CanHandleWriteEvent(string filePath) {
-		if (string.IsNullOrEmpty(filePath)) {
-			throw new ArgumentNullException(nameof(filePath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		if (LastWriteEvents == null) {
 			throw new InvalidOperationException(nameof(LastWriteEvents));
@@ -408,7 +403,6 @@ public static class ASF {
 	private static HashSet<string> GetLoadedAssembliesNames() {
 		Assembly[] loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 		return loadedAssemblies.Select(static loadedAssembly => loadedAssembly.FullName).Where(static name => !string.IsNullOrEmpty(name)).ToHashSet(StringComparer.Ordinal)!;
 	}
 
@@ -515,21 +509,14 @@ public static class ASF {
 	}
 
 	private static async Task OnChangedConfigFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		await OnCreatedConfigFile(name, fullPath).ConfigureAwait(false);
 	}
 
 	private static async Task OnChangedConfigFile(string name) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
 
 		if (!name.Equals(SharedInfo.IPCConfigFile, StringComparison.OrdinalIgnoreCase) || (GlobalConfig?.IPC != true)) {
 			return;
@@ -545,13 +532,8 @@ public static class ASF {
 	}
 
 	private static async Task OnChangedFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		string extension = Path.GetExtension(name);
 
@@ -569,13 +551,8 @@ public static class ASF {
 	}
 
 	private static async Task OnChangedKeysFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		await OnCreatedKeysFile(name, fullPath).ConfigureAwait(false);
 	}
@@ -618,13 +595,8 @@ public static class ASF {
 	}
 
 	private static async Task OnCreatedConfigFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		string extension = Path.GetExtension(name);
 
@@ -641,13 +613,8 @@ public static class ASF {
 	}
 
 	private static async Task OnCreatedFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		string extension = Path.GetExtension(name);
 
@@ -665,13 +632,8 @@ public static class ASF {
 	}
 
 	private static async Task OnCreatedJsonFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		if (Bot.Bots == null) {
 			throw new InvalidOperationException(nameof(Bot.Bots));
@@ -709,13 +671,8 @@ public static class ASF {
 	}
 
 	private static async Task OnCreatedKeysFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		if (Bot.Bots == null) {
 			throw new InvalidOperationException(nameof(Bot.Bots));
@@ -754,13 +711,8 @@ public static class ASF {
 	}
 
 	private static async Task OnDeletedConfigFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		string extension = Path.GetExtension(name);
 
@@ -777,13 +729,8 @@ public static class ASF {
 	}
 
 	private static async Task OnDeletedFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		string extension = Path.GetExtension(name);
 
@@ -797,13 +744,8 @@ public static class ASF {
 	}
 
 	private static async Task OnDeletedJsonConfigFile(string name, string fullPath) {
-		if (string.IsNullOrEmpty(name)) {
-			throw new ArgumentNullException(nameof(name));
-		}
-
-		if (string.IsNullOrEmpty(fullPath)) {
-			throw new ArgumentNullException(nameof(fullPath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(name);
+		ArgumentException.ThrowIfNullOrEmpty(fullPath);
 
 		if (Bot.Bots == null) {
 			throw new InvalidOperationException(nameof(Bot.Bots));
@@ -872,8 +814,16 @@ public static class ASF {
 	}
 
 	private static async Task RegisterBots() {
-		if ((GlobalConfig == null) || (GlobalDatabase == null) || (WebBrowser == null)) {
-			throw new InvalidOperationException($"{nameof(GlobalConfig)} || {nameof(GlobalDatabase)} || {nameof(WebBrowser)}");
+		if (GlobalConfig == null) {
+			throw new InvalidOperationException(nameof(GlobalConfig));
+		}
+
+		if (GlobalDatabase == null) {
+			throw new InvalidOperationException(nameof(GlobalDatabase));
+		}
+
+		if (WebBrowser == null) {
+			throw new InvalidOperationException(nameof(WebBrowser));
 		}
 
 		// Ensure that we ask for a list of servers if we don't have any saved servers available
@@ -960,10 +910,7 @@ public static class ASF {
 
 	private static bool UpdateFromArchive(ZipArchive archive, string targetDirectory) {
 		ArgumentNullException.ThrowIfNull(archive);
-
-		if (string.IsNullOrEmpty(targetDirectory)) {
-			throw new ArgumentNullException(nameof(targetDirectory));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetDirectory);
 
 		if (SharedInfo.HomeDirectory == AppContext.BaseDirectory) {
 			// We're running a build that includes our dependencies in ASF's home
@@ -1069,10 +1016,8 @@ public static class ASF {
 					return false;
 				}
 
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				if (!Directory.Exists(directory!)) {
-					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-					Directory.CreateDirectory(directory!);
+				if (!Directory.Exists(directory)) {
+					Directory.CreateDirectory(directory);
 				}
 
 				// We're not interested in extracting placeholder files (but we still want directories created for them, done above)

@@ -49,35 +49,30 @@ public sealed class Commands {
 	private readonly Bot Bot;
 	private readonly Dictionary<uint, string> CachedGamesOwned = new();
 
-	internal Commands(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+	internal Commands(Bot bot) {
+		ArgumentNullException.ThrowIfNull(bot);
+
+		Bot = bot;
+	}
 
 	[PublicAPI]
 	public static string FormatBotResponse(string response, string botName) {
-		if (string.IsNullOrEmpty(response)) {
-			throw new ArgumentNullException(nameof(response));
-		}
-
-		if (string.IsNullOrEmpty(botName)) {
-			throw new ArgumentNullException(nameof(botName));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(response);
+		ArgumentException.ThrowIfNullOrEmpty(botName);
 
 		return $"{Environment.NewLine}<{botName}> {response}";
 	}
 
 	[PublicAPI]
 	public string FormatBotResponse(string response) {
-		if (string.IsNullOrEmpty(response)) {
-			throw new ArgumentNullException(nameof(response));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(response);
 
 		return $"<{Bot.BotName}> {response}";
 	}
 
 	[PublicAPI]
 	public static string FormatStaticResponse(string response) {
-		if (string.IsNullOrEmpty(response)) {
-			throw new ArgumentNullException(nameof(response));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(response);
 
 		return $"<{SharedInfo.ASF}> {response}";
 	}
@@ -112,9 +107,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		string[] args = message.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries);
 
@@ -345,20 +338,16 @@ public sealed class Commands {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
 
 		if (!string.IsNullOrEmpty(commandPrefix)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (!message.StartsWith(commandPrefix!, StringComparison.Ordinal)) {
+			if (!message.StartsWith(commandPrefix, StringComparison.Ordinal)) {
 				string? pluginsResponse = await PluginsCore.OnBotMessage(Bot, steamID, message).ConfigureAwait(false);
 
 				if (!string.IsNullOrEmpty(pluginsResponse)) {
-					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-					if (!await Bot.SendMessage(steamID, pluginsResponse!).ConfigureAwait(false)) {
+					if (!await Bot.SendMessage(steamID, pluginsResponse).ConfigureAwait(false)) {
 						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
 						Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, pluginsResponse));
 					}
@@ -367,8 +356,7 @@ public sealed class Commands {
 				return;
 			}
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (message.Length == commandPrefix!.Length) {
+			if (message.Length == commandPrefix.Length) {
 				// If the message starts with command prefix and is of the same length as command prefix, then it's just empty command trigger, useless
 				return;
 			}
@@ -404,40 +392,30 @@ public sealed class Commands {
 			response = FormatBotResponse(Strings.ErrorAccessDenied);
 		}
 
-		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-		if (!await Bot.SendMessage(steamID, response!).ConfigureAwait(false)) {
+		if (!await Bot.SendMessage(steamID, response).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
 			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, response));
 		}
 	}
 
 	internal async Task HandleMessage(ulong chatGroupID, ulong chatID, ulong steamID, string message) {
-		if (chatGroupID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(chatGroupID));
-		}
-
-		if (chatID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(chatID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(chatGroupID);
+		ArgumentOutOfRangeException.ThrowIfZero(chatID);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		if (string.IsNullOrEmpty(message)) {
-			throw new ArgumentNullException(nameof(message));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(message);
 
 		string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
 
 		if (!string.IsNullOrEmpty(commandPrefix)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (!message.StartsWith(commandPrefix!, StringComparison.Ordinal)) {
+			if (!message.StartsWith(commandPrefix, StringComparison.Ordinal)) {
 				string? pluginsResponse = await PluginsCore.OnBotMessage(Bot, steamID, message).ConfigureAwait(false);
 
 				if (!string.IsNullOrEmpty(pluginsResponse)) {
-					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-					if (!await Bot.SendMessage(chatGroupID, chatID, pluginsResponse!).ConfigureAwait(false)) {
+					if (!await Bot.SendMessage(chatGroupID, chatID, pluginsResponse).ConfigureAwait(false)) {
 						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
 						Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, pluginsResponse));
 					}
@@ -446,8 +424,7 @@ public sealed class Commands {
 				return;
 			}
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (message.Length == commandPrefix!.Length) {
+			if (message.Length == commandPrefix.Length) {
 				// If the message starts with command prefix and is of the same length as command prefix, then it's just empty command trigger, useless
 				return;
 			}
@@ -485,8 +462,7 @@ public sealed class Commands {
 			response = FormatBotResponse(Strings.ErrorAccessDenied);
 		}
 
-		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-		if (!await Bot.SendMessage(chatGroupID, chatID, response!).ConfigureAwait(false)) {
+		if (!await Bot.SendMessage(chatGroupID, chatID, response).ConfigureAwait(false)) {
 			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
 			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, response));
 		}
@@ -546,9 +522,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -558,7 +532,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.Response2FA(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -590,9 +564,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -602,7 +574,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.Response2FAConfirm(GetProxyAccess(bot, access, steamID), confirm))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -612,9 +584,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(query)) {
-			throw new ArgumentNullException(nameof(query));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(query);
 
 		if (access < EAccess.Operator) {
 			return null;
@@ -626,7 +596,7 @@ public sealed class Commands {
 
 		StringBuilder response = new();
 
-		string[] entries = query.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] entries = query.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		foreach (string entry in entries) {
 			uint gameID;
@@ -697,13 +667,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(query)) {
-			throw new ArgumentNullException(nameof(query));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(query);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -713,7 +678,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAddLicense(GetProxyAccess(bot, access, steamID), query))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -723,13 +688,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetAppID)) {
-			throw new ArgumentNullException(nameof(targetAppID));
-		}
-
-		if (string.IsNullOrEmpty(targetContextID)) {
-			throw new ArgumentNullException(nameof(targetContextID));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetAppID);
+		ArgumentException.ThrowIfNullOrEmpty(targetContextID);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -757,17 +717,9 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(appID)) {
-			throw new ArgumentNullException(nameof(appID));
-		}
-
-		if (string.IsNullOrEmpty(contextID)) {
-			throw new ArgumentNullException(nameof(contextID));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(appID);
+		ArgumentException.ThrowIfNullOrEmpty(contextID);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -777,7 +729,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedLoot(GetProxyAccess(bot, access, steamID), appID, contextID))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -787,19 +739,14 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(options)) {
-			throw new ArgumentNullException(nameof(options));
-		}
-
-		if (string.IsNullOrEmpty(keys)) {
-			throw new ArgumentNullException(nameof(keys));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(options);
+		ArgumentException.ThrowIfNullOrEmpty(keys);
 
 		if (access < EAccess.Operator) {
 			return null;
 		}
 
-		string[] flags = options.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] flags = options.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (flags.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(flags)));
@@ -862,17 +809,9 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(options)) {
-			throw new ArgumentNullException(nameof(options));
-		}
-
-		if (string.IsNullOrEmpty(keys)) {
-			throw new ArgumentNullException(nameof(keys));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(options);
+		ArgumentException.ThrowIfNullOrEmpty(keys);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -882,7 +821,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedRedeem(GetProxyAccess(bot, access, steamID), options, keys, steamID))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -892,14 +831,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
-
-		if (contextID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(contextID));
-		}
-
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 		ArgumentNullException.ThrowIfNull(targetBot);
 
 		if (access < EAccess.Master) {
@@ -924,17 +857,9 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetAppID)) {
-			throw new ArgumentNullException(nameof(targetAppID));
-		}
-
-		if (string.IsNullOrEmpty(targetContextID)) {
-			throw new ArgumentNullException(nameof(targetContextID));
-		}
-
-		if (string.IsNullOrEmpty(botNameTo)) {
-			throw new ArgumentNullException(nameof(botNameTo));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetAppID);
+		ArgumentException.ThrowIfNullOrEmpty(targetContextID);
+		ArgumentException.ThrowIfNullOrEmpty(botNameTo);
 
 		Bot? targetBot = Bot.GetBot(botNameTo);
 
@@ -958,21 +883,10 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetAppID)) {
-			throw new ArgumentNullException(nameof(targetAppID));
-		}
-
-		if (string.IsNullOrEmpty(targetContextID)) {
-			throw new ArgumentNullException(nameof(targetContextID));
-		}
-
-		if (string.IsNullOrEmpty(botNameTo)) {
-			throw new ArgumentNullException(nameof(botNameTo));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetAppID);
+		ArgumentException.ThrowIfNullOrEmpty(targetContextID);
+		ArgumentException.ThrowIfNullOrEmpty(botNameTo);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -996,7 +910,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedTransfer(GetProxyAccess(bot, access, steamID), appID, contextID, targetBot))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1020,9 +934,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1032,7 +944,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseBackgroundGamesRedeemer(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1042,13 +954,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(cryptoMethodText)) {
-			throw new ArgumentNullException(nameof(cryptoMethodText));
-		}
-
-		if (string.IsNullOrEmpty(stringToEncrypt)) {
-			throw new ArgumentNullException(nameof(stringToEncrypt));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(cryptoMethodText);
+		ArgumentException.ThrowIfNullOrEmpty(stringToEncrypt);
 
 		if (access < EAccess.Owner) {
 			return null;
@@ -1104,9 +1011,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1116,7 +1021,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseFarm(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1134,9 +1039,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1146,7 +1049,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingBlacklist(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1156,21 +1059,19 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		if (access < EAccess.Master) {
 			return null;
 		}
 
-		string[] targets = targetAppIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] targets = targetAppIDs.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
 		}
 
-		HashSet<uint> appIDs = new();
+		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
 			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
@@ -1201,13 +1102,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1217,7 +1113,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingBlacklistAdd(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1227,21 +1123,19 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		if (access < EAccess.Master) {
 			return null;
 		}
 
-		string[] targets = targetAppIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] targets = targetAppIDs.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
 		}
 
-		HashSet<uint> appIDs = new();
+		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
 			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
@@ -1267,13 +1161,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1283,7 +1172,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingBlacklistRemove(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1301,9 +1190,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1313,7 +1200,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingQueue(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1323,21 +1210,19 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		if (access < EAccess.Master) {
 			return null;
 		}
 
-		string[] targets = targetAppIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] targets = targetAppIDs.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
 		}
 
-		HashSet<uint> appIDs = new();
+		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
 			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
@@ -1375,13 +1260,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1391,7 +1271,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingQueueAdd(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1401,21 +1281,19 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		if (access < EAccess.Master) {
 			return null;
 		}
 
-		string[] targets = targetAppIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] targets = targetAppIDs.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
 		}
 
-		HashSet<uint> appIDs = new();
+		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
 			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
@@ -1446,13 +1324,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1462,7 +1335,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseFarmingQueueRemove(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1472,13 +1345,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(hashingMethodText)) {
-			throw new ArgumentNullException(nameof(hashingMethodText));
-		}
-
-		if (string.IsNullOrEmpty(stringToHash)) {
-			throw new ArgumentNullException(nameof(stringToHash));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(hashingMethodText);
+		ArgumentException.ThrowIfNullOrEmpty(stringToHash);
 
 		if (access < EAccess.Owner) {
 			return null;
@@ -1506,13 +1374,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(propertyName)) {
-			throw new ArgumentNullException(nameof(propertyName));
-		}
-
-		if (string.IsNullOrEmpty(inputValue)) {
-			throw new ArgumentNullException(nameof(inputValue));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(propertyName);
+		ArgumentException.ThrowIfNullOrEmpty(inputValue);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -1538,17 +1401,9 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(propertyName)) {
-			throw new ArgumentNullException(nameof(propertyName));
-		}
-
-		if (string.IsNullOrEmpty(inputValue)) {
-			throw new ArgumentNullException(nameof(inputValue));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(propertyName);
+		ArgumentException.ThrowIfNullOrEmpty(inputValue);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1558,7 +1413,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseInput(GetProxyAccess(bot, access, steamID), propertyName, inputValue)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1586,9 +1441,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1598,7 +1451,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLevel(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1630,9 +1483,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1642,7 +1493,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLoot(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1652,9 +1503,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(realAppIDsText)) {
-			throw new ArgumentNullException(nameof(realAppIDsText));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(realAppIDsText);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -1668,13 +1517,13 @@ public sealed class Commands {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(Bot.BotConfig.LootableTypes)));
 		}
 
-		string[] appIDTexts = realAppIDsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] appIDTexts = realAppIDsText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (appIDTexts.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(appIDTexts)));
 		}
 
-		HashSet<uint> realAppIDs = new();
+		HashSet<uint> realAppIDs = [];
 
 		foreach (string appIDText in appIDTexts) {
 			if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
@@ -1694,13 +1543,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(realAppIDsText)) {
-			throw new ArgumentNullException(nameof(realAppIDsText));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(realAppIDsText);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1710,7 +1554,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLootByRealAppIDs(GetProxyAccess(bot, access, steamID), realAppIDsText, exclude))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1728,9 +1572,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1740,7 +1582,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseMatchActivelyBlacklist(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1750,21 +1592,19 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		if (access < EAccess.Master) {
 			return null;
 		}
 
-		string[] targets = targetAppIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] targets = targetAppIDs.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
 		}
 
-		HashSet<uint> appIDs = new();
+		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
 			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
@@ -1782,13 +1622,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1798,7 +1633,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseMatchActivelyBlacklistAdd(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1808,21 +1643,19 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		if (access < EAccess.Master) {
 			return null;
 		}
 
-		string[] targets = targetAppIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] targets = targetAppIDs.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
 		}
 
-		HashSet<uint> appIDs = new();
+		HashSet<uint> appIDs = [];
 
 		foreach (string target in targets) {
 			if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
@@ -1840,13 +1673,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetAppIDs)) {
-			throw new ArgumentNullException(nameof(targetAppIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetAppIDs);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1856,7 +1684,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseMatchActivelyBlacklistRemove(GetProxyAccess(bot, access, steamID), targetAppIDs)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1866,9 +1694,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(nickname)) {
-			throw new ArgumentNullException(nameof(nickname));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(nickname);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -1891,13 +1717,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(nickname)) {
-			throw new ArgumentNullException(nameof(nickname));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(nickname);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -1907,7 +1728,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseNickname(GetProxyAccess(bot, access, steamID), nickname)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -1917,9 +1738,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(query)) {
-			throw new ArgumentNullException(nameof(query));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(query);
 
 		if (access < EAccess.Operator) {
 			return (null, null);
@@ -1934,7 +1753,7 @@ public sealed class Commands {
 		StringBuilder response = new();
 		Dictionary<string, string> result = new(StringComparer.Ordinal);
 
-		string[] entries = query.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] entries = query.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		foreach (string entry in entries) {
 			string game;
@@ -2066,13 +1885,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(query)) {
-			throw new ArgumentNullException(nameof(query));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(query);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2082,7 +1896,7 @@ public sealed class Commands {
 
 		IList<(string? Response, Dictionary<string, string>? OwnedGames)> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseOwns(GetProxyAccess(bot, access, steamID), query))).ConfigureAwait(false);
 
-		List<(string Response, Dictionary<string, string> OwnedGames)> validResults = new(results.Where(static result => !string.IsNullOrEmpty(result.Response) && (result.OwnedGames != null))!);
+		List<(string Response, Dictionary<string, string> OwnedGames)> validResults = [..results.Where(static result => !string.IsNullOrEmpty(result.Response) && (result.OwnedGames != null))];
 
 		if (validResults.Count == 0) {
 			return null;
@@ -2138,9 +1952,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2150,7 +1962,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePause(GetProxyAccess(bot, access, steamID), permanent, resumeInSecondsText))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2184,9 +1996,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetGameIDs)) {
-			throw new ArgumentNullException(nameof(targetGameIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetGameIDs);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -2196,7 +2006,7 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.BotNotConnected);
 		}
 
-		string[] games = targetGameIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] games = targetGameIDs.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (games.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(games)));
@@ -2231,13 +2041,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetGameIDs)) {
-			throw new ArgumentNullException(nameof(targetGameIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetGameIDs);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2247,7 +2052,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePlay(GetProxyAccess(bot, access, steamID), targetGameIDs))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2275,9 +2080,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2287,7 +2090,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePointsBalance(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2297,9 +2100,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(privacySettingsText)) {
-			throw new ArgumentNullException(nameof(privacySettingsText));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(privacySettingsText);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -2312,7 +2113,7 @@ public sealed class Commands {
 		// There are only 7 privacy settings
 		const byte privacySettings = 7;
 
-		string[] privacySettingsArgs = privacySettingsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] privacySettingsArgs = privacySettingsText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		switch (privacySettingsArgs.Length) {
 			case 0:
@@ -2431,13 +2232,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(privacySettingsText)) {
-			throw new ArgumentNullException(nameof(privacySettingsText));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(privacySettingsText);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2447,7 +2243,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePrivacy(GetProxyAccess(bot, access, steamID), privacySettingsText))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2457,9 +2253,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(keysText)) {
-			throw new ArgumentNullException(nameof(keysText));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(keysText);
 
 		if ((steamID != 0) && !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
@@ -2477,7 +2271,7 @@ public sealed class Commands {
 			return FormatBotResponse(Strings.BotNotConnected);
 		}
 
-		string[] keys = keysText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] keys = keysText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (keys.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(keys)));
@@ -2491,8 +2285,8 @@ public sealed class Commands {
 		HashSet<string> pendingKeys = keys.ToHashSet(StringComparer.Ordinal);
 		HashSet<string> unusedKeys = pendingKeys.ToHashSet(StringComparer.Ordinal);
 
-		HashSet<Bot> rateLimitedBots = new();
-		HashSet<Bot> triedBots = new();
+		HashSet<Bot> rateLimitedBots = [];
+		HashSet<Bot> triedBots = [];
 
 		StringBuilder response = new();
 
@@ -2502,8 +2296,7 @@ public sealed class Commands {
 			string? previousKey = key;
 
 			while (!string.IsNullOrEmpty(key)) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				string startingKey = key!;
+				string startingKey = key;
 
 				using (IEnumerator<Bot> botsEnumerator = Bot.Bots.Where(bot => (bot.Value != Bot) && bot.Value.IsConnectedAndLoggedOn && ((access >= EAccess.Owner) || ((steamID != 0) && (bot.Value.GetAccess(steamID) >= EAccess.Operator)))).OrderByDescending(bot => Bot.BotsComparer?.Compare(bot.Key, Bot.BotName) > 0).ThenBy(static bot => bot.Key, Bot.BotsComparer).Select(static bot => bot.Value).GetEnumerator()) {
 					Bot? currentBot = Bot;
@@ -2514,8 +2307,7 @@ public sealed class Commands {
 							previousKey = key;
 						}
 
-						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-						if (redeemFlags.HasFlag(ERedeemFlags.Validate) && !Utilities.IsValidCdKey(key!)) {
+						if (redeemFlags.HasFlag(ERedeemFlags.Validate) && !Utilities.IsValidCdKey(key)) {
 							// Next key
 							key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null;
 
@@ -2534,8 +2326,7 @@ public sealed class Commands {
 							Dictionary<uint, string>? items = null;
 
 							if (!skipRequest) {
-								// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-								CStore_RegisterCDKey_Response? redeemResult = await currentBot.Actions.RedeemKey(key!).ConfigureAwait(false);
+								CStore_RegisterCDKey_Response? redeemResult = await currentBot.Actions.RedeemKey(key).ConfigureAwait(false);
 
 								if (redeemResult != null) {
 									result = (EResult) redeemResult.purchase_receipt_info.purchase_status;
@@ -2562,8 +2353,7 @@ public sealed class Commands {
 
 								if ((purchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((purchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) {
 									// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
-									// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-									(EResult Result, EPurchaseResultDetail? PurchaseResult, string? BalanceText)? walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key!).ConfigureAwait(false);
+									(EResult Result, EPurchaseResultDetail? PurchaseResult, string? BalanceText)? walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
 
 									if (walletResult != null) {
 										result = walletResult.Value.Result;
@@ -2588,8 +2378,7 @@ public sealed class Commands {
 									case EPurchaseResultDetail.NoDetail: // OK
 									case EPurchaseResultDetail.Timeout:
 										if ((result != EResult.Timeout) && (purchaseResultDetail != EPurchaseResultDetail.Timeout)) {
-											// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-											unusedKeys.Remove(key!);
+											unusedKeys.Remove(key);
 										}
 
 										// Next key
@@ -2626,8 +2415,7 @@ public sealed class Commands {
 										bool alreadyHandled = false;
 
 										foreach (Bot innerBot in Bot.Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != Bot)) && !triedBots.Contains(bot.Value) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && ((access >= EAccess.Owner) || ((steamID != 0) && (bot.Value.GetAccess(steamID) >= EAccess.Operator))) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(static bot => bot.Key, Bot.BotsComparer).Select(static bot => bot.Value)) {
-											// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-											CStore_RegisterCDKey_Response? redeemResponse = await innerBot.Actions.RedeemKey(key!).ConfigureAwait(false);
+											CStore_RegisterCDKey_Response? redeemResponse = await innerBot.Actions.RedeemKey(key).ConfigureAwait(false);
 
 											if (redeemResponse == null) {
 												response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{EResult.Timeout}/{EPurchaseResultDetail.Timeout}"), innerBot.BotName));
@@ -2647,8 +2435,7 @@ public sealed class Commands {
 													// This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
 													alreadyHandled = true;
 
-													// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-													unusedKeys.Remove(key!);
+													unusedKeys.Remove(key);
 
 													break;
 												case EPurchaseResultDetail.RateLimited:
@@ -2686,8 +2473,7 @@ public sealed class Commands {
 									default:
 										ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(purchaseResultDetail), purchaseResultDetail));
 
-										// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-										unusedKeys.Remove(key!);
+										unusedKeys.Remove(key);
 
 										// Next key
 										key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null;
@@ -2726,13 +2512,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(keysText)) {
-			throw new ArgumentNullException(nameof(keysText));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(keysText);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2742,7 +2523,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseRedeem(GetProxyAccess(bot, access, steamID), keysText, steamID, redeemFlags))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2770,9 +2551,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2782,7 +2561,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseReset(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2820,9 +2599,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2832,7 +2609,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseResume(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2856,9 +2633,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2868,7 +2643,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStart(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -2935,9 +2710,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2947,7 +2720,7 @@ public sealed class Commands {
 
 		IList<(string? Response, Bot Bot)> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStatus(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<(string Response, Bot Bot)> validResults = new(results.Where(static result => !string.IsNullOrEmpty(result.Response))!);
+		List<(string Response, Bot Bot)> validResults = [..results.Where(static result => !string.IsNullOrEmpty(result.Response))];
 
 		if (validResults.Count == 0) {
 			return null;
@@ -2979,9 +2752,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -2991,7 +2762,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStop(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -3009,9 +2780,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -3021,7 +2790,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseTradingBlacklist(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -3031,21 +2800,19 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetSteamIDs)) {
-			throw new ArgumentNullException(nameof(targetSteamIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetSteamIDs);
 
 		if (access < EAccess.Master) {
 			return null;
 		}
 
-		string[] targets = targetSteamIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] targets = targetSteamIDs.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
 		}
 
-		HashSet<ulong> targetIDs = new();
+		HashSet<ulong> targetIDs = [];
 
 		foreach (string target in targets) {
 			if (!ulong.TryParse(target, out ulong targetID) || (targetID == 0) || !new SteamID(targetID).IsIndividualAccount) {
@@ -3063,13 +2830,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetSteamIDs)) {
-			throw new ArgumentNullException(nameof(targetSteamIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetSteamIDs);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -3079,7 +2841,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseTradingBlacklistAdd(GetProxyAccess(bot, access, steamID), targetSteamIDs)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -3089,21 +2851,19 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(targetSteamIDs)) {
-			throw new ArgumentNullException(nameof(targetSteamIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(targetSteamIDs);
 
 		if (access < EAccess.Master) {
 			return null;
 		}
 
-		string[] targets = targetSteamIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] targets = targetSteamIDs.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (targets.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(targets)));
 		}
 
-		HashSet<ulong> targetIDs = new();
+		HashSet<ulong> targetIDs = [];
 
 		foreach (string target in targets) {
 			if (!ulong.TryParse(target, out ulong targetID) || (targetID == 0) || !new SteamID(targetID).IsIndividualAccount) {
@@ -3121,13 +2881,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(targetSteamIDs)) {
-			throw new ArgumentNullException(nameof(targetSteamIDs));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(targetSteamIDs);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -3137,7 +2892,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseTradingBlacklistRemove(GetProxyAccess(bot, access, steamID), targetSteamIDs)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -3147,9 +2902,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNameTo)) {
-			throw new ArgumentNullException(nameof(botNameTo));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNameTo);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -3187,13 +2940,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(botNameTo)) {
-			throw new ArgumentNullException(nameof(botNameTo));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(botNameTo);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -3203,7 +2951,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseTransfer(GetProxyAccess(bot, access, steamID), botNameTo))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -3249,13 +2997,8 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(realAppIDsText)) {
-			throw new ArgumentNullException(nameof(realAppIDsText));
-		}
-
-		if (string.IsNullOrEmpty(botNameTo)) {
-			throw new ArgumentNullException(nameof(botNameTo));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(realAppIDsText);
+		ArgumentException.ThrowIfNullOrEmpty(botNameTo);
 
 		if (access < EAccess.Master) {
 			return null;
@@ -3267,13 +3010,13 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNameTo)) : null;
 		}
 
-		string[] appIDTexts = realAppIDsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] appIDTexts = realAppIDsText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (appIDTexts.Length == 0) {
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(appIDTexts)));
 		}
 
-		HashSet<uint> realAppIDs = new();
+		HashSet<uint> realAppIDs = [];
 
 		foreach (string appIDText in appIDTexts) {
 			if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
@@ -3291,17 +3034,9 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
-		if (string.IsNullOrEmpty(realAppIDsText)) {
-			throw new ArgumentNullException(nameof(realAppIDsText));
-		}
-
-		if (string.IsNullOrEmpty(botNameTo)) {
-			throw new ArgumentNullException(nameof(botNameTo));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
+		ArgumentException.ThrowIfNullOrEmpty(realAppIDsText);
+		ArgumentException.ThrowIfNullOrEmpty(botNameTo);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -3309,13 +3044,13 @@ public sealed class Commands {
 			return access >= EAccess.Owner ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
 		}
 
-		string[] appIDTexts = realAppIDsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] appIDTexts = realAppIDsText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
 
 		if (appIDTexts.Length == 0) {
 			return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(appIDTexts)));
 		}
 
-		HashSet<uint> realAppIDs = new();
+		HashSet<uint> realAppIDs = [];
 
 		foreach (string appIDText in appIDTexts) {
 			if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
@@ -3333,7 +3068,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseTransferByRealAppIDs(GetProxyAccess(bot, access, steamID), realAppIDs, targetBot, exclude))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -3387,9 +3122,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -3399,7 +3132,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseUnpackBoosters(GetProxyAccess(bot, access, steamID)))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}
@@ -3416,8 +3149,7 @@ public sealed class Commands {
 		GlobalConfig.EUpdateChannel channel = ASF.GlobalConfig?.UpdateChannel ?? GlobalConfig.DefaultUpdateChannel;
 
 		if (!string.IsNullOrEmpty(channelText)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (!Enum.TryParse(channelText!, true, out channel) || (channel == GlobalConfig.EUpdateChannel.None)) {
+			if (!Enum.TryParse(channelText, true, out channel) || (channel == GlobalConfig.EUpdateChannel.None)) {
 				return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(channelText)));
 			}
 		}
@@ -3452,9 +3184,7 @@ public sealed class Commands {
 			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
 		}
 
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -3464,7 +3194,7 @@ public sealed class Commands {
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseWalletBalance(GetProxyAccess(bot, access, steamID))))).ConfigureAwait(false);
 
-		List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
+		List<string> responses = [..results.Where(static result => !string.IsNullOrEmpty(result))];
 
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 	}

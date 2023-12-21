@@ -1,35 +1,35 @@
-# Drittanbieterkommunikation
+# Telekommunikation
 
-This section elaborates on remote communication that ASF includes, including further explanation on how one can influence it. While we don't consider anything below as malicious or otherwise unwanted, and neither we're legally obliged to disclose it, we want you to better understand the program functionality especially in regards to your privacy and data being shared.
+Dieser Abschnitt befasst sich mit der Drittanbieterkommunikation (die ASF beinhaltet), einschließlich weiterer Erklärungen, wie man sie beeinflussen kann. Während wir weiter unten nichts als böswillig oder anderweitig unerwünscht betrachten, sind wir auch nicht gesetzlich dazu verpflichtet, es offen zu legen. Wir möchten, dass Sie die Funktionalität des Programms besser verstehen, insbesondere in Bezug auf Ihre Privatsphäre und Daten, die weitergegeben werden.
 
 ## Steam
 
-ASF communicates with Steam network (**[CM servers](https://api.steampowered.com/ISteamDirectory/GetCMList/v1?cellid=0)**), as well as **[Steam API](https://steamcommunity.com/dev)**, **[Steam store](https://store.steampowered.com)** and **[Steam community](https://steamcommunity.com)**.
+ASF kommuniziert mit dem Steam Netzwerk (**[CM Server](https://api.steampowered.com/ISteamDirectory/GetCMList/v1?cellid=0)**), sowie **[Steam API](https://steamcommunity.com/dev)**, **[Steam Store](https://store.steampowered.com)** und **[Steam Community](https://steamcommunity.com)**.
 
-It's not possible to disable any of the above communication, as it's the core foundation ASF is based on in order to provide its basic functionality. You'll need to refrain from using ASF if you're not comfortable with the above.
+Es ist nicht möglich die oben genannte Kommunikation zu deaktivieren, da es das Grundgerüst ist, auf der ASF basiert, um seine grundlegende Funktionalität bereitzustellen. Sie müssen ASF nicht verwenden, wenn Sie mit dem oben genannten nicht zufrieden sind.
 
-## Steam group
+## Steam-Gruppe
 
-ASF communicates with our **[Steam group](https://steamcommunity.com/groups/archiasf)**. The group provides you with announcements, especially new versions, critical issues, Steam problems and other things that are important to keep community updated. It also allows you to use our technical support, by asking questions, resolving problems, reporting issues or suggesting improvements. By default, accounts used in ASF will automatically join the group upon login.
+ASF kommuniziert mit unserer **[Steam-Gruppe](https://steamcommunity.com/groups/archiasf)**. Die Gruppe bietet Ihnen Ankündigungen, insbesondere über neue Versionen, kritische Probleme, Steam-Probleme und andere Dinge, die wichtig sind, um die Community zu informieren. Es ermöglicht Ihnen zudem, unsere technische Unterstützung in Anspruch zu nehmen, indem Sie Fragen stellen, Probleme lösen, Probleme melden oder Verbesserungsvorschläge einbringen. Standardmäßig werden Konten, die in ASF verwendet werden, bei der Anmeldung automatisch der Gruppe hinzugefügt.
 
-You can decide to opt-out of joining the group by disabling `SteamGroup` flag in bot's **[`RemoteCommunication`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#remotecommunication)** settings.
+Sie können sich entscheiden, dem Gruppenbeitritt zu widerrufen, indem Sie die `SteamGroup`-Flag in der Bot-Einstellung **[`RemoteCommunication`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-de-DE#remotecommunication)** deaktivieren.
 
 ## GitHub
 
-ASF communicates with **[GitHub's API](https://api.github.com)** in order to fetch **[ASF releases](https://github.com/JustArchiNET/ArchiSteamFarm/releases)** for the update functionality. This is done as part of auto-updates (if you've kept **[`UpdatePeriod`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#updateperiod)** enabled), as well as `update` **[command](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands)**. You can influence ASF's communication with GitHub through **[`UpdateChannel`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#updatechannel)** property - setting it to `None` will result in disabling entire update functionality, including GitHub communication in this regard.
+ASF kommuniziert mit **[GitHubs API](https://api.github.com)** um die **[ASF Veröffentlichungen](https://github.com/JustArchiNET/ArchiSteamFarm/releases)** für die Update-Funktionalität abzurufen. Dies geschieht als Teil des Auto-Updates (falls Sie **[`UpdatePeriod`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-de-DE#updateperiod)** aktiviert haben), sowie beim ****[Befehl](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-de-DE)** `update`. Sie können die Kommunikation von ASF mit GitHub durch die Variable **[`UpdateChannel`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#updatechannel)** beeinflussen - setzen Sie es auf `None` wird die gesamte Update-Funktionalität deaktivieren, einschließlich der Kommunikation mit GitHub in dieser Hinsicht.</p>
 
-## ASF's server
+## ASFs Server
 
-ASF communicates with **[our own server](https://asf.justarchi.net)** for more advanced functionality. In particular, this includes:
-- Verifying checksums of ASF builds downloaded from GitHub against our own independent database to ensure that all downloaded builds are legitimate (free of malware, MITM attacks or other tampering)
-- Fetching list of bad bots for filtering if you've kept `FilterBadBots` global config setting enabled.
-- Announcing your bot in **[our listing](https://asf.justarchi.net/STM)** if you've enabled `SteamTradeMatcher` in **[`TradingPreferences`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#tradingpreferences)** and meet other criteria
-- Downloading currently available bots to trade from **[our listing](https://asf.justarchi.net/STM)** if you've enabled `MatchActively` in **[`TradingPreferences`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#tradingpreferences)** and meet other criteria
+ASF kommuniziert mit **[unserem eigenen Server](https://asf.justarchi.net)** für eine erweiterte Funktionalität. Dies beinhaltet insbesondere:
+- Überprüfen der Prüfsummen von ASF-Builds, die von GitHub heruntergeladen wurden, gegen unsere eigene unabhängige Datenbank, um sicherzustellen, dass alle heruntergeladenen Builds legitim sind (frei von Malware, MITM-Angriffe oder andere Manipulationen)
+- Abrufen der Filterliste von schlechten Bots, wenn Sie die globale Konfigurationseinstellung `FilterBadBots` aktiviert haben.
+- Ankündigung Ihres Bots in **[unserer Auflistung](https://asf.justarchi.net/STM)**, wenn Sie `SteamTradeMatcher` in den **[`TradingPreferences`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-de-DE#tradingpreferences)** (Handelseinstellungen) aktiviert haben und andere Kriterien erfüllen
+- Aktuell verfügbare Bots zum Handel von **[unserer Auflistung](https://asf.justarchi.net/STM)** herunterladen, sofern Sie `MatchActively` in **[`TradingPreferences`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-de-DE#tradingpreferences)** aktiviert haben und andere Kriterien erfüllen
 
-As a security measure, it's not possible to disable checksum verification for ASF builds. However, you can disable auto-updates entirely if you'd like to avoid this, as described above in the GitHub section.
+Als Sicherheitsmaßnahme ist es nicht möglich, die Überprüfung der Prüfsumme für ASF-Builds zu deaktivieren. Allerdings können Sie automatische Updates komplett deaktivieren, falls Sie dies vermeiden möchten, wie oben im GitHub Abschnitt beschrieben.
 
-You can disable `FilterBadBots` setting if you want to avoid fetching the list from the server.
+Sie können die Einstellung `FilterBadBots` deaktivieren, wenn Sie die Liste nicht vom Server abrufen wollen.
 
-You can decide to opt-out of being announced in the listing by disabling `PublicListing` flag in bot's **[`RemoteCommunication`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#remotecommunication)** settings. This might be useful if you'd like to run `SteamTradeMatcher` bot without being announced at the same time.
+Sie können sich dagegen entscheiden, dass Sie in der Auflistung angekündigt werden, indem Sie `PublicListing` in der Bot-Einstellung **[`RemoteCommunication`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-de-DE#remotecommunication)** deaktivieren. Dies kann nützlich sein, wenn Sie einen `SteamTradeMatcher`-Bot ausführen möchten, ohne gleichzeitig angekündigt zu werden.
 
-Downloading bots from our listing is mandatory for `MatchActively` setting, you'll need to disable that setting if you're unwilling to accept that.
+Das Herunterladen von Bots aus unserer Auflistung ist obligatorisch für die Einstellung `MatchActively`. Sie müssen diese Einstellung deaktivieren, wenn Sie damit nicht einverstanden sind.

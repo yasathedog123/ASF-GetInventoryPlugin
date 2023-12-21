@@ -155,7 +155,7 @@ ASF-ui 是一个社区项目，主要为最终用户提供了一个用户友好�
 
 ## `Authentication` 请求头
 
-通常您应该使用 HTTP 请求头方法，将 `Authentication` 头的值设置为您的密码。 具体的方法取决于您访问 ASF IPC 接口的具体工具，例如，假如您使用 `curl`，就应该添加 `-H 'Authentication: MyPassword'` 命令行参数。 在这种方法中，验证信息被放在请求头部中传送，这也正是这类信息应该在的地方。
+通常您应该使用 [**HTTP 请求头**](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields)方法，将 `Authentication` 头的值设置为您的密码。 具体的方法取决于您访问 ASF IPC 接口的具体工具，例如，假如您使用 `curl`，就应该添加 `-H 'Authentication: MyPassword'` 命令行参数。 在这种方法中，验证信息被放在请求头部中传送，这也正是这类信息应该在的地方。
 
 ## `password` 请求参数
 
@@ -287,7 +287,7 @@ server {
 
 ### 为什么我如果不使用 `IPCPassword`，就会出现 `403 Forbidden` 错误？
 
-从 ASF V5.1.2.1 版本开始，我们添加了额外的安全措施，默认只允许环回接口（`localhost`，即本机）在不设置 `IPCPassword` 的情况下访问 ASF API。 这是因为，如果任何人决定进一步暴露 ASF 接口，那么设置 `IPCPassword` 就是一项必须的**最低**限度安全措施。
+ASF 包含额外的安全措施，默认只允许环回接口（`localhost`，即本机）在不设置 `IPCPassword` 的情况下访问 ASF API。 这是因为，如果任何人决定进一步暴露 ASF 接口，那么设置 `IPCPassword` 就是一项必须的**最低**限度安全措施。
 
 造成这一变化的原因是，很多不知情用户部署的大量公开 ASF 实例被恶意入侵，通常这会导致他们失去自己的帐户和物品。 尽管我们可以说“他们应该在向全世界暴露 ASF 之前阅读此页面”，但默认不允许 ASF 的危险部署方式则更为合理，并且如果用户仍然明确希望允许，则需要用户手动操作，如下文所述。
 

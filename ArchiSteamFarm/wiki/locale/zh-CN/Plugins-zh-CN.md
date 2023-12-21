@@ -1,6 +1,6 @@
 # 插件
 
-自 ASF V4 开始，程序支持在运行时加载自定义插件。 插件允许您自定义 ASF 行为，例如添加自定义命令、自定义交易逻辑或者与其他第三方服务与 API 进行整体集成。
+ASF 支持在运行时加载自定义插件。 插件允许您自定义 ASF 行为，例如添加自定义命令、自定义交易逻辑或者与其他第三方服务与 API 进行整体集成。
 
 ---
 
@@ -28,7 +28,7 @@ ASF 会从 ASF 目录内的 `plugins` 文件夹加载插件。 建议您根据�
 
 我们为您准备了 **[ASF 插件模板](https://github.com/JustArchiNET/ASF-PluginTemplate)**，您可以以此作为插件项目的基础。 使用模板并不是强制性的（因为您可以完全从零开始），但我们强烈建议您使用，因为它能够大大加速您的开发，节约各种配置的时间。 阅读模板的 **[README](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/README.md)** 进一步了解详情。 无论如何，如果您打算从零开始或者希望更好地理解插件模板中的概念，我们接下来也会介绍相关基础。
 
-您的项目应该是一个标准 .NET 库，其目标指向对应 ASF 版本所使用框架的版本，如&#8203;**[编译](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compilation-zh-CN)**&#8203;章节所述。 我们建议您以 .NET（Core）为目标，但 .NET Framework 框架插件也是可用的。
+您的项目应该是一个标准 .NET 库，其目标指向对应 ASF 版本所使用框架的版本，如[**编译**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compilation-zh-CN)章节所述。
 
 您的项目必须引用 `ArchiSteamFarm` 主程序集，或者您下载的 ASF 中包含的预编译 `ArchiSteamFarm.dll` 库，或者项目源代码（例如您决定将 ASF 代码树添加为子模块的情况）。 这样，您就可以访问与检查 ASF 的结构、方法和属性，特别是您接下来需要继承的核心 `IPlugin` 接口。 该项目还必须至少引用 `System.Composition.AttributedModel`，使您能够将插件的 `IPlugin` 实现 `[Export]`（导出）给 ASF 使用。 此外，您可能还需要引用其他公共库，以便解析某些接口提供给您的数据结构，但除非您明确需要它们，否则现在这样就足够了。
 
@@ -37,18 +37,18 @@ ASF 会从 ASF 目录内的 `plugins` 文件夹加载插件。 建议您根据�
 ```csproj
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" Version="7.0.0" />
+    <PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="ArchiSteamFarm" HintPath="C:\\Path\To\Downloaded\ArchiSteamFarm.dll" />
+    <ProjectReference Include="C:\\Path\To\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="false" />
 
-    <!-- 如果要作为 ASF 代码树的一部分构建，使用此设置代替上面的 <Reference> 标签 -->
-    <!-- <ProjectReference Include="C:\\Path\To\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="false" /> -->
+    <!-- 如果要使用下载的 DLL 二进制文件构建，使用此设置代替上面的 <ProjectReference> 标签 -->
+    <!-- <Reference Include="ArchiSteamFarm" HintPath="C:\\Path\To\Downloaded\ArchiSteamFarm.dll" /> -->
   </ItemGroup>
 </Project>
 ```

@@ -42,12 +42,10 @@ public sealed class TwoFactorAuthenticationController : ArchiController {
 	///     Fetches pending 2FA confirmations of given bots, requires ASF 2FA module to be active on them.
 	/// </summary>
 	[HttpGet("Confirmations")]
-	[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse<IReadOnlyCollection<Confirmation>>>>), (int) HttpStatusCode.OK)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, GenericResponse<IReadOnlyCollection<Confirmation>>>>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	public async Task<ActionResult<GenericResponse>> ConfirmationsGet(string botNames) {
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -72,13 +70,10 @@ public sealed class TwoFactorAuthenticationController : ArchiController {
 	/// </summary>
 	[Consumes("application/json")]
 	[HttpPost("Confirmations")]
-	[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse<IReadOnlyCollection<Confirmation>>>>), (int) HttpStatusCode.OK)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, GenericResponse<IReadOnlyCollection<Confirmation>>>>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	public async Task<ActionResult<GenericResponse>> ConfirmationsPost(string botNames, [FromBody] TwoFactorAuthenticationConfirmationsRequest request) {
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (request.AcceptedType.HasValue && ((request.AcceptedType.Value == Confirmation.EConfirmationType.Unknown) || !Enum.IsDefined(request.AcceptedType.Value))) {
@@ -107,12 +102,10 @@ public sealed class TwoFactorAuthenticationController : ArchiController {
 	///     Deletes the MobileAuthenticator of given bots if an ASF 2FA module is active on them.
 	/// </summary>
 	[HttpDelete]
-	[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>), (int) HttpStatusCode.OK)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	public async Task<ActionResult<GenericResponse>> Delete(string botNames) {
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 
@@ -137,13 +130,10 @@ public sealed class TwoFactorAuthenticationController : ArchiController {
 	/// </summary>
 	[Consumes("application/json")]
 	[HttpPost]
-	[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse>>), (int) HttpStatusCode.OK)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, GenericResponse>>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	public async Task<ActionResult<GenericResponse>> Post(string botNames, [FromBody] MobileAuthenticator authenticator) {
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
-
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 		ArgumentNullException.ThrowIfNull(authenticator);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
@@ -168,12 +158,10 @@ public sealed class TwoFactorAuthenticationController : ArchiController {
 	///     Fetches 2FA tokens of given bots, requires ASF 2FA module to be active on them.
 	/// </summary>
 	[HttpGet("Token")]
-	[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>), (int) HttpStatusCode.OK)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	[ProducesResponseType<GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
 	public async Task<ActionResult<GenericResponse>> TokenGet(string botNames) {
-		if (string.IsNullOrEmpty(botNames)) {
-			throw new ArgumentNullException(nameof(botNames));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(botNames);
 
 		HashSet<Bot>? bots = Bot.GetBots(botNames);
 

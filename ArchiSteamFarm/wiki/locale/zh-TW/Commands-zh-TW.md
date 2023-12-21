@@ -15,7 +15,7 @@ ASF支援各種指令，以此來控制程序及Bot實例的行為。
 
 ### 互動式控制台
 
-從V4.0.0.9版本開始，ASF支援互動式控制台。只要您沒有讓ASF在&#8203;[**`Headless`**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-TW#headless無頭模式)&#8203;模式下執行， 按下&#8203;`C`&#8203;鍵，就可以啟用指令模式。輸入您的指令，並按下確認鍵確認。
+ASF支援互動式控制台。只要您沒有讓ASF在&#8203;[**`Headless`**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-TW#headless無頭模式)&#8203;模式下執行， 按下&#8203;`C`&#8203;鍵，就可以啟用指令模式。輸入您的指令，並按下確認鍵確認。
 
 ![擷圖](https://i.imgur.com/bH5Gtjq.png)
 
@@ -48,7 +48,7 @@ ASF支援各種指令，以此來控制程序及Bot實例的行為。
 | 指令                                                                   | 存取權限            | 描述                                                                                                                                                                                                                                   |
 | -------------------------------------------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `2fa [Bots]`                                                         | `Master`        | 使指定的Bot實例生成臨時的&#8203;**[雙重驗證](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-TW)**&#8203;權杖。                                                                                                       |
-| `2fafinalize [Bots] <ActivationCode>`                          | `Master`        | 使指定Bot實例使用簡訊啟用碼，完成綁定新&#8203;**[雙重驗證](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-TW#建立)**&#8203;憑證的流程。                                                                                          |
+| `2fafinalize [Bots] <ActivationCode>`                          | `Master`        | 使指定Bot實例使用簡訊／電子郵件啟用碼，完成綁定新&#8203;**[雙重驗證](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-TW#建立)**&#8203;憑證的流程。                                                                                     |
 | `2fafinalized [Bots] <ActivationCode>`                         | `Master`        | 為指定Bot實例使用雙重驗證權杖驗證，匯入已最終化的&#8203;**[雙重驗證](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-TW#建立)**&#8203;憑證。                                                                                        |
 | `2fafinalizedforce [Bots]`                                           | `Master`        | 為指定Bot實例匯入已最終化的&#8203;**[雙重驗證](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-TW#建立)**&#8203;憑證，並跳過雙重驗證權杖驗證。                                                                                       |
 | `2fainit [Bots]`                                                     | `Master`        | 使指定Bot實例開始綁定新&#8203;**[雙重驗證](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-TW#建立)**&#8203;憑證的流程。                                                                                                  |
@@ -94,7 +94,7 @@ ASF支援各種指令，以此來控制程序及Bot實例的行為。
 | `start [Bots]`                                                       | `Master`        | 啟動指定的Bot實例。                                                                                                                                                                                                                          |
 | `stats`                                                              | `Owner`         | 顯示程序的統計資料，例如託管記憶體的使用量。                                                                                                                                                                                                               |
 | `status [Bots]`                                                      | `FamilySharing` | 顯示指定Bot實例的狀態。                                                                                                                                                                                                                        |
-| `std`                                                                | `Owner`         | 控制&#8203;**[`SteamTokenDumperPlugin`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/SteamTokenDumperPlugin-zh-TW)**&#8203;的特殊指令，用於立即提交資料。                                                                                      |
+| `std [Bots]`                                                         | `Master`        | 控制&#8203;**[`SteamTokenDumperPlugin`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/SteamTokenDumperPlugin-zh-TW)**&#8203;的特殊指令，用於重新整理所選的Bot，並立即提交資料。                                                                          |
 | `stop [Bots]`                                                        | `Master`        | 停止指定的Bot實例。                                                                                                                                                                                                                          |
 | `tb [Bots]`                                                          | `Master`        | 列出指定Bot實例交易模組黑名單中的使用者。                                                                                                                                                                                                               |
 | `tbadd [Bots] <SteamIDs64>`                                    | `Master`        | 將給定的&#8203;`SteamIDs64`&#8203;加入至指定Bot的實例交易模組黑名單中。                                                                                                                                                                                   |
@@ -177,7 +177,7 @@ ASF會將超出指令範圍的多餘引數「連接」至符合語法的最後�
 | 2 | `FriendsOnly（僅限好友）` |
 | 3 | `Public（公開）`        |
 
-您可以使用它們的名稱（不區分大小寫）或數值。 未賦值的引數將會被設為預設值&#8203;`Private`&#8203;。 特別注意，上述引數的從屬關係非常重要，因為子選項無法擁有比父選項還高的權限。 舉例來說，若您將個人檔案設為&#8203;`Private`&#8203;，就&#8203;**無法**&#8203;再將遊戲資料設定成&#8203;`Public`&#8203;。
+您可以使用它們的名稱（不區分大小寫）或數值。 未賦值的引數將會被設為預設值&#8203;`Private`&#8203;。 特別注意，上述引數的從屬關係非常重要，因為子選項無法擁有比父選項還高的權限。 舉例來說，您&#8203;**無法**&#8203;在個人檔案設定成&#8203;`Private`&#8203;時，將遊戲資料設定成&#8203;`Public`&#8203;。
 
 ### 範例
 

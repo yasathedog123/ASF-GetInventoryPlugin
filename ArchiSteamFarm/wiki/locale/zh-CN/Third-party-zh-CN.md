@@ -8,6 +8,12 @@
 
 ## ASF 插件
 
+### **[Citrinate](https://github.com/Citrinate)**
+
+- **[BoosterManager](https://github.com/Citrinate/BoosterManager)**，此插件为 ASF 提供易于使用的界面，将宝石转换为补充包，同时提供各种管理库存和市场的功能。
+- **[CS2Interface](https://github.com/Citrinate/CS2Interface)**，允许您通过 **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)** 操作反恐精英 2 的 ASF 插件。
+- **[FreePackages](https://github.com/Citrinate/FreePackages)**，使 ASF 在 Steam 寻找免费游戏并添加到帐户的插件。
+
 ### **[Rudokhvist](https://github.com/Rudokhvist)**
 
 - **[ASF-Achievement-Manager](https://github.com/Rudokhvist/ASF-Achievement-Manager)**，使您可以通过 ASF 管理 Steam 成就的插件。
@@ -29,6 +35,7 @@
 ### 其他
 
 - **[ASFEnhance](https://github.com/chr233/ASFEnhance)**，ASF 增强插件，包含各种新功能和新命令。
+- **[ASFFreeGames](https://github.com/maxisoft/ASFFreeGames)**，此插件允许 ASF 自动收集在 Reddit 上发布的免费 Steam 游戏。
 
 ---
 
@@ -58,7 +65,7 @@
 
 ## 工具
 
-- **[Keys extractor](https://ske.xpixv.com)**，能够从您复制的带有游戏序列号的各种文本中提取序列号，并为您生成 ASF 的 `redeem` 命令。 前往 **[GitHub 仓库](https://github.com/PixvIO/SKE)**&#8203;了解更多。
+- **[Keys extractor](https://umaim.github.io/SKE)**，能够从您复制的带有游戏序列号的各种文本中提取序列号，并为您生成 ASF 的 `redeem` 命令。 前往 **[GitHub 仓库](https://github.com/PixvIO/SKE)**&#8203;了解更多。
 - **[ASF Mass Config Editor](https://github.com/genesix-eu/ASF_MCE)**，使您能够方便地管理多份 ASF 配置文件。
 
 ---

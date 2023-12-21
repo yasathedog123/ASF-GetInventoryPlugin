@@ -1,6 +1,6 @@
 # 交易
 
-ASF支援Steam的非互動式（離線）交易。 您可以直接接收（接受／拒絕）及發送交易，不需要特殊設定。但顯而易見，這需要不受限制的Steam帳號（需已在商店中消費滿$5美元）。 受限制的帳號無法使用交易模組。
+ASF支援Steam的非互動式（離線）交易。 您可以直接接收（接受／拒絕）及發送交易，不需要特殊設定。但顯而易見，這需要不受限制的Steam帳號（需已在商店中消費滿$5美元）。 Only limited trading functionality is available for restricted accounts.
 
 ---
 

@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -42,12 +43,11 @@ public sealed class TypeController : ArchiController {
 	///     Type info is defined as a representation of given object with its fields and properties being assigned to a string value that defines their type.
 	/// </remarks>
 	[HttpGet("{type:required}")]
-	[ProducesResponseType(typeof(GenericResponse<TypeResponse>), (int) HttpStatusCode.OK)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	[ProducesResponseType<GenericResponse<TypeResponse>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2075", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	public ActionResult<GenericResponse> TypeGet(string type) {
-		if (string.IsNullOrEmpty(type)) {
-			throw new ArgumentNullException(nameof(type));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(type);
 
 		Type? targetType = WebUtilities.ParseType(type);
 
@@ -69,8 +69,7 @@ public sealed class TypeController : ArchiController {
 					string? unifiedName = field.FieldType.GetUnifiedName();
 
 					if (!string.IsNullOrEmpty(unifiedName)) {
-						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-						body[jsonProperty.PropertyName ?? field.Name] = unifiedName!;
+						body[jsonProperty.PropertyName ?? field.Name] = unifiedName;
 					}
 				}
 			}
@@ -82,8 +81,7 @@ public sealed class TypeController : ArchiController {
 					string? unifiedName = property.PropertyType.GetUnifiedName();
 
 					if (!string.IsNullOrEmpty(unifiedName)) {
-						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-						body[jsonProperty.PropertyName ?? property.Name] = unifiedName!;
+						body[jsonProperty.PropertyName ?? property.Name] = unifiedName;
 					}
 				}
 			}
@@ -106,10 +104,7 @@ public sealed class TypeController : ArchiController {
 					continue;
 				}
 
-				// ReSharper disable RedundantSuppressNullableWarningExpression - required for .NET Framework
-				body[valueText!] = valueObjText!;
-
-				// ReSharper restore RedundantSuppressNullableWarningExpression - required for .NET Framework
+				body[valueText] = valueObjText;
 			}
 		}
 

@@ -19,10 +19,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if NETFRAMEWORK || NETSTANDARD
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-#endif
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -35,37 +31,15 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.IPC;
 
 internal static class WebUtilities {
-#if NETFRAMEWORK || NETSTANDARD
-	internal static IMvcCoreBuilder AddControllers(this IServiceCollection services) {
-		ArgumentNullException.ThrowIfNull(services);
-
-		return services.AddMvcCore();
-	}
-
-	internal static IMvcCoreBuilder AddNewtonsoftJson(this IMvcCoreBuilder mvc, Action<MvcJsonOptions> setupAction) {
-		ArgumentNullException.ThrowIfNull(mvc);
-		ArgumentNullException.ThrowIfNull(setupAction);
-
-		// Add JSON formatters that will be used as default ones if no specific formatters are asked for
-		mvc.AddJsonFormatters();
-
-		mvc.AddJsonOptions(setupAction);
-
-		return mvc;
-	}
-#endif
-
 	internal static string? GetUnifiedName(this Type type) {
 		ArgumentNullException.ThrowIfNull(type);
 
-		return type.GenericTypeArguments.Length == 0 ? type.FullName : $"{type.Namespace}.{type.Name}{string.Join("", type.GenericTypeArguments.Select(static innerType => $"[{innerType.GetUnifiedName()}]"))}";
+		return type.GenericTypeArguments.Length == 0 ? type.FullName : $"{type.Namespace}.{type.Name}{string.Join(null, type.GenericTypeArguments.Select(static innerType => $"[{innerType.GetUnifiedName()}]"))}";
 	}
 
-	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2057:TypeGetType", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	internal static Type? ParseType(string typeText) {
-		if (string.IsNullOrEmpty(typeText)) {
-			throw new ArgumentNullException(nameof(typeText));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(typeText);
 
 		Type? targetType = Type.GetType(typeText);
 

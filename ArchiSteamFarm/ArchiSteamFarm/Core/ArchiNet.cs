@@ -25,6 +25,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Helpers;
@@ -42,12 +43,9 @@ internal static class ArchiNet {
 
 	private static readonly ArchiCacheable<IReadOnlyCollection<ulong>> CachedBadBots = new(ResolveCachedBadBots, TimeSpan.FromDays(1));
 
-	internal static async Task<string?> FetchBuildChecksum(Version version, string variant) {
+	internal static async Task<string?> FetchBuildChecksum(Version version, string variant, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(version);
-
-		if (string.IsNullOrEmpty(variant)) {
-			throw new ArgumentNullException(nameof(variant));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(variant);
 
 		if (ASF.WebBrowser == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
@@ -55,7 +53,7 @@ internal static class ArchiNet {
 
 		Uri request = new(URL, $"/Api/Checksum/{version}/{variant}");
 
-		ObjectResponse<GenericResponse<string>>? response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<string>>(request).ConfigureAwait(false);
+		ObjectResponse<GenericResponse<string>>? response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<string>>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response?.Content == null) {
 			return null;
@@ -64,17 +62,17 @@ internal static class ArchiNet {
 		return response.Content.Result ?? "";
 	}
 
-	internal static async Task<bool?> IsBadBot(ulong steamID) {
+	internal static async Task<bool?> IsBadBot(ulong steamID, CancellationToken cancellationToken = default) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		(_, IReadOnlyCollection<ulong>? badBots) = await CachedBadBots.GetValue(ECacheFallback.FailedNow).ConfigureAwait(false);
+		(_, IReadOnlyCollection<ulong>? badBots) = await CachedBadBots.GetValue(ECacheFallback.FailedNow, cancellationToken).ConfigureAwait(false);
 
 		return badBots?.Contains(steamID);
 	}
 
-	internal static async Task<HttpStatusCode?> SignInWithSteam(Bot bot, WebBrowser webBrowser) {
+	internal static async Task<HttpStatusCode?> SignInWithSteam(Bot bot, WebBrowser webBrowser, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentNullException.ThrowIfNull(webBrowser);
 
@@ -85,7 +83,7 @@ internal static class ArchiNet {
 		// We expect data or redirection to Steam OpenID
 		Uri authenticateRequest = new(URL, $"/Api/Steam/Authenticate?steamID={bot.SteamID}");
 
-		ObjectResponse<GenericResponse<ulong>>? authenticateResponse = await webBrowser.UrlGetToJsonObject<GenericResponse<ulong>>(authenticateRequest, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
+		ObjectResponse<GenericResponse<ulong>>? authenticateResponse = await webBrowser.UrlGetToJsonObject<GenericResponse<ulong>>(authenticateRequest, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (authenticateResponse == null) {
 			return null;
@@ -100,7 +98,7 @@ internal static class ArchiNet {
 		}
 
 		// We've got a redirection, initiate OpenID procedure by following it
-		using HtmlDocumentResponse? challengeResponse = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(authenticateResponse.FinalUri).ConfigureAwait(false);
+		using HtmlDocumentResponse? challengeResponse = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(authenticateResponse.FinalUri, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (challengeResponse?.Content == null) {
 			return null;
@@ -153,14 +151,14 @@ internal static class ArchiNet {
 		data.Add(nonceContent, "nonce");
 
 		// Accept OpenID request presented and follow redirection back to the data we initially expected
-		BasicResponse? loginResponse = await bot.ArchiWebHandler.WebBrowser.UrlPost(loginRequest, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections).ConfigureAwait(false);
+		BasicResponse? loginResponse = await bot.ArchiWebHandler.WebBrowser.UrlPost(loginRequest, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (loginResponse == null) {
 			return null;
 		}
 
 		// We've got a final redirection, follow it and complete login procedure
-		authenticateResponse = await webBrowser.UrlGetToJsonObject<GenericResponse<ulong>>(loginResponse.FinalUri, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
+		authenticateResponse = await webBrowser.UrlGetToJsonObject<GenericResponse<ulong>>(loginResponse.FinalUri, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (authenticateResponse == null) {
 			return null;
@@ -173,7 +171,7 @@ internal static class ArchiNet {
 		return authenticateResponse.Content?.Result == bot.SteamID ? HttpStatusCode.OK : HttpStatusCode.Unauthorized;
 	}
 
-	private static async Task<(bool Success, IReadOnlyCollection<ulong>? Result)> ResolveCachedBadBots() {
+	private static async Task<(bool Success, IReadOnlyCollection<ulong>? Result)> ResolveCachedBadBots(CancellationToken cancellationToken = default) {
 		if (ASF.GlobalDatabase == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
 		}
@@ -184,7 +182,7 @@ internal static class ArchiNet {
 
 		Uri request = new(URL, "/Api/BadBots");
 
-		ObjectResponse<GenericResponse<ImmutableHashSet<ulong>>>? response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<ImmutableHashSet<ulong>>>(request).ConfigureAwait(false);
+		ObjectResponse<GenericResponse<ImmutableHashSet<ulong>>>? response = await ASF.WebBrowser.UrlGetToJsonObject<GenericResponse<ImmutableHashSet<ulong>>>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		if (response?.Content?.Result == null) {
 			return (false, ASF.GlobalDatabase.CachedBadBots);

@@ -1,6 +1,6 @@
 # STEAMTOKENDUMPERPLUGIN
 
-`SteamTokenDumperPlugin` IZ OFFISHUL ASF **[PLUGIN](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Plugins-lol-US)** AVAILABLE SINCE ASF V4.2.2.2, DEVELOPD BY US, WHICH ALLOWS U 2 CONTRIBUTE 2 **[STEAMDB](https://steamdb.info)** PROJECT BY SHARIN PACKAGE TOKENS, APP TOKENS AN DEPOT KEYS DAT UR STEAM AKOWNT HAS ACCES 2. TEH EXTENDD INFO ON COLLECTD DATA AN Y STEAMDB NEEDZ IT CAN BE FINDZ ON STEAMDBS **[TOKEN DUMPR](https://steamdb.info/tokendumper)** PAEG. TEH SUBMITTD DATA DOESNT INCLUDE ANY POTENTIALLY-SENSITIV INFORMASHUN, AN POSESEZ NO SECURITY/PRIVACY RISK, AS STATD IN ABOOV DESCRIPSHUN.
+`SteamTokenDumperPlugin` IZ OFFISHUL ASF **[PLUGIN](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Plugins-lol-US)** DEVELOPD BY US, WHICH ALLOWS U 2 CONTRIBUTE 2 **[STEAMDB](https://steamdb.info)** PROJECT BY SHARIN PACKAGE TOKENS, APP TOKENS AN DEPOT KEYS DAT UR STEAM AKOWNT HAS ACCES 2. TEH EXTENDD INFO ON COLLECTD DATA AN Y STEAMDB NEEDZ IT CAN BE FINDZ ON STEAMDBS **[TOKEN DUMPR](https://steamdb.info/tokendumper)** PAEG. TEH SUBMITTD DATA DOESNT INCLUDE ANY POTENTIALLY-SENSITIV INFORMASHUN, AN POSESEZ NO SECURITY/PRIVACY RISK, AS STATD IN ABOOV DESCRIPSHUN.
 
 ---
 
@@ -36,9 +36,17 @@ IN ANY CASE, STEAMDB STAFF WUD LIEK 2 THANK U IN ADVANCE 4 UR HALP. TEH SUBMITTD
 
 ---
 
+## COMMAND
+
+STD plugin comes with extra ASF command, `!std [Bots]`, which allows you to trigger refresh and submission for selected bots on demand. Using the command doesn't require enabled config, which allows you to skip automatic gathering and submission, and control the process yourself manually. Naturally it can also be executed with enabled config, which will simply trigger the usual gathering and submission procedures earlier than expected.
+
+We recommend `!std ASF` in order to trigger refresh for all available bots. However, you can also trigger it for selected ones if you'd like to.
+
+---
+
 ## ADVANCD CONFIG
 
-STARTIN WIF ASF V5.1.0.0, R PLUGIN SUPPORTS ADVANCD CONFIG WHICH MITE COME USEFUL 4 PEEPS DAT WUD LIEK 2 TWEAK TEH INTERNALS 2 THEIR PREFERENCE.
+R PLUGIN SUPPORTS ADVANCD CONFIG WHICH MITE COME USEFUL 4 PEEPS DAT WUD LIEK 2 TWEAK TEH INTERNALS 2 THEIR PREFERENCE.
 
 TEH ADVANCD CONFIG HAS TEH FOLLOWIN STRUCCHUR LOCATD WITHIN `ASF.json`:
 

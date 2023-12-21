@@ -29,6 +29,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
@@ -60,18 +61,15 @@ public sealed class WebBrowser : IDisposable {
 	private readonly HttpClientHandler HttpClientHandler;
 
 	internal WebBrowser(ArchiLogger archiLogger, IWebProxy? webProxy = null, bool extendedTimeout = false) {
-		ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
+		ArgumentNullException.ThrowIfNull(archiLogger);
+
+		ArchiLogger = archiLogger;
 
 		HttpClientHandler = new HttpClientHandler {
 			AllowAutoRedirect = false, // This must be false if we want to handle custom redirection schemes such as "steammobile://"
-
-#if NETFRAMEWORK || NETSTANDARD
-			AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
-#else
 			AutomaticDecompression = DecompressionMethods.All,
-#endif
-
-			CookieContainer = CookieContainer
+			CookieContainer = CookieContainer,
+			MaxConnectionsPerServer = MaxConnections
 		};
 
 		if (webProxy != null) {
@@ -83,14 +81,6 @@ public sealed class WebBrowser : IDisposable {
 				HttpClientHandler.PreAuthenticate = true;
 			}
 		}
-
-#if NETFRAMEWORK || NETSTANDARD
-		if (!RuntimeMadness.IsRunningOnMono) {
-			HttpClientHandler.MaxConnectionsPerServer = MaxConnections;
-		}
-#else
-		HttpClientHandler.MaxConnectionsPerServer = MaxConnections;
-#endif
 
 		HttpClient = GenerateDisposableHttpClient(extendedTimeout);
 	}
@@ -105,9 +95,7 @@ public sealed class WebBrowser : IDisposable {
 		byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 		HttpClient result = new(HttpClientHandler, false) {
-#if !NETFRAMEWORK && !NETSTANDARD
 			DefaultRequestVersion = HttpVersion.Version30,
-#endif
 			Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeout : connectionTimeout)
 		};
 
@@ -124,23 +112,17 @@ public sealed class WebBrowser : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<BinaryResponse?> UrlGetToBinary(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, IProgress<byte>? progressReporter = null) {
+	public async Task<BinaryResponse?> UrlGetToBinary(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, IProgress<byte>? progressReporter = null, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
-
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		for (byte i = 0; i < maxTries; i++) {
 			if ((i > 0) && (rateLimitingDelay > 0)) {
-				await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
+				await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 			}
 
-			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
+			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				// Request timed out, try again
@@ -192,13 +174,13 @@ public sealed class WebBrowser : IDisposable {
 
 					try {
 						while (response.Content.CanRead) {
-							int read = await response.Content.ReadAsync(buffer.AsMemory(0, buffer.Length)).ConfigureAwait(false);
+							int read = await response.Content.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken).ConfigureAwait(false);
 
 							if (read == 0) {
 								break;
 							}
 
-							await ms.WriteAsync(buffer.AsMemory(0, read)).ConfigureAwait(false);
+							await ms.WriteAsync(buffer.AsMemory(0, read), cancellationToken).ConfigureAwait(false);
 
 							if ((progressReporter == null) || (batchIncreaseSize == 0) || (batch >= 99)) {
 								continue;
@@ -211,6 +193,8 @@ public sealed class WebBrowser : IDisposable {
 								progressReporter.Report(++batch);
 							}
 						}
+					} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+						throw;
 					} catch (Exception e) {
 						ArchiLogger.LogGenericWarningException(e);
 						ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
@@ -234,23 +218,17 @@ public sealed class WebBrowser : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<HtmlDocumentResponse?> UrlGetToHtmlDocument(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0) {
+	public async Task<HtmlDocumentResponse?> UrlGetToHtmlDocument(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
-
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		for (byte i = 0; i < maxTries; i++) {
 			if ((i > 0) && (rateLimitingDelay > 0)) {
-				await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
+				await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 			}
 
-			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
+			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				// Request timed out, try again
@@ -281,7 +259,9 @@ public sealed class WebBrowser : IDisposable {
 				}
 
 				try {
-					return await HtmlDocumentResponse.Create(response).ConfigureAwait(false);
+					return await HtmlDocumentResponse.Create(response, cancellationToken).ConfigureAwait(false);
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+					throw;
 				} catch (Exception e) {
 					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
 						return new HtmlDocumentResponse(response);
@@ -300,23 +280,17 @@ public sealed class WebBrowser : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<ObjectResponse<T>?> UrlGetToJsonObject<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0) {
+	public async Task<ObjectResponse<T>?> UrlGetToJsonObject<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
-
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		for (byte i = 0; i < maxTries; i++) {
 			if ((i > 0) && (rateLimitingDelay > 0)) {
-				await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
+				await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 			}
 
-			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
+			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				// Request timed out, try again
@@ -360,6 +334,8 @@ public sealed class WebBrowser : IDisposable {
 
 						obj = serializer.Deserialize<T>(jsonReader);
 					}
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+					throw;
 				} catch (Exception e) {
 					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
 						return new ObjectResponse<T>(response);
@@ -392,23 +368,17 @@ public sealed class WebBrowser : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<StreamResponse?> UrlGetToStream(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0) {
+	public async Task<StreamResponse?> UrlGetToStream(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
-
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		for (byte i = 0; i < maxTries; i++) {
 			if ((i > 0) && (rateLimitingDelay > 0)) {
-				await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
+				await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 			}
 
-			HttpResponseMessage? response = await InternalGet(request, headers, referer, requestOptions, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+			HttpResponseMessage? response = await InternalGet(request, headers, referer, requestOptions, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				// Request timed out, try again
@@ -433,7 +403,7 @@ public sealed class WebBrowser : IDisposable {
 				}
 			}
 
-			return new StreamResponse(response, await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
+			return new StreamResponse(response, await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false));
 		}
 
 		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
@@ -443,23 +413,17 @@ public sealed class WebBrowser : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<BasicResponse?> UrlHead(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0) {
+	public async Task<BasicResponse?> UrlHead(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
-
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		for (byte i = 0; i < maxTries; i++) {
 			if ((i > 0) && (rateLimitingDelay > 0)) {
-				await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
+				await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 			}
 
-			using HttpResponseMessage? response = await InternalHead(request, headers, referer, requestOptions).ConfigureAwait(false);
+			using HttpResponseMessage? response = await InternalHead(request, headers, referer, requestOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				continue;
@@ -493,23 +457,17 @@ public sealed class WebBrowser : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<BasicResponse?> UrlPost<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0) where T : class {
+	public async Task<BasicResponse?> UrlPost<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) where T : class {
 		ArgumentNullException.ThrowIfNull(request);
-
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		for (byte i = 0; i < maxTries; i++) {
 			if ((i > 0) && (rateLimitingDelay > 0)) {
-				await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
+				await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 			}
 
-			using HttpResponseMessage? response = await InternalPost(request, headers, data, referer, requestOptions).ConfigureAwait(false);
+			using HttpResponseMessage? response = await InternalPost(request, headers, data, referer, requestOptions, cancellationToken: cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				continue;
@@ -543,23 +501,17 @@ public sealed class WebBrowser : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<HtmlDocumentResponse?> UrlPostToHtmlDocument<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0) where T : class {
+	public async Task<HtmlDocumentResponse?> UrlPostToHtmlDocument<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) where T : class {
 		ArgumentNullException.ThrowIfNull(request);
-
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		for (byte i = 0; i < maxTries; i++) {
 			if ((i > 0) && (rateLimitingDelay > 0)) {
-				await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
+				await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 			}
 
-			StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
+			StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				// Request timed out, try again
@@ -590,7 +542,9 @@ public sealed class WebBrowser : IDisposable {
 				}
 
 				try {
-					return await HtmlDocumentResponse.Create(response).ConfigureAwait(false);
+					return await HtmlDocumentResponse.Create(response, cancellationToken).ConfigureAwait(false);
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+					throw;
 				} catch (Exception e) {
 					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
 						return new HtmlDocumentResponse(response);
@@ -609,23 +563,17 @@ public sealed class WebBrowser : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<ObjectResponse<TResult>?> UrlPostToJsonObject<TResult, TData>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, TData? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0) where TData : class {
+	public async Task<ObjectResponse<TResult>?> UrlPostToJsonObject<TResult, TData>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, TData? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) where TData : class {
 		ArgumentNullException.ThrowIfNull(request);
-
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		for (byte i = 0; i < maxTries; i++) {
 			if ((i > 0) && (rateLimitingDelay > 0)) {
-				await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
+				await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 			}
 
-			StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay).ConfigureAwait(false);
+			StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1, rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				// Request timed out, try again
@@ -669,6 +617,8 @@ public sealed class WebBrowser : IDisposable {
 
 						obj = serializer.Deserialize<TResult>(jsonReader);
 					}
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+					throw;
 				} catch (Exception e) {
 					if ((requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnSuccess) && response.StatusCode.IsSuccessCode()) || (requestOptions.HasFlag(ERequestOptions.AllowInvalidBodyOnErrors) && !response.StatusCode.IsSuccessCode())) {
 						return new ObjectResponse<TResult>(response);
@@ -701,23 +651,17 @@ public sealed class WebBrowser : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<StreamResponse?> UrlPostToStream<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0) where T : class {
+	public async Task<StreamResponse?> UrlPostToStream<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, int rateLimitingDelay = 0, CancellationToken cancellationToken = default) where T : class {
 		ArgumentNullException.ThrowIfNull(request);
-
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		for (byte i = 0; i < maxTries; i++) {
 			if ((i > 0) && (rateLimitingDelay > 0)) {
-				await Task.Delay(rateLimitingDelay).ConfigureAwait(false);
+				await Task.Delay(rateLimitingDelay, cancellationToken).ConfigureAwait(false);
 			}
 
-			HttpResponseMessage? response = await InternalPost(request, headers, data, referer, requestOptions, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+			HttpResponseMessage? response = await InternalPost(request, headers, data, referer, requestOptions, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
 
 			if (response == null) {
 				// Request timed out, try again
@@ -742,7 +686,7 @@ public sealed class WebBrowser : IDisposable {
 				}
 			}
 
-			return new StreamResponse(response, await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
+			return new StreamResponse(response, await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false));
 		}
 
 		ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
@@ -762,34 +706,28 @@ public sealed class WebBrowser : IDisposable {
 		ServicePointManager.Expect100Continue = false;
 
 		// Reuse ports if possible
-#if NETFRAMEWORK || NETSTANDARD
-		if (!RuntimeMadness.IsRunningOnMono) {
-			ServicePointManager.ReusePort = true;
-		}
-#else
 		ServicePointManager.ReusePort = true;
-#endif
 	}
 
-	private async Task<HttpResponseMessage?> InternalGet(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) {
+	private async Task<HttpResponseMessage?> InternalGet(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
-		return await InternalRequest<object>(request, HttpMethod.Get, headers, null, referer, requestOptions, httpCompletionOption).ConfigureAwait(false);
+		return await InternalRequest<object>(request, HttpMethod.Get, headers, null, referer, requestOptions, httpCompletionOption, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
-	private async Task<HttpResponseMessage?> InternalHead(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) {
+	private async Task<HttpResponseMessage?> InternalHead(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
-		return await InternalRequest<object>(request, HttpMethod.Head, headers, null, referer, requestOptions, httpCompletionOption).ConfigureAwait(false);
+		return await InternalRequest<object>(request, HttpMethod.Head, headers, null, referer, requestOptions, httpCompletionOption, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
-	private async Task<HttpResponseMessage?> InternalPost<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) where T : class {
+	private async Task<HttpResponseMessage?> InternalPost<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, CancellationToken cancellationToken = default) where T : class {
 		ArgumentNullException.ThrowIfNull(request);
 
-		return await InternalRequest(request, HttpMethod.Post, headers, data, referer, requestOptions, httpCompletionOption).ConfigureAwait(false);
+		return await InternalRequest(request, HttpMethod.Post, headers, data, referer, requestOptions, httpCompletionOption, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
-	private async Task<HttpResponseMessage?> InternalRequest<T>(Uri request, HttpMethod httpMethod, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries) where T : class {
+	private async Task<HttpResponseMessage?> InternalRequest<T>(Uri request, HttpMethod httpMethod, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries, CancellationToken cancellationToken = default) where T : class {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentNullException.ThrowIfNull(httpMethod);
 
@@ -797,9 +735,7 @@ public sealed class WebBrowser : IDisposable {
 
 		while (true) {
 			using (HttpRequestMessage requestMessage = new(httpMethod, request)) {
-#if !NETFRAMEWORK && !NETSTANDARD
 				requestMessage.Version = HttpClient.DefaultRequestVersion;
-#endif
 
 				if (headers != null) {
 					foreach ((string header, string value) in headers) {
@@ -817,7 +753,7 @@ public sealed class WebBrowser : IDisposable {
 							try {
 								requestMessage.Content = new FormUrlEncodedContent(nameValueCollection);
 							} catch (UriFormatException) {
-								requestMessage.Content = new StringContent(string.Join("&", nameValueCollection.Select(static kv => $"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value)}")), null, "application/x-www-form-urlencoded");
+								requestMessage.Content = new StringContent(string.Join('&', nameValueCollection.Select(static kv => $"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value)}")), null, "application/x-www-form-urlencoded");
 							}
 
 							break;
@@ -853,7 +789,9 @@ public sealed class WebBrowser : IDisposable {
 				}
 
 				try {
-					response = await HttpClient.SendAsync(requestMessage, httpCompletionOption).ConfigureAwait(false);
+					response = await HttpClient.SendAsync(requestMessage, httpCompletionOption, cancellationToken).ConfigureAwait(false);
+				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
+					throw;
 				} catch (Exception e) {
 					ArchiLogger.LogGenericDebuggingException(e);
 
@@ -942,7 +880,7 @@ public sealed class WebBrowser : IDisposable {
 
 		if (response.StatusCode.IsClientErrorCode()) {
 			if (Debugging.IsUserDebugging) {
-				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
+				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false)));
 			}
 
 			// Do not retry on client errors
@@ -951,7 +889,7 @@ public sealed class WebBrowser : IDisposable {
 
 		if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors) && response.StatusCode.IsServerErrorCode()) {
 			if (Debugging.IsUserDebugging) {
-				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
+				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false)));
 			}
 
 			// Do not retry on server errors in this case
@@ -960,7 +898,7 @@ public sealed class WebBrowser : IDisposable {
 
 		using (response) {
 			if (Debugging.IsUserDebugging) {
-				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
+				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false)));
 			}
 
 			return null;

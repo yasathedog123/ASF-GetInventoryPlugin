@@ -42,7 +42,7 @@ ASF 采用 **[JSON](https://en.wikipedia.org/wiki/JSON)** 格式存储其配置�
 
 我们的 **[ASF-ui](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC#asf-ui)** IPC 接口同样支持配置 ASF，并且特别适合在第一次配置之后修改配置内容，因为与在线配置文件生成器总是生成新文件不同，ASF-ui 可以在原地直接编辑配置文件。
 
-要使用 ASF-ui，首先您需要启用 **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)** 接口本身。 自 ASF V5.1.0.0 版本开始，`IPC` 已默认启用，因此只要您没有手动禁用它，就可以直接开始访问。
+要使用 ASF-ui，首先您需要启用 **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)** 接口本身。 `IPC` 默认启用，因此只要您没有手动禁用它，就可以直接开始访问。
 
 程序启动后，直接访问 ASF 的 **[IPC 地址](http://localhost:1242)**。 如果一切都正常工作，您也可以在这里更改 ASF 配置。
 
@@ -472,7 +472,7 @@ ASF 的更新过程会完全更新 ASF 使用的目录结构，但不包括您�
 | 3 | FoilTradingCard | 闪亮集换式卡牌（`TradingCard`）   |
 | 5 | TradingCard     | 用来合成徽章的 Steam 集换式卡牌（非闪亮） |
 
-请注意，无论如何设置上述选项，ASF 都只会处理 Steam 分组（`appID` 为 753）中的社区物品（`contextID` 为 6），所以所有的游戏物品、礼物等都会被排除在交易报价之外。
+请注意，无论如何设置上述选项，ASF 都只会处理 [**Steam 社区物品**](https://steamcommunity.com/my/inventory/#753_6)（`appID` 为 753，`contextID` 为 6），所以所有的游戏物品、礼物等都会被排除在交易报价之外。
 
 由于启用此选项会带来额外开销，我们建议您只在确实有机会自行集齐物品的机器人上启用——例如，如果您平时已经使用 `SendOnFarmingFinished`、`SendTradePeriod` 或 `loot` 命令来收集物品，就没有必要使用此选项。
 
@@ -583,7 +583,7 @@ ASF 提供了一些您可以在文本中使用的特殊变量。 `{0}` 会被 AS
 | 15 | KeyboardSkin          | Steam Deck 的特殊键盘皮肤        |
 | 16 | StartupVideo          | Steam Deck 的特殊启动影片        |
 
-请注意，无论如何设置上述选项，ASF 都只会处理 Steam 分组（`appID` 为 753）中的社区物品（`contextID` 为 6），所以所有的游戏物品、礼物等都会被排除在交易报价之外。
+请注意，无论如何设置上述选项，ASF 都只会处理 [**Steam 社区物品**](https://steamcommunity.com/my/inventory/#753_6)（`appID` 为 753，`contextID` 为 6），所以所有的游戏物品、礼物等都会被排除在交易报价之外。
 
 默认值的设定基于机器人的最常见用法，即仅仅拾取补充包和集换式卡牌（包括闪亮卡牌）。 您可以更改此属性，将机器人的行为调整至令您满意。 请记住，上表未定义的所有类型都会显示为 `Unknown`，特别是在 Valve 发布一些新 Steam 物品时，ASF 也会将它们标记为 `Unknown`，直到它们（在未来版本中）被添加到这个表格中。 这也是为何一般不建议在 `LootableTypes` 中包含 `Unknown` 类型，除非您了解您正在做什么，并且明白如果 Steam 网络出现故障，将所有物品当作 `Unknown`，ASF 将会在交易报价中发送整个库存内的物品。 我强烈建议，即使您希望拾取所有（其他）类型的物品，也不要在 `LootableTypes` 中包含 `Unknown`。
 
@@ -732,7 +732,7 @@ ASF 提供了一些您可以在文本中使用的特殊变量。 `{0}` 会被 AS
 
 这是一个默认值为 `false` 的 `bool` 类型属性。 当 ASF 完成给定帐户的挂卡任务时，它可以通过交易报价将全部挂卡所得发送给拥有 `Master` 权限的用户，免去您手动发送交易报价的麻烦。 此选项的运作方式与 `loot` 命令相同，因此请注意，您需要先正确为用户设置 `Master` 权限，并且设置有效的 `SteamTradeToken`，并且还要保证此帐户原本就能够进行交易。 启用此选项时，除了在挂卡完成之后激发 `loot` 命令，ASF 也会在每次获得新物品时（未挂卡时）以及每次在交易中获得新物品时激发 `loot` 命令。 这可以方便地将来自其他人的物品“转发”到我们的帐户中。
 
-通常您需要同时启用 **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-CN)** 以更好地使用此功能，但如果您愿意及时手动确认交易，也可以跳过这一步。 如果您不确定应该如何设置这个属性，请保留默认值 `false`。
+通常您需要同时启用 **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-CN)** 以更好地使用此功能，但如果您愿意及时手动处理 2FA 交易确认，也可以跳过这一步。 如果您不确定应该如何设置这个属性，请保留默认值 `false`。
 
 ---
 
@@ -740,7 +740,7 @@ ASF 提供了一些您可以在文本中使用的特殊变量。 `{0}` 会被 AS
 
 这是一个默认值为 `0` 的 `byte` 类型属性。 该属性的工作方式非常类似于 `SendOnFarmingFinished` 属性，只有一点区别——不是在挂卡完成时发送交易报价，而是每隔 `SendTradePeriod` 小时发送一次，无论是否挂卡完成。 如果您希望定期对子帐户发送 `loot` 命令而不是等到挂卡结束，则应该设置此属性。 默认值 `0` 会禁用此功能，如果您希望您的机器人每天发送一次交易报价，就可以设置为 `24`。
 
-通常您需要同时启用 **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-CN)** 以更好地使用此功能，但如果您愿意及时手动确认交易，也可以跳过这一步。 如果您不确定应该如何设置这个属性，请保留默认值 `0`。
+通常您需要同时启用 **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-CN)** 以更好地使用此功能，但如果您愿意及时手动处理 2FA 交易确认，也可以跳过这一步。 如果您不确定应该如何设置这个属性，请保留默认值 `0`。
 
 ---
 
@@ -860,7 +860,7 @@ ASF 提供了一些您可以在文本中使用的特殊变量。 `{0}` 会被 AS
 | 15 | KeyboardSkin          | Steam Deck 的特殊键盘皮肤        |
 | 16 | StartupVideo          | Steam Deck 的特殊启动影片        |
 
-请注意，无论如何设置上述选项，ASF 都只会处理 Steam 分组（`appID` 为 753）中的社区物品（`contextID` 为 6），所以所有的游戏物品、礼物等都会被排除在交易报价之外。
+请注意，无论如何设置上述选项，ASF 都只会处理 [**Steam 社区物品**](https://steamcommunity.com/my/inventory/#753_6)（`appID` 为 753，`contextID` 为 6），所以所有的游戏物品、礼物等都会被排除在交易报价之外。
 
 默认值的设定基于机器人的最常见用法，即仅仅转移补充包和集换式卡牌（包括闪亮卡牌）。 您可以更改此属性，将机器人的行为调整至令您满意。 请记住，上表未定义的所有类型都会显示为 `Unknown`，特别是在 Valve 发布一些新 Steam 物品时，ASF 也会将它们标记为 `Unknown`，直到它们（在未来版本中）被添加到这个表格中。 这也是为何一般不建议在 `TransferableTypes` 中包含 `Unknown` 类型，除非您了解您正在做什么，并且明白如果 Steam 网络出现故障，将所有物品当作 `Unknown`，ASF 将会在交易报价中发送整个库存内的物品。 我强烈建议您即使希望转移所有类型的物品，也不要在 `TransferableTypes` 中包含 `Unknown`。
 
@@ -900,10 +900,8 @@ ASF 采用这种很简单的文件结构：
 │     ├── ASF.db
 │     ├── Bot1.json
 │     ├── Bot1.db
-│     ├── Bot1.bin
 │     ├── Bot2.json
 │     ├── Bot2.db
-│     ├── Bot2.bin
 │     └── ...
 ├── ArchiSteamFarm.dll
 ├── log.txt
@@ -925,8 +923,6 @@ ASF 采用这种很简单的文件结构：
 `ASF.db` 是 ASF 的全局数据库。 它是一个全局的持久存储数据库，其中包含各种与 ASF 进程相关的信息，例如当地 Steam 服务器的 IP 地址。 **您不应该编辑这个文件**。
 
 `BotName.db` 是给定机器人实例的数据库。 此文件将给定机器人实例的关键数据，例如登录密钥或者 ASF 2FA，存储在持久存储数据库内。 **您不应该编辑这个文件**。
-
-`BotName.bin` 是给定机器人实例的一个特殊文件，用于存储 Steam Sentry Hash。 Sentry Hash 用于 `SteamGuard` 机制进行认证，非常类似于 Steam 的 `ssfn` 文件。 **您不应该编辑这个文件**。
 
 `BotName.keys` 是一个特殊文件，用于向[**后台游戏激活器**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Background-games-redeemer-zh-CN)中导入序列号。 此文件既非必须也非由 ASF 生成，ASF 会读取此文件。 此文件将会在序列号导入成功后被自动删除。
 
@@ -1047,7 +1043,7 @@ ASF 使用原生的 C# 类型系统，包括：
 
 ## 自动重载
 
-自 ASF V2.1.6.2 开始，程序将会在配置文件被修改时进行动态操作——即 ASF 会自动：
+ASF 会在配置文件被修改时进行动态操作——即 ASF 会自动：
 - 在您新建机器人配置文件时，创建（并在需要时启动）新机器人实例
 - 在您删除机器人配置文件时，停止（如果需要）并删除旧机器人实例
 - 在您编辑机器人配置文件时，停止（并在需要时启动）机器人实例

@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -52,7 +53,6 @@ public sealed class ArchiWebHandler : IDisposable {
 	private const ushort MaxItemsInSingleInventoryRequest = 5000;
 	private const byte MinimumSessionValidityInSeconds = 10;
 	private const string SteamAppsService = "ISteamApps";
-	private const string SteamUserService = "ISteamUser";
 	private const string TwoFactorService = "ITwoFactorService";
 
 	[PublicAPI]
@@ -73,12 +73,6 @@ public sealed class ArchiWebHandler : IDisposable {
 	public ArchiCacheable<string> CachedAccessToken { get; }
 
 	[PublicAPI]
-	public ArchiCacheable<string> CachedApiKey { get; }
-
-	[PublicAPI]
-	public ArchiCacheable<bool?> CachedEconomyBan { get; }
-
-	[PublicAPI]
 	public WebBrowser WebBrowser { get; }
 
 	private readonly Bot Bot;
@@ -91,28 +85,24 @@ public sealed class ArchiWebHandler : IDisposable {
 	private string? VanityURL;
 
 	internal ArchiWebHandler(Bot bot) {
-		Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+		ArgumentNullException.ThrowIfNull(bot);
+
+		Bot = bot;
 
 		CachedAccessToken = new ArchiCacheable<string>(ResolveAccessToken, TimeSpan.FromHours(6));
-		CachedApiKey = new ArchiCacheable<string>(ResolveApiKey, TimeSpan.FromHours(6));
-		CachedEconomyBan = new ArchiCacheable<bool?>(ResolveEconomyBan, TimeSpan.FromHours(6));
 
 		WebBrowser = new WebBrowser(bot.ArchiLogger, ASF.GlobalConfig?.WebProxy);
 	}
 
 	public void Dispose() {
 		CachedAccessToken.Dispose();
-		CachedApiKey.Dispose();
-		CachedEconomyBan.Dispose();
 		SessionSemaphore.Dispose();
 		WebBrowser.Dispose();
 	}
 
 	[PublicAPI]
 	public async Task<bool> CancelTradeOffer(ulong tradeID) {
-		if (tradeID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(tradeID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
 
 		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/cancel");
 
@@ -207,7 +197,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			return null;
 		}
 
-		HashSet<uint> result = new();
+		HashSet<uint> result = [];
 
 		IEnumerable<IAttr> linkNodes = response.Content.SelectNodes<IAttr>("//li[@class='booster_eligibility_game']/a/@href");
 
@@ -242,13 +232,8 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public async IAsyncEnumerable<Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
-
-		if (contextID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(contextID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 
 		if (ASF.InventorySemaphore == null) {
 			throw new InvalidOperationException(nameof(ASF.InventorySemaphore));
@@ -311,8 +296,7 @@ public sealed class ArchiWebHandler : IDisposable {
 						}
 
 						// Interpret the reason and see if we should try again
-						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-						switch (response.Content!.ErrorCode) {
+						switch (response.Content.ErrorCode) {
 							case EResult.DuplicateRequest:
 							case EResult.ServiceUnavailable:
 								response = null;
@@ -321,8 +305,7 @@ public sealed class ArchiWebHandler : IDisposable {
 						}
 
 						// This is actually client error with a reason, so it doesn't make sense to retry
-						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.ErrorText), null, response.StatusCode);
+						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText), null, response.StatusCode);
 					}
 				}
 			} finally {
@@ -370,11 +353,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 				(ulong ClassID, ulong InstanceID) key = (description.ClassID, description.InstanceID);
 
-				if (descriptions.ContainsKey(key)) {
-					continue;
-				}
-
-				descriptions[key] = description;
+				descriptions.TryAdd(key, description);
 			}
 
 			foreach (Asset asset in response.Content.Assets) {
@@ -417,9 +396,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		Dictionary<string, object?> arguments = new(2, StringComparer.Ordinal) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			{ "access_token", accessToken! },
-
+			{ "access_token", accessToken },
 			{ "steamid", Bot.SteamID }
 		};
 
@@ -475,15 +452,14 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	[PublicAPI]
 	public async Task<HashSet<TradeOffer>?> GetTradeOffers(bool? activeOnly = null, bool? receivedOffers = null, bool? sentOffers = null, bool? withDescriptions = null) {
-		(_, string? steamApiKey) = await CachedApiKey.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+		(_, string? accessToken) = await CachedAccessToken.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
 
-		if (string.IsNullOrEmpty(steamApiKey)) {
+		if (string.IsNullOrEmpty(accessToken)) {
 			return null;
 		}
 
 		Dictionary<string, object?> arguments = new(StringComparer.Ordinal) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			{ "key", steamApiKey! }
+			{ "access_token", accessToken }
 		};
 
 		if (activeOnly.HasValue) {
@@ -567,18 +543,14 @@ public sealed class ArchiWebHandler : IDisposable {
 				continue;
 			}
 
-			InventoryResponse.Description parsedDescription = new() {
-				AppID = appID,
-				ClassID = classID,
-				InstanceID = instanceID,
-				Marketable = description["marketable"].AsBoolean(),
-				Tradable = true // We're parsing active trade offers, we can assume as much
-			};
+			bool marketable = description["marketable"].AsBoolean();
 
 			List<KeyValue> tags = description["tags"].Children;
 
+			HashSet<Tag>? parsedTags = null;
+
 			if (tags.Count > 0) {
-				HashSet<Tag> parsedTags = new(tags.Count);
+				parsedTags = new HashSet<Tag>(tags.Count);
 
 				foreach (KeyValue tag in tags) {
 					string? identifier = tag["category"].AsString();
@@ -598,12 +570,11 @@ public sealed class ArchiWebHandler : IDisposable {
 						return null;
 					}
 
-					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-					parsedTags.Add(new Tag(identifier!, value));
+					parsedTags.Add(new Tag(identifier, value));
 				}
-
-				parsedDescription.Tags = parsedTags.ToImmutableHashSet();
 			}
+
+			InventoryResponse.Description parsedDescription = new(appID, classID, instanceID, marketable, parsedTags);
 
 			descriptions[key] = parsedDescription;
 		}
@@ -618,7 +589,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			trades = trades.Concat(response["trade_offers_sent"].Children);
 		}
 
-		HashSet<TradeOffer> result = new();
+		HashSet<TradeOffer> result = [];
 
 		foreach (KeyValue trade in trades) {
 			ETradeOfferState state = trade["trade_offer_state"].AsEnum<ETradeOfferState>();
@@ -678,13 +649,6 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<bool?> HasValidApiKey() {
-		(_, string? steamApiKey) = await CachedApiKey.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
-
-		return !string.IsNullOrEmpty(steamApiKey);
-	}
-
-	[PublicAPI]
 	public async Task<bool> JoinGroup(ulong groupID) {
 		if ((groupID == 0) || !new SteamID(groupID).IsClanAccount) {
 			throw new ArgumentOutOfRangeException(nameof(groupID));
@@ -708,12 +672,10 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new ArgumentException($"{nameof(itemsToGive)} && {nameof(itemsToReceive)}");
 		}
 
-		if (itemsPerTrade <= 2) {
-			throw new ArgumentOutOfRangeException(nameof(itemsPerTrade));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(itemsPerTrade);
 
 		TradeOfferSendRequest singleTrade = new();
-		HashSet<TradeOfferSendRequest> trades = new() { singleTrade };
+		HashSet<TradeOfferSendRequest> trades = [singleTrade];
 
 		if (itemsToGive != null) {
 			foreach (Asset itemToGive in itemsToGive) {
@@ -780,8 +742,7 @@ public sealed class ArchiWebHandler : IDisposable {
 					}
 
 					// This is actually client error with a reason, so it doesn't make sense to retry
-					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.ErrorText));
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText));
 
 					return (false, tradeOfferIDs, mobileTradeOfferIDs);
 				}
@@ -808,16 +769,10 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<HtmlDocumentResponse?> UrlGetToHtmlDocumentWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true) {
+	public async Task<HtmlDocumentResponse?> UrlGetToHtmlDocumentWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
-
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		if (WebLimiterDelay > rateLimitingDelay) {
 			rateLimitingDelay = WebLimiterDelay;
@@ -829,7 +784,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (sessionExpired.GetValueOrDefault(true)) {
 				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-					return await UrlGetToHtmlDocumentWithSession(request, headers, referer, requestOptions, true, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+					return await UrlGetToHtmlDocumentWithSession(request, headers, referer, requestOptions, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -839,7 +794,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		} else {
 			// If session refresh is already in progress, just wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+			await SessionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 			SessionSemaphore.Release();
 		}
 
@@ -847,7 +802,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!Initialized) {
@@ -861,7 +816,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		Uri host = new(request.GetLeftPart(UriPartial.Authority));
 
 		// ReSharper disable once AccessToModifiedClosure - evaluated fully before returning
-		HtmlDocumentResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToHtmlDocument(request, headers, referer, requestOptions, maxTries, rateLimitingDelay).ConfigureAwait(false)).ConfigureAwait(false);
+		HtmlDocumentResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToHtmlDocument(request, headers, referer, requestOptions, maxTries, rateLimitingDelay, cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
 			return null;
@@ -869,7 +824,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
 			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-				return await UrlGetToHtmlDocumentWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+				return await UrlGetToHtmlDocumentWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -889,23 +844,17 @@ public sealed class ArchiWebHandler : IDisposable {
 				return null;
 			}
 
-			return await UrlGetToHtmlDocumentWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh).ConfigureAwait(false);
+			return await UrlGetToHtmlDocumentWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh, cancellationToken).ConfigureAwait(false);
 		}
 
 		return response;
 	}
 
 	[PublicAPI]
-	public async Task<ObjectResponse<T>?> UrlGetToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true) {
+	public async Task<ObjectResponse<T>?> UrlGetToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
-
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		if (WebLimiterDelay > rateLimitingDelay) {
 			rateLimitingDelay = WebLimiterDelay;
@@ -917,7 +866,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (sessionExpired.GetValueOrDefault(true)) {
 				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-					return await UrlGetToJsonObjectWithSession<T>(request, headers, referer, requestOptions, true, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+					return await UrlGetToJsonObjectWithSession<T>(request, headers, referer, requestOptions, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -927,7 +876,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		} else {
 			// If session refresh is already in progress, just wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+			await SessionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 			SessionSemaphore.Release();
 		}
 
@@ -935,7 +884,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!Initialized) {
@@ -949,7 +898,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		Uri host = new(request.GetLeftPart(UriPartial.Authority));
 
 		// ReSharper disable once AccessToModifiedClosure - evaluated fully before returning
-		ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToJsonObject<T>(request, headers, referer, requestOptions, maxTries, rateLimitingDelay).ConfigureAwait(false)).ConfigureAwait(false);
+		ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToJsonObject<T>(request, headers, referer, requestOptions, maxTries, rateLimitingDelay, cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
 			return default(ObjectResponse<T>?);
@@ -957,7 +906,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
 			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-				return await UrlGetToJsonObjectWithSession<T>(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+				return await UrlGetToJsonObjectWithSession<T>(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -977,23 +926,17 @@ public sealed class ArchiWebHandler : IDisposable {
 				return null;
 			}
 
-			return await UrlGetToJsonObjectWithSession<T>(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh).ConfigureAwait(false);
+			return await UrlGetToJsonObjectWithSession<T>(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh, cancellationToken).ConfigureAwait(false);
 		}
 
 		return response;
 	}
 
 	[PublicAPI]
-	public async Task<bool> UrlHeadWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true) {
+	public async Task<bool> UrlHeadWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
-
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		if (WebLimiterDelay > rateLimitingDelay) {
 			rateLimitingDelay = WebLimiterDelay;
@@ -1005,7 +948,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (sessionExpired.GetValueOrDefault(true)) {
 				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-					return await UrlHeadWithSession(request, headers, referer, requestOptions, true, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+					return await UrlHeadWithSession(request, headers, referer, requestOptions, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1015,7 +958,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		} else {
 			// If session refresh is already in progress, just wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+			await SessionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 			SessionSemaphore.Release();
 		}
 
@@ -1023,7 +966,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!Initialized) {
@@ -1037,7 +980,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		Uri host = new(request.GetLeftPart(UriPartial.Authority));
 
 		// ReSharper disable once AccessToModifiedClosure - evaluated fully before returning
-		BasicResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlHead(request, headers, referer, requestOptions, maxTries, rateLimitingDelay).ConfigureAwait(false)).ConfigureAwait(false);
+		BasicResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlHead(request, headers, referer, requestOptions, maxTries, rateLimitingDelay, cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
 			return false;
@@ -1045,7 +988,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
 			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-				return await UrlHeadWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+				return await UrlHeadWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1065,27 +1008,22 @@ public sealed class ArchiWebHandler : IDisposable {
 				return false;
 			}
 
-			return await UrlHeadWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh).ConfigureAwait(false);
+			return await UrlHeadWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh, cancellationToken).ConfigureAwait(false);
 		}
 
 		return true;
 	}
 
 	[PublicAPI]
-	public async Task<HtmlDocumentResponse?> UrlPostToHtmlDocumentWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true) {
+	public async Task<HtmlDocumentResponse?> UrlPostToHtmlDocumentWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (!Enum.IsDefined(session)) {
 			throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
 		}
 
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		if (WebLimiterDelay > rateLimitingDelay) {
 			rateLimitingDelay = WebLimiterDelay;
@@ -1097,7 +1035,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (sessionExpired.GetValueOrDefault(true)) {
 				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-					return await UrlPostToHtmlDocumentWithSession(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+					return await UrlPostToHtmlDocumentWithSession(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1107,7 +1045,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		} else {
 			// If session refresh is already in progress, just wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+			await SessionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 			SessionSemaphore.Release();
 		}
 
@@ -1115,7 +1053,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!Initialized) {
@@ -1141,20 +1079,18 @@ public sealed class ArchiWebHandler : IDisposable {
 				ESession.CamelCase => "sessionID",
 				ESession.Lowercase => "sessionid",
 				ESession.PascalCase => "SessionID",
-				_ => throw new ArgumentOutOfRangeException(nameof(session))
+				_ => throw new InvalidOperationException(nameof(session))
 			};
 
 			if (data != null) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				data[sessionName] = sessionID!;
+				data[sessionName] = sessionID;
 			} else {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { sessionName, sessionID! } };
+				data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { sessionName, sessionID } };
 			}
 		}
 
 		// ReSharper disable once AccessToModifiedClosure - evaluated fully before returning
-		HtmlDocumentResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToHtmlDocument(request, headers, data, referer, requestOptions, maxTries, rateLimitingDelay).ConfigureAwait(false)).ConfigureAwait(false);
+		HtmlDocumentResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToHtmlDocument(request, headers, data, referer, requestOptions, maxTries, rateLimitingDelay, cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
 			return null;
@@ -1162,7 +1098,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
 			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-				return await UrlPostToHtmlDocumentWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+				return await UrlPostToHtmlDocumentWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1182,27 +1118,22 @@ public sealed class ArchiWebHandler : IDisposable {
 				return null;
 			}
 
-			return await UrlPostToHtmlDocumentWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh).ConfigureAwait(false);
+			return await UrlPostToHtmlDocumentWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh, cancellationToken).ConfigureAwait(false);
 		}
 
 		return response;
 	}
 
 	[PublicAPI]
-	public async Task<ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true) {
+	public async Task<ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (!Enum.IsDefined(session)) {
 			throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
 		}
 
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		if (WebLimiterDelay > rateLimitingDelay) {
 			rateLimitingDelay = WebLimiterDelay;
@@ -1214,7 +1145,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (sessionExpired.GetValueOrDefault(true)) {
 				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-					return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+					return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1224,7 +1155,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		} else {
 			// If session refresh is already in progress, just wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+			await SessionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 			SessionSemaphore.Release();
 		}
 
@@ -1232,7 +1163,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!Initialized) {
@@ -1258,20 +1189,18 @@ public sealed class ArchiWebHandler : IDisposable {
 				ESession.CamelCase => "sessionID",
 				ESession.Lowercase => "sessionid",
 				ESession.PascalCase => "SessionID",
-				_ => throw new ArgumentOutOfRangeException(nameof(session))
+				_ => throw new InvalidOperationException(nameof(session))
 			};
 
 			if (data != null) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				data[sessionName] = sessionID!;
+				data[sessionName] = sessionID;
 			} else {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { sessionName, sessionID! } };
+				data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { sessionName, sessionID } };
 			}
 		}
 
 		// ReSharper disable once AccessToModifiedClosure - evaluated fully before returning
-		ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T, IDictionary<string, string>>(request, headers, data, referer, requestOptions, maxTries, rateLimitingDelay).ConfigureAwait(false)).ConfigureAwait(false);
+		ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T, IDictionary<string, string>>(request, headers, data, referer, requestOptions, maxTries, rateLimitingDelay, cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
 			return null;
@@ -1279,7 +1208,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
 			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-				return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+				return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1299,27 +1228,22 @@ public sealed class ArchiWebHandler : IDisposable {
 				return null;
 			}
 
-			return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh).ConfigureAwait(false);
+			return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh, cancellationToken).ConfigureAwait(false);
 		}
 
 		return response;
 	}
 
 	[PublicAPI]
-	public async Task<ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, ICollection<KeyValuePair<string, string>>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true) {
+	public async Task<ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, ICollection<KeyValuePair<string, string>>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (!Enum.IsDefined(session)) {
 			throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
 		}
 
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		if (WebLimiterDelay > rateLimitingDelay) {
 			rateLimitingDelay = WebLimiterDelay;
@@ -1331,7 +1255,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (sessionExpired.GetValueOrDefault(true)) {
 				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-					return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+					return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1341,7 +1265,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		} else {
 			// If session refresh is already in progress, just wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+			await SessionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 			SessionSemaphore.Release();
 		}
 
@@ -1349,7 +1273,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!Initialized) {
@@ -1375,11 +1299,10 @@ public sealed class ArchiWebHandler : IDisposable {
 				ESession.CamelCase => "sessionID",
 				ESession.Lowercase => "sessionid",
 				ESession.PascalCase => "SessionID",
-				_ => throw new ArgumentOutOfRangeException(nameof(session))
+				_ => throw new InvalidOperationException(nameof(session))
 			};
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			KeyValuePair<string, string> sessionValue = new(sessionName, sessionID!);
+			KeyValuePair<string, string> sessionValue = new(sessionName, sessionID);
 
 			if (data != null) {
 				data.Remove(sessionValue);
@@ -1390,7 +1313,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// ReSharper disable once AccessToModifiedClosure - evaluated fully before returning
-		ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T, ICollection<KeyValuePair<string, string>>>(request, headers, data, referer, requestOptions, maxTries, rateLimitingDelay).ConfigureAwait(false)).ConfigureAwait(false);
+		ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T, ICollection<KeyValuePair<string, string>>>(request, headers, data, referer, requestOptions, maxTries, rateLimitingDelay, cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
 			return null;
@@ -1398,7 +1321,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
 			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-				return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+				return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1418,27 +1341,22 @@ public sealed class ArchiWebHandler : IDisposable {
 				return null;
 			}
 
-			return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh).ConfigureAwait(false);
+			return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh, cancellationToken).ConfigureAwait(false);
 		}
 
 		return response;
 	}
 
 	[PublicAPI]
-	public async Task<bool> UrlPostWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true) {
+	public async Task<bool> UrlPostWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries, int rateLimitingDelay = 0, bool allowSessionRefresh = true, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(request);
 
 		if (!Enum.IsDefined(session)) {
 			throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
 		}
 
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		if (rateLimitingDelay < 0) {
-			throw new ArgumentOutOfRangeException(nameof(rateLimitingDelay));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
+		ArgumentOutOfRangeException.ThrowIfNegative(rateLimitingDelay);
 
 		if (WebLimiterDelay > rateLimitingDelay) {
 			rateLimitingDelay = WebLimiterDelay;
@@ -1450,7 +1368,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 			if (sessionExpired.GetValueOrDefault(true)) {
 				if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-					return await UrlPostWithSession(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+					return await UrlPostWithSession(request, headers, data, referer, requestOptions, session, true, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1460,7 +1378,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			}
 		} else {
 			// If session refresh is already in progress, just wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+			await SessionSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 			SessionSemaphore.Release();
 		}
 
@@ -1468,7 +1386,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
+				await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
 			}
 
 			if (!Initialized) {
@@ -1494,20 +1412,18 @@ public sealed class ArchiWebHandler : IDisposable {
 				ESession.CamelCase => "sessionID",
 				ESession.Lowercase => "sessionid",
 				ESession.PascalCase => "SessionID",
-				_ => throw new ArgumentOutOfRangeException(nameof(session))
+				_ => throw new InvalidOperationException(nameof(session))
 			};
 
 			if (data != null) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				data[sessionName] = sessionID!;
+				data[sessionName] = sessionID;
 			} else {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { sessionName, sessionID! } };
+				data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { sessionName, sessionID } };
 			}
 		}
 
 		// ReSharper disable once AccessToModifiedClosure - evaluated fully before returning
-		BasicResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPost(request, headers, data, referer, requestOptions, maxTries, rateLimitingDelay).ConfigureAwait(false)).ConfigureAwait(false);
+		BasicResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPost(request, headers, data, referer, requestOptions, maxTries, rateLimitingDelay, cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 		if (response == null) {
 			return false;
@@ -1515,7 +1431,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		if (IsSessionExpiredUri(response.FinalUri)) {
 			if (allowSessionRefresh && await RefreshSession().ConfigureAwait(false)) {
-				return await UrlPostWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false).ConfigureAwait(false);
+				return await UrlPostWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, false, cancellationToken).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1535,14 +1451,14 @@ public sealed class ArchiWebHandler : IDisposable {
 				return false;
 			}
 
-			return await UrlPostWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh).ConfigureAwait(false);
+			return await UrlPostWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, maxTries, rateLimitingDelay, allowSessionRefresh, cancellationToken).ConfigureAwait(false);
 		}
 
 		return true;
 	}
 
 	[PublicAPI]
-	public static async Task<T> WebLimitRequest<T>(Uri service, Func<Task<T>> function) {
+	public static async Task<T> WebLimitRequest<T>(Uri service, Func<Task<T>> function, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(service);
 		ArgumentNullException.ThrowIfNull(function);
 
@@ -1566,15 +1482,16 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 
 		// Sending a request opens a new connection
-		await limiters.OpenConnectionsSemaphore.WaitAsync().ConfigureAwait(false);
+		await limiters.OpenConnectionsSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 		try {
 			// It also increases number of requests
-			await limiters.RateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+			await limiters.RateLimitingSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
 			// We release rate-limiter semaphore regardless of our task completion, since we use that one only to guarantee rate-limiting of their creation
 			Utilities.InBackground(
 				async () => {
+					// ReSharper disable once MethodSupportsCancellation - we must always wait given time before releasing semaphore
 					await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
 					limiters.RateLimitingSemaphore.Release();
 				}
@@ -1588,9 +1505,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<bool> AcceptDigitalGiftCard(ulong giftCardID) {
-		if (giftCardID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(giftCardID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(giftCardID);
 
 		Uri request = new(SteamStoreURL, "/gifts/0/resolvegiftcard");
 
@@ -1616,9 +1531,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<(bool Success, bool RequiresMobileConfirmation)> AcceptTradeOffer(ulong tradeID) {
-		if (tradeID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(tradeID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
 
 		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/accept");
 		Uri referer = new(SteamCommunityURL, $"/tradeoffer/{tradeID}");
@@ -1647,8 +1560,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				}
 
 				// This is actually client error with a reason, so it doesn't make sense to retry
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.ErrorText));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText));
 
 				return (false, false);
 			}
@@ -1658,9 +1570,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<(EResult Result, EPurchaseResultDetail PurchaseResult)> AddFreeLicense(uint subID) {
-		if (subID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(subID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(subID);
 
 		Uri request = new(SteamStoreURL, $"/freelicense/addfreelicense/{subID}");
 
@@ -1757,9 +1667,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<bool> ClearFromDiscoveryQueue(uint appID) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
 		Uri request = new(SteamStoreURL, $"/app/{appID}");
 
@@ -1770,9 +1678,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<bool> DeclineTradeOffer(ulong tradeID) {
-		if (tradeID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(tradeID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
 
 		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/decline");
 
@@ -1848,13 +1754,8 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<IDocument?> GetBadgePage(byte page, byte maxTries = WebBrowser.MaxTries) {
-		if (page == 0) {
-			throw new ArgumentOutOfRangeException(nameof(page));
-		}
-
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(page);
+		ArgumentOutOfRangeException.ThrowIfZero(maxTries);
 
 		Uri request = new(SteamCommunityURL, $"/my/badges?l=english&p={page}");
 
@@ -1864,9 +1765,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<byte> GetCardCountForGame(uint appID) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
 		if (ASF.GlobalDatabase?.CardCountsPerGame.TryGetValue(appID, out byte result) == true) {
 			return result;
@@ -1900,22 +1799,19 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		(_, string? steamApiKey) = await CachedApiKey.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
+		(_, string? accessToken) = await CachedAccessToken.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
 
-		if (string.IsNullOrEmpty(steamApiKey)) {
+		if (string.IsNullOrEmpty(accessToken)) {
 			return null;
 		}
 
 		Dictionary<string, object?> arguments = new(!string.IsNullOrEmpty(tradeToken) ? 3 : 2, StringComparer.Ordinal) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			{ "key", steamApiKey! },
-
+			{ "access_token", accessToken },
 			{ "steamid_target", steamID }
 		};
 
 		if (!string.IsNullOrEmpty(tradeToken)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			arguments["trade_offer_access_token"] = tradeToken!;
+			arguments["trade_offer_access_token"] = tradeToken;
 		}
 
 		KeyValue? response = null;
@@ -1961,17 +1857,9 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<ConfirmationsResponse?> GetConfirmations(string deviceID, string confirmationHash, ulong time) {
-		if (string.IsNullOrEmpty(deviceID)) {
-			throw new ArgumentNullException(nameof(deviceID));
-		}
-
-		if (string.IsNullOrEmpty(confirmationHash)) {
-			throw new ArgumentNullException(nameof(confirmationHash));
-		}
-
-		if (time == 0) {
-			throw new ArgumentOutOfRangeException(nameof(time));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(deviceID);
+		ArgumentException.ThrowIfNullOrEmpty(confirmationHash);
+		ArgumentOutOfRangeException.ThrowIfZero(time);
 
 		if (!Initialized) {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
@@ -2014,7 +1902,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		IEnumerable<IAttr> htmlNodes = response.Content.SelectNodes<IAttr>("//div[@class='pending_gift']/div[starts-with(@id, 'pending_gift_')][count(div[@class='pending_giftcard_leftcol']) > 0]/@id");
 
-		HashSet<ulong> results = new();
+		HashSet<ulong> results = [];
 
 		foreach (string giftCardIDText in htmlNodes.Select(static htmlNode => htmlNode.Value)) {
 			if (string.IsNullOrEmpty(giftCardIDText)) {
@@ -2023,8 +1911,7 @@ public sealed class ArchiWebHandler : IDisposable {
 				return null;
 			}
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (giftCardIDText!.Length <= 13) {
+			if (giftCardIDText.Length <= 13) {
 				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(giftCardIDText)));
 
 				return null;
@@ -2061,7 +1948,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		IEnumerable<IAttr> htmlNodes = response.Content.SelectNodes<IAttr>("(//table[@class='accountTable'])[2]//a/@data-miniprofile");
 
-		HashSet<ulong> result = new();
+		HashSet<ulong> result = [];
 
 		foreach (string miniProfile in htmlNodes.Select(static htmlNode => htmlNode.Value)) {
 			if (string.IsNullOrEmpty(miniProfile)) {
@@ -2084,9 +1971,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<IDocument?> GetGameCardsPage(uint appID) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
 
 		Uri request = new(SteamCommunityURL, $"/my/gamecards/{appID}?l=english");
 
@@ -2139,9 +2024,7 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<byte?> GetTradeHoldDurationForTrade(ulong tradeID) {
-		if (tradeID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(tradeID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(tradeID);
 
 		Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}?l=english");
 
@@ -2194,25 +2077,11 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<bool?> HandleConfirmation(string deviceID, string confirmationHash, ulong time, ulong confirmationID, ulong confirmationKey, bool accept) {
-		if (string.IsNullOrEmpty(deviceID)) {
-			throw new ArgumentNullException(nameof(deviceID));
-		}
-
-		if (string.IsNullOrEmpty(confirmationHash)) {
-			throw new ArgumentNullException(nameof(confirmationHash));
-		}
-
-		if (time == 0) {
-			throw new ArgumentOutOfRangeException(nameof(time));
-		}
-
-		if (confirmationID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(confirmationID));
-		}
-
-		if (confirmationKey == 0) {
-			throw new ArgumentOutOfRangeException(nameof(confirmationKey));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(deviceID);
+		ArgumentException.ThrowIfNullOrEmpty(confirmationHash);
+		ArgumentOutOfRangeException.ThrowIfZero(time);
+		ArgumentOutOfRangeException.ThrowIfZero(confirmationID);
+		ArgumentOutOfRangeException.ThrowIfZero(confirmationKey);
 
 		if (!Initialized) {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
@@ -2236,17 +2105,9 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<bool?> HandleConfirmations(string deviceID, string confirmationHash, ulong time, IReadOnlyCollection<Confirmation> confirmations, bool accept) {
-		if (string.IsNullOrEmpty(deviceID)) {
-			throw new ArgumentNullException(nameof(deviceID));
-		}
-
-		if (string.IsNullOrEmpty(confirmationHash)) {
-			throw new ArgumentNullException(nameof(confirmationHash));
-		}
-
-		if (time == 0) {
-			throw new ArgumentOutOfRangeException(nameof(time));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(deviceID);
+		ArgumentException.ThrowIfNullOrEmpty(confirmationHash);
+		ArgumentOutOfRangeException.ThrowIfZero(time);
 
 		if ((confirmations == null) || (confirmations.Count == 0)) {
 			throw new ArgumentNullException(nameof(confirmations));
@@ -2298,9 +2159,20 @@ public sealed class ArchiWebHandler : IDisposable {
 			throw new InvalidEnumArgumentException(nameof(universe), (int) universe, typeof(EUniverse));
 		}
 
-		if (string.IsNullOrEmpty(accessToken)) {
-			throw new ArgumentNullException(nameof(accessToken));
+		ArgumentException.ThrowIfNullOrEmpty(accessToken);
+
+		string steamLoginSecure = $"{steamID}||{accessToken}";
+
+		if (Initialized) {
+			string? previousSteamLoginSecure = WebBrowser.CookieContainer.GetCookieValue(SteamCommunityURL, "steamLoginSecure");
+
+			if (previousSteamLoginSecure == steamLoginSecure) {
+				// We have nothing to update, skip this request
+				return true;
+			}
 		}
+
+		Initialized = false;
 
 		string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString(CultureInfo.InvariantCulture)));
 
@@ -2308,8 +2180,6 @@ public sealed class ArchiWebHandler : IDisposable {
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamCommunityURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamHelpURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamStoreURL.Host}"));
-
-		string steamLoginSecure = $"{steamID}||{accessToken}";
 
 		WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", $".{SteamCheckoutURL.Host}"));
 		WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", $".{SteamCommunityURL.Host}"));
@@ -2328,8 +2198,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		// Unlock Steam Parental if needed
 		if (!string.IsNullOrEmpty(parentalCode)) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (!await UnlockParentalAccount(parentalCode!).ConfigureAwait(false)) {
+			if (!await UnlockParentalAccount(parentalCode).ConfigureAwait(false)) {
 				return false;
 			}
 		}
@@ -2391,17 +2260,13 @@ public sealed class ArchiWebHandler : IDisposable {
 	internal void OnDisconnected() {
 		Initialized = false;
 
-		Utilities.InBackground(CachedAccessToken.Reset);
-		Utilities.InBackground(CachedApiKey.Reset);
-		Utilities.InBackground(CachedEconomyBan.Reset);
+		Utilities.InBackground(() => CachedAccessToken.Reset());
 	}
 
 	internal void OnVanityURLChanged(string? vanityURL = null) => VanityURL = !string.IsNullOrEmpty(vanityURL) ? vanityURL : null;
 
 	internal async Task<(EResult Result, EPurchaseResultDetail? PurchaseResult, string? BalanceText)?> RedeemWalletKey(string key) {
-		if (string.IsNullOrEmpty(key)) {
-			throw new ArgumentNullException(nameof(key));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(key);
 
 		Uri request = new(SteamStoreURL, "/account/ajaxredeemwalletcode");
 
@@ -2423,13 +2288,8 @@ public sealed class ArchiWebHandler : IDisposable {
 	}
 
 	internal async Task<bool> UnpackBooster(uint appID, ulong itemID) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
-
-		if (itemID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(itemID));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentOutOfRangeException.ThrowIfZero(itemID);
 
 		string? profileURL = await GetAbsoluteProfileURL().ConfigureAwait(false);
 
@@ -2450,82 +2310,6 @@ public sealed class ArchiWebHandler : IDisposable {
 		ObjectResponse<ResultResponse>? response = await UrlPostToJsonObjectWithSession<ResultResponse>(request, data: data).ConfigureAwait(false);
 
 		return response?.Content?.Result == EResult.OK;
-	}
-
-	private async Task<(ESteamApiKeyState State, string? Key)> GetApiKeyState() {
-		Uri request = new(SteamCommunityURL, "/dev/apikey?l=english");
-
-		using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
-
-		if (response?.Content == null) {
-			return (ESteamApiKeyState.Timeout, null);
-		}
-
-		INode? titleNode = response.Content.SelectSingleNode("//div[@id='mainContents']/h2");
-
-		if (titleNode == null) {
-			Bot.ArchiLogger.LogNullError(titleNode);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		string title = titleNode.TextContent;
-
-		if (string.IsNullOrEmpty(title)) {
-			Bot.ArchiLogger.LogNullError(title);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		if (title.Contains("Access Denied", StringComparison.OrdinalIgnoreCase) || title.Contains("Validated email address required", StringComparison.OrdinalIgnoreCase)) {
-			return (ESteamApiKeyState.AccessDenied, null);
-		}
-
-		INode? htmlNode = response.Content.SelectSingleNode("//div[@id='bodyContents_ex']/p");
-
-		if (htmlNode == null) {
-			Bot.ArchiLogger.LogNullError(htmlNode);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		string text = htmlNode.TextContent;
-
-		if (string.IsNullOrEmpty(text)) {
-			Bot.ArchiLogger.LogNullError(text);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		if (text.Contains("Registering for a Steam Web API Key", StringComparison.OrdinalIgnoreCase)) {
-			return (ESteamApiKeyState.NotRegisteredYet, null);
-		}
-
-		int keyIndex = text.IndexOf("Key: ", StringComparison.Ordinal);
-
-		if (keyIndex < 0) {
-			Bot.ArchiLogger.LogNullError(keyIndex);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		keyIndex += 5;
-
-		if (text.Length <= keyIndex) {
-			Bot.ArchiLogger.LogNullError(text);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		text = text[keyIndex..];
-
-		if ((text.Length != 32) || !Utilities.IsValidHexadecimalText(text)) {
-			Bot.ArchiLogger.LogNullError(text);
-
-			return (ESteamApiKeyState.Error, null);
-		}
-
-		return (ESteamApiKeyState.Registered, text);
 	}
 
 	private async Task<bool> IsProfileUri(Uri uri, bool waitForInitialization = true) {
@@ -2602,7 +2386,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		return uri.AbsolutePath.StartsWith("/login", StringComparison.OrdinalIgnoreCase) || uri.Host.Equals("lostauth", StringComparison.OrdinalIgnoreCase);
 	}
 
-	private static bool ParseItems(IReadOnlyDictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryResponse.Description> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Asset> output) {
+	private static bool ParseItems([SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")] Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), InventoryResponse.Description> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Asset> output) {
 		ArgumentNullException.ThrowIfNull(descriptions);
 
 		if ((input == null) || (input.Count == 0)) {
@@ -2719,169 +2503,16 @@ public sealed class ArchiWebHandler : IDisposable {
 		}
 	}
 
-	private async Task<bool> RegisterApiKey() {
-		Uri request = new(SteamCommunityURL, "/dev/registerkey");
-
-		// Extra entry for sessionID
-		Dictionary<string, string> data = new(4, StringComparer.Ordinal) {
-			{ "agreeToTerms", "agreed" },
-#pragma warning disable CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
-			{ "domain", $"generated.by.{SharedInfo.AssemblyName.ToLowerInvariant()}.localhost" },
-#pragma warning restore CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
-			{ "Submit", "Register" }
-		};
-
-		return await UrlPostWithSession(request, data: data).ConfigureAwait(false);
-	}
-
-	private async Task<(bool Success, string? Result)> ResolveAccessToken() {
+	private async Task<(bool Success, string? Result)> ResolveAccessToken(CancellationToken cancellationToken = default) {
 		Uri request = new(SteamStoreURL, "/pointssummary/ajaxgetasyncconfig");
 
-		ObjectResponse<AccessTokenResponse>? response = await UrlGetToJsonObjectWithSession<AccessTokenResponse>(request).ConfigureAwait(false);
+		ObjectResponse<AccessTokenResponse>? response = await UrlGetToJsonObjectWithSession<AccessTokenResponse>(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-		return !string.IsNullOrEmpty(response?.Content?.Data.WebAPIToken) ? (true, response!.Content!.Data.WebAPIToken) : (false, null);
-	}
-
-	private async Task<(bool Success, string? Result)> ResolveApiKey() {
-		if (Bot.IsAccountLimited) {
-			// API key is permanently unavailable for limited accounts
-			return (true, null);
-		}
-
-		(ESteamApiKeyState State, string? Key) result = await GetApiKeyState().ConfigureAwait(false);
-
-		switch (result.State) {
-			case ESteamApiKeyState.AccessDenied:
-				// We succeeded in fetching API key, but it resulted in access denied
-				// Return empty result, API key is unavailable permanently
-				return (true, "");
-			case ESteamApiKeyState.NotRegisteredYet:
-				// We succeeded in fetching API key, and it resulted in no key registered yet
-				// Let's try to register a new key
-				if (!await RegisterApiKey().ConfigureAwait(false)) {
-					// Request timed out, bad luck, we'll try again later
-					goto case ESteamApiKeyState.Timeout;
-				}
-
-				// We should have the key ready, so let's fetch it again
-				result = await GetApiKeyState().ConfigureAwait(false);
-
-				if (result.State == ESteamApiKeyState.Timeout) {
-					// Request timed out, bad luck, we'll try again later
-					goto case ESteamApiKeyState.Timeout;
-				}
-
-				if (result.State != ESteamApiKeyState.Registered) {
-					// Something went wrong, report error
-					goto default;
-				}
-
-				goto case ESteamApiKeyState.Registered;
-			case ESteamApiKeyState.Registered:
-				// We succeeded in fetching API key, and it resulted in registered key
-				// Cache the result, this is the API key we want
-				return (true, result.Key);
-			case ESteamApiKeyState.Timeout:
-				// Request timed out, bad luck, we'll try again later
-				return (false, null);
-			default:
-				// We got an unhandled error, this should never happen
-				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result.State), result.State));
-
-				return (false, null);
-		}
-	}
-
-	private async Task<(bool Success, bool? Result)> ResolveEconomyBan() {
-		(_, string? steamApiKey) = await CachedApiKey.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
-
-		if (string.IsNullOrEmpty(steamApiKey)) {
-			return (false, null);
-		}
-
-		if (!Initialized) {
-			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
-
-			for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
-			}
-
-			if (!Initialized) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-
-				return (false, null);
-			}
-		}
-
-		Dictionary<string, object?> arguments = new(2, StringComparer.Ordinal) {
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			{ "key", steamApiKey! },
-
-			{ "steamids", Bot.SteamID }
-		};
-
-		KeyValue? response = null;
-
-		for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-			if ((i > 0) && (WebLimiterDelay > 0)) {
-				await Task.Delay(WebLimiterDelay).ConfigureAwait(false);
-			}
-
-			using WebAPI.AsyncInterface service = Bot.SteamConfiguration.GetAsyncWebAPIInterface(SteamUserService);
-
-			service.Timeout = WebBrowser.Timeout;
-
-			try {
-				response = await WebLimitRequest(
-					WebAPI.DefaultBaseAddress,
-
-					// ReSharper disable once AccessToDisposedClosure
-					async () => await service.CallAsync(HttpMethod.Get, "GetPlayerBans", args: arguments).ConfigureAwait(false)
-				).ConfigureAwait(false);
-			} catch (TaskCanceledException e) {
-				Bot.ArchiLogger.LogGenericDebuggingException(e);
-			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericWarningException(e);
-			}
-		}
-
-		if (response == null) {
-			Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-
-			return (false, null);
-		}
-
-		List<KeyValue> players = response["players"].Children;
-
-		if (players.Count != 1) {
-			Bot.ArchiLogger.LogNullError(players);
-
-			return (false, null);
-		}
-
-		string? economyBanText = players[0]["EconomyBan"].AsString();
-
-		switch (economyBanText) {
-			case null:
-				Bot.ArchiLogger.LogNullError(economyBanText);
-
-				return (false, null);
-			case "none":
-				return (true, false);
-			case "banned":
-				return (true, true);
-			default:
-				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(economyBanText), economyBanText));
-
-				return (false, null);
-		}
+		return !string.IsNullOrEmpty(response?.Content?.Data.WebAPIToken) ? (true, response.Content.Data.WebAPIToken) : (false, null);
 	}
 
 	private async Task<bool> UnlockParentalAccount(string parentalCode) {
-		if (string.IsNullOrEmpty(parentalCode)) {
-			throw new ArgumentNullException(nameof(parentalCode));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(parentalCode);
 
 		Bot.ArchiLogger.LogGenericInfo(Strings.UnlockingParentalAccount);
 
@@ -2900,10 +2531,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 	private async Task<bool> UnlockParentalAccountForService(Uri service, string parentalCode, byte maxTries = WebBrowser.MaxTries) {
 		ArgumentNullException.ThrowIfNull(service);
-
-		if (string.IsNullOrEmpty(parentalCode)) {
-			throw new ArgumentNullException(nameof(parentalCode));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(parentalCode);
 
 		Uri request = new(service, "/parental/ajaxunlock");
 
@@ -2924,9 +2552,7 @@ public sealed class ArchiWebHandler : IDisposable {
 
 		Dictionary<string, string> data = new(2, StringComparer.Ordinal) {
 			{ "pin", parentalCode },
-
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			{ "sessionid", sessionID! }
+			{ "sessionid", sessionID }
 		};
 
 		// This request doesn't go through UrlPostRetryWithSession as we have no access to session refresh capability (this is in fact session initialization)
@@ -2952,13 +2578,5 @@ public sealed class ArchiWebHandler : IDisposable {
 		Lowercase,
 		CamelCase,
 		PascalCase
-	}
-
-	private enum ESteamApiKeyState : byte {
-		Error,
-		Timeout,
-		Registered,
-		NotRegisteredYet,
-		AccessDenied
 	}
 }

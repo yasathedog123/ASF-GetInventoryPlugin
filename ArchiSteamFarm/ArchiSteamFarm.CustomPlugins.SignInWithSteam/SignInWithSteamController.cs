@@ -41,14 +41,11 @@ namespace ArchiSteamFarm.CustomPlugins.SignInWithSteam;
 [Route("/Api/Bot/{botName:required}/SignInWithSteam")]
 public sealed class SignInWithSteamController : ArchiController {
 	[HttpPost]
-	[ProducesResponseType(typeof(GenericResponse<SignInWithSteamResponse>), (int) HttpStatusCode.OK)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
+	[ProducesResponseType<GenericResponse<SignInWithSteamResponse>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.BadRequest)]
+	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.ServiceUnavailable)]
 	public async Task<ActionResult<GenericResponse>> Post(string botName, [FromBody] SignInWithSteamRequest request) {
-		if (string.IsNullOrEmpty(botName)) {
-			throw new ArgumentNullException(nameof(botName));
-		}
-
+		ArgumentException.ThrowIfNullOrEmpty(botName);
 		ArgumentNullException.ThrowIfNull(request);
 
 		Bot? bot = Bot.GetBot(botName);

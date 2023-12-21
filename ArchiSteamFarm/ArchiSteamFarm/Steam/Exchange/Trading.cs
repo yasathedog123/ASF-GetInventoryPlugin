@@ -44,12 +44,16 @@ public sealed class Trading : IDisposable {
 	internal const byte MaxTradesPerAccount = 5; // This is limit introduced by Valve
 
 	private readonly Bot Bot;
-	private readonly ConcurrentHashSet<ulong> HandledTradeOfferIDs = new();
+	private readonly ConcurrentHashSet<ulong> HandledTradeOfferIDs = [];
 	private readonly SemaphoreSlim TradesSemaphore = new(1, 1);
 
 	private bool ParsingScheduled;
 
-	internal Trading(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+	internal Trading(Bot bot) {
+		ArgumentNullException.ThrowIfNull(bot);
+
+		Bot = bot;
+	}
 
 	public void Dispose() => TradesSemaphore.Dispose();
 
@@ -124,7 +128,7 @@ public sealed class Trading : IDisposable {
 		// This loop is a bit more complex due to the fact that we might have a mix of the same item splitted into different amounts
 		foreach (Asset itemToGive in itemsToGive) {
 			uint amountToGive = itemToGive.Amount;
-			HashSet<Asset> itemsToRemove = new();
+			HashSet<Asset> itemsToRemove = [];
 
 			// Keep in mind that ClassID is unique only within appID scope - we can do it like this because we're not dealing with non-Steam items here (otherwise we'd need to check appID too)
 			foreach (Asset item in inventory.Where(item => item.ClassID == itemToGive.ClassID)) {
@@ -254,7 +258,7 @@ public sealed class Trading : IDisposable {
 			throw new ArgumentNullException(nameof(classIDs));
 		}
 
-		HashSet<Asset> result = new();
+		HashSet<Asset> result = [];
 
 		IEnumerable<Asset> items = inventory.Where(static item => item.Tradable);
 
@@ -635,7 +639,7 @@ public sealed class Trading : IDisposable {
 		HashSet<Asset> inventory;
 
 		try {
-			inventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => wantedSets.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSetAsync().ConfigureAwait(false);
+			inventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => !item.IsSteamPointsShopItem && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSetAsync().ConfigureAwait(false);
 		} catch (HttpRequestException e) {
 			// If we can't check our inventory when not using MatchEverything, this is a temporary failure, try again later
 			Bot.ArchiLogger.LogGenericWarningException(e);

@@ -54,13 +54,13 @@ Bu değişkenin doğası gereği, cryptkey'i `ASF_CRYPTKEY` ortam değişkeni il
 
 ---
 
-`--cryptkey-file <path>` ve `--cryptkey-file=<path>` - ASF'yi `<path>` dosyasından okunan özel şifreleme anahtarı ile başlatır. Bu, yukarıda açıklanan `--cryptkey <key>` ile aynı amaca hizmet eder, yalnızca mekanizma farklıdır, çünkü bu özellik bunun yerine `<key>` sağlanandan `<path>` okuyacaktır.
+`--cryptkey-file <path>` ve `--cryptkey-file=<path>` - ASF'yi `<path>` dosyasından okunan özel şifreleme anahtarı ile başlatır. Bu, yukarıda açıklanan `--cryptkey <key>` ile aynı amaca hizmet eder, yalnızca mekanizma farklıdır, çünkü bu özellik bunun yerine `<key>` sağlanandan `<path>` okuyacaktır. If you're using this together with `--path`, consider declaring `--path` first so relative paths can work correctly.
 
 Bu özelliğin doğası gereği, işlem bağımsız değişkenlerinde hassas ayrıntılardan kaçınmak isteyen kişiler için daha uygun olabilecek `ASF_CRYPTKEY_FILE` ortam değişkeni bildirerek cryptkey dosyasını ayarlamak da mümkündür.
 
 ---
 
-`--ignore-unsupported-environment` - ASF'nin normalde bir hata ve zorunlu çıkışla işaretlenen desteklenmeyen ortamda çalışmayla ilgili sorunları görmezden gelmesine neden olur. Desteklenmeyen ortam, örneğin, bunun yerine .NET (Core) derlemesini çalıştırıyor olabilecek platformda .NET Framework derlemesi çalıştırmayı içerir. Bu bayrak ASF'nin bu tür senaryolarda koşmaya çalışmasına izin verecek olsa da, bunları resmi olarak desteklemediğimizi ve ASF'yi tamamen **kendi sorumluluğunuzda** yapmaya zorladığınızı unutmayın. Bugün itibariyle, `generic-netf` yerine `generic` yapı çalıştırma gibi desteklenmeyen **tüm** ortam senaryoları düzeltilebilir. Bu argümanı beyan etmek yerine öne çıkan sorunları düzeltmenizi şiddetle tavsiye ederiz.
+`--ignore-unsupported-environment` - ASF'nin normalde bir hata ve zorunlu çıkışla işaretlenen desteklenmeyen ortamda çalışmayla ilgili sorunları görmezden gelmesine neden olur. Unsupported environment includes for example running `win-x64` OS-specific build on `linux-x64`. Bu bayrak ASF'nin bu tür senaryolarda koşmaya çalışmasına izin verecek olsa da, bunları resmi olarak desteklemediğimizi ve ASF'yi tamamen **kendi sorumluluğunuzda** yapmaya zorladığınızı unutmayın. As of today, **all** of the unsupported environment scenarios can be corrected. Bu argümanı beyan etmek yerine öne çıkan sorunları düzeltmenizi şiddetle tavsiye ederiz.
 
 ---
 

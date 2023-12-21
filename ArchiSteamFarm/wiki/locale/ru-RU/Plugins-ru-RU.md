@@ -1,6 +1,6 @@
 # Плагины
 
-Начиная с ASF V4, программа включает в себя поддержку пользовательских плагинов, которые могут загружаться в процессе выполнения. Плагины позволяют вам изменять поведение ASF, например добавляя дополнительные команды, новую логику принятия обменов или полную интеграцию со сторонними сервисами и API.
+ASF includes support for custom plugins that can be loaded during runtime. Плагины позволяют вам изменять поведение ASF, например добавляя дополнительные команды, новую логику принятия обменов или полную интеграцию со сторонними сервисами и API.
 
 ---
 
@@ -28,7 +28,7 @@ ASF загружает плагины из папки `plugins` располож
 
 Мы подготовили для вас ** [ ASF-PluginTemplate ](https://github.com/JustArchiNET/ASF-PluginTemplate) **, который вы можете использовать в качестве шаблона для вашего проекта плагина. Использование шаблона не является обязательным (так как вы можете делать все с нуля), но мы настоятельно рекомендуем взять его в руки, поскольку он может ускорить вашу разработку и сократить время, необходимое для реализации правильной работы. Просто ознакомьтесь с ** [ README ](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/README.md) ** шаблона, и он поможет вам в дальнейшем. Тем не менее, мы рассмотрим основы ниже, если вы хотите начать с нуля или лучше понять концепции, используемые в шаблоне плагина.
 
-Ваш проект должен быть стандартной библиотекой .NET, ориентированной на соответствующую платформу вашей целевой версии ASF, как указано в ** [компиляция](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compilation-ru-RU)**. Мы рекомендуем вам выбрать .NET (Core), но и для .NET Framework могу быть доступны плагины.
+Ваш проект должен быть стандартной библиотекой .NET, ориентированной на соответствующую платформу вашей целевой версии ASF, как указано в ** [компиляция](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compilation-ru-RU)**.
 
 Проект должен ссылаться на сборку `ArchiSteamFarm`, либо в виде собранной библиотеки `ArchiSteamFarm.dll` которую вы скачиваете как часть выпуска, либо в виде исходного проекта (например если вы добавили дерево ASF в качестве под-модуля). Это позволит вам получить доступ к структурам, методам и свойствам ASF, в особенностью к ядру интерфейса `IPlugin`, которое вам понадобится на следующем этапе. Проект также должен иметь ссылку как минимум на `System.Composition.AttributedModel`, что позволит вам сделать `[Export]` вашего `IPlugin` для использования в ASF. В добавок к этому, вам может захотеться/понадобиться сослаться на другие общие библиотеки с целью интерпретировать структуры данных, которые вам предоставлены в некоторых интерфейсах, но если они не являются необходимыми - этого будет пока достаточно.
 
@@ -37,18 +37,18 @@ ASF загружает плагины из папки `plugins` располож
 ```csproj
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" Version="7.0.0" />
+    <PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="ArchiSteamFarm" HintPath="C:\\Path\To\Downloaded\ArchiSteamFarm.dll" />
+    <ProjectReference Include="C:\\Path\To\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="false" />
 
-    <!-- If building as part of ASF source tree, use this instead of <Reference> above -->
-    <!-- <ProjectReference Include="C:\\Path\To\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="false" /> -->
+    <!-- If building with downloaded DLL binary, use this instead of <ProjectReference> above -->
+    <!-- <Reference Include="ArchiSteamFarm" HintPath="C:\\Path\To\Downloaded\ArchiSteamFarm.dll" /> -->
   </ItemGroup>
 </Project>
 ```

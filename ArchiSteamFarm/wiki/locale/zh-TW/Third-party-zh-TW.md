@@ -8,6 +8,12 @@
 
 ## ASF 外掛程式
 
+### **[Citrinate](https://github.com/Citrinate)**
+
+- **[BoosterManager](https://github.com/Citrinate/BoosterManager)**, plugin for ASF providing an easy-to-use interface for turning gems into booster packs as well as various features for managing inventories and market listings.
+- **[CS2Interface](https://github.com/Citrinate/CS2Interface)**, plugin for ASF that allows you to interact with Counter-Strike 2 using **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)**.
+- **[FreePackages](https://github.com/Citrinate/FreePackages)**, plugin for ASF that finds free packages on Steam and adds them to your account.
+
 ### **[Rudokhvist](https://github.com/Rudokhvist)**
 
 - **[ASF-Achievement-Manager](https://github.com/Rudokhvist/ASF-Achievement-Manager)**&#8203;：讓您能透過ASF來管理Steam成就。
@@ -29,6 +35,7 @@
 ### 其他
 
 - **[ASFEnhance](https://github.com/chr233/ASFEnhance)**&#8203;：加入新功能以增強ASF，特別是指令。
+- **[ASFFreeGames](https://github.com/maxisoft/ASFFreeGames)**, plugin for ASF allowing one to automatically collect free steam games posted on reddit.
 
 ---
 
@@ -58,7 +65,7 @@
 
 ## 工具
 
-- **[Keys extractor](https://ske.xpixv.com)**&#8203;：讓您能複製貼上含有各種格式的序號，並使ASF建立&#8203;`redeem`&#8203;指令。 前往&#8203;**[GitHub repo](https://github.com/PixvIO/SKE)**&#8203;以了解更多。
+- **[Keys extractor](https://umaim.github.io/SKE)**&#8203;：讓您能複製貼上含有各種格式的序號，並使ASF建立&#8203;`redeem`&#8203;指令。 前往&#8203;**[GitHub repo](https://github.com/PixvIO/SKE)**&#8203;以了解更多。
 - **[ASF Mass Config Editor](https://github.com/genesix-eu/ASF_MCE)**&#8203;：讓您能更方便地管理多個ASF設定檔。
 
 ---

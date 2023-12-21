@@ -1,6 +1,6 @@
 # Intercambios
 
-ASF incluye soporte para intercambios no interactivos (offline) de Steam. Tanto la recepción (aceptar/rechazar) como el envío de intercambios está disponible inmediatamente y no requiere una configuración especial, pero obviamente se requiere una cuenta de Steam sin restricciones (aquella que ya ha gastado 5$ en la tienda). El módulo de intercambios no está disponible para cuentas limitadas.
+ASF incluye soporte para intercambios no interactivos (offline) de Steam. Tanto la recepción (aceptar/rechazar) como el envío de intercambios está disponible inmediatamente y no requiere una configuración especial, pero obviamente se requiere una cuenta de Steam sin restricciones (aquella que ya ha gastado 5$ en la tienda). Las cuentas restringidas solo tienen disponible funciones de intercambio limitadas.
 
 ---
 

@@ -58,13 +58,19 @@ ASF程序的「硬性」記憶體限制，本設定會將GC調整為只使用總
 
 反之，將此值設定得夠高，是確保ASF永遠不會使用超出您實際承受範圍的記憶體的最佳方法，即使在高負載下，也能為您的設備提供一些喘息的空間，但同時仍然能使程式盡可能高效地完成工作。
 
+### [`GCConserveMemory`](https://learn.microsoft.com/dotnet/core/runtime-config/garbage-collector#conserve-memory)
+
+> 設定垃圾回收程序以節省記憶體，但會使垃圾回收機制更加頻繁，且可能導致更長的暫停時間。
+
+接受0～9的值。 擁有越高的數值，GC更會偏向最佳化記憶體而非效能。
+
 ### [`GCHighMemPercent`](https://docs.microsoft.com/zh-tw/dotnet/core/run-time-config/garbage-collector#high-memory-percent)
 
 > 指定在GC變得更積極後的記憶體使用量。
 
 本設定是設定整個作業系統的記憶體閾值，一旦超過，GC將會變得更加積極，並嘗試透過執行更密集的GC程序來幫助作業系統降低記憶體負荷，來將更多的閒置記憶體釋放給作業系統。 最好將本屬性設定成您認為整個作業系統「臨界」效能的最大記憶體使用量（百分率）。 預設值為90%，通常您希望將它維持在80～97%的範圍內，因為太低的值會使GC產生不必要的積極並使效能無故下降，而太高的值會給您的作業系統帶來不必要的負載，應該讓ASF釋放一些記憶體來緩解。
 
-### **[`GCLatencyLevel`](https://github.com/dotnet/runtime/blob/4b90e803262cb5a045205d946d800f9b55f88571/src/coreclr/gc/gcpriv.h#L375-L398)**
+### **[`GCLatencyLevel`](https://github.com/dotnet/runtime/blob/a1d48d6c00b5aecc063d1a58b0d9281c611ada91/src/coreclr/gc/gcpriv.h#L445-L468)**
 
 > 指定您要最佳化的GC延遲層級。
 
@@ -81,10 +87,11 @@ ASF程序的「硬性」記憶體限制，本設定會將GC調整為只使用總
 您可以透過設定適當的環境變數來啟用所選的屬性。 舉例來說，在Linux（Shell）上：
 
 ```shell
-# Don't forget to tune those if you're planning to make use of them
-export DOTNET_GCHeapHardLimitPercent=0x4B # 75% as hex
-export DOTNET_GCHighMemPercent=0x50 # 80% as hex
+# 若您打算使用它們，別忘了調整一下
+export DOTNET_GCHeapHardLimitPercent=0x4B # 75% 的十六進位
+export DOTNET_GCHighMemPercent=0x50 # 80% 的十六進位
 
+export DOTNET_GCConserveMemory=9
 export DOTNET_GCLatencyLevel=0
 export DOTNET_gcTrimCommitOnLowMemory=1
 
@@ -95,10 +102,11 @@ export DOTNET_gcTrimCommitOnLowMemory=1
 或在Windows（PowerShell）上：
 
 ```powershell
-# Don't forget to tune those if you're planning to make use of them
-$Env:DOTNET_GCHeapHardLimitPercent=0x4B # 75% as hex
-$Env:DOTNET_GCHighMemPercent=0x50 # 80% as hex
+# 若您打算使用它們，別忘了調整一下
+$Env:DOTNET_GCHeapHardLimitPercent=0x4B # 75% 的十六進位
+$Env:DOTNET_GCHighMemPercent=0x50 # 80% 的十六進位
 
+$Env:DOTNET_GCConserveMemory=9
 $Env:DOTNET_GCLatencyLevel=0
 $Env:DOTNET_gcTrimCommitOnLowMemory=1
 

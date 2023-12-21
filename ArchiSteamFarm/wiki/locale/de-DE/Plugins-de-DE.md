@@ -1,26 +1,26 @@
 # Plugins
 
-Ab ASF V4 bietet das Programm Unterstützung für benutzerdefinierte Plugins, die während der Laufzeit geladen werden können. Plugins ermöglichen es dir, das ASF-Verhalten anzupassen, z. B. durch Hinzufügen von benutzerdefinierten Befehlen, einer benutzerdefinierten Handelslogik oder der vollständigen Integration mit Diensten und APIs von Drittanbietern.
+ASF includes support for custom plugins that can be loaded during runtime. Plugins ermöglichen es dir, das ASF-Verhalten anzupassen, z. B. durch Hinzufügen von benutzerdefinierten Befehlen, einer benutzerdefinierten Handelslogik oder der vollständigen Integration mit Diensten und APIs von Drittanbietern.
 
 ---
 
 ## Für Benutzer
 
-ASF lädt Plugins aus dem Verzeichnis `plugins`, das sich in ihrem ASF-Ordner befindet. Es wird empfohlen, für jedes Plugin das Du verwenden möchtest ein eigenes Verzeichnis zu erstellen, das auf seinem Namen basieren kann, wie z. B. `MeinPlugin`. Dies führt zur finalen Baumstruktur von `plugins/MeinPlugin`. Schließlich sollten alle Binärdateien des Plugins in diesem speziellen Ordner abgelegt werden. ASF wird dein Plugin nach dem Neustart ordnungsgemäß erkennen und verwenden.
+ASF lädt Plugins aus dem Verzeichnis `plugins`, das sich in Ihrem ASF-Ordner befindet. Es wird empfohlen, für jedes Plugin das Du verwenden möchtest ein eigenes Verzeichnis zu erstellen, das auf seinem Namen basieren kann, wie z. B. `MeinPlugin`. Dies führt zur finalen Baumstruktur von `plugins/MeinPlugin`. Schließlich sollten alle Binärdateien des Plugins in diesem speziellen Ordner abgelegt werden. ASF wird dein Plugin nach dem Neustart ordnungsgemäß erkennen und verwenden.
 
-Normalerweise veröffentlichen Plugin-Entwickler ihre Plugins in Form einer `zip`-Datei mit bereits vorbereiteter Struktur für Sie, sodass es genügt, das Zip-Archiv in das Verzeichnis `plugins` zu entpacken, welches automatisch den entsprechenden Ordner erstellt.
+Normalerweise veröffentlichen Plugin-Entwickler Ihre Plugins in Form einer `zip`-Datei mit bereits vorbereiteter Struktur für Sie, sodass es genügt, das Zip-Archiv in das Verzeichnis `plugins` zu entpacken, welches automatisch den entsprechenden Ordner erstellt.
 
-Wenn das Plugin erfolgreich geladen wurde siehst Du seinen Namen und seine Version in ihrem Protokoll. Du solltest ihren Plugin-Entwickler konsultieren, wenn es um Fragen, Probleme oder die Verwendung der Plugins geht die Du verwendest.
+Wenn das Plugin erfolgreich geladen wurde siehst Du seinen Namen und seine Version in Ihrem Protokoll. Du solltest Ihren Plugin-Entwickler konsultieren, wenn es um Fragen, Probleme oder die Verwendung der Plugins geht die Du verwendest.
 
 Du findest einige der vorgestellten Plugins in unserem **[Drittanbieter](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Third-party-de-DE#asf-plugins)** Abschnitt.
 
-**Bitte beachte, dass ASF-Plugins möglicherweise gefährlich sein können**. Du solltest immer sicherstellen, dass Du Plugins von Entwicklern verwendest denen Du vertrauen kannst. Die ASF-Entwickler können ihren die üblichen ASF-Vorteile (wie z. B. keine Schadsoftware oder VAC-Freiheit) nicht mehr garantieren, wenn Du dich dazu entscheidest benutzerdefinierte Plugins zu verwenden. You need to understand that plugins have full control over ASF process once loaded, due to that we're also unable to support setups that utilize custom plugins, since you're no longer running vanilla ASF code.
+**Bitte beachte, dass ASF-Plugins möglicherweise gefährlich sein können**. Du solltest immer sicherstellen, dass Du Plugins von Entwicklern verwendest denen Du vertrauen kannst. Die ASF-Entwickler können Ihren die üblichen ASF-Vorteile (wie z. B. keine Schadsoftware oder VAC-Freiheit) nicht mehr garantieren, wenn Du dich dazu entscheidest benutzerdefinierte Plugins zu verwenden. You need to understand that plugins have full control over ASF process once loaded, due to that we're also unable to support setups that utilize custom plugins, since you're no longer running vanilla ASF code.
 
 ---
 
 ## Für Entwickler
 
-Plugins sind Standard .NET-Bibliotheken die die übliche `IPlugin`-Schnittstelle von ASF erben. Sie können Plugins völlig unabhängig von der Haupt-ASF-Version entwickeln und in aktuellen und zukünftigen ASF-Versionen wiederverwenden, solange die API kompatibel bleibt. Das in ASF verwendete Plugin-System basiert auf `System.Composition`, früher bekannt als **[Managed Extensibility Framework](https://docs.microsoft.com/dotnet/framework/mef)**, das es ASF ermöglicht, ihre Bibliotheken während der Laufzeit zu entdecken und zu laden.
+Plugins sind Standard .NET-Bibliotheken die die übliche `IPlugin`-Schnittstelle von ASF erben. Sie können Plugins völlig unabhängig von der Haupt-ASF-Version entwickeln und in aktuellen und zukünftigen ASF-Versionen wiederverwenden, solange die API kompatibel bleibt. Das in ASF verwendete Plugin-System basiert auf `System.Composition`, früher bekannt als **[Managed Extensibility Framework](https://docs.microsoft.com/dotnet/framework/mef)**, das es ASF ermöglicht, Ihre Bibliotheken während der Laufzeit zu entdecken und zu laden.
 
 ---
 
@@ -28,32 +28,32 @@ Plugins sind Standard .NET-Bibliotheken die die übliche `IPlugin`-Schnittstelle
 
 We've prepared **[ASF-PluginTemplate](https://github.com/JustArchiNET/ASF-PluginTemplate)** for you, which you can use as a base for your plugin project. Using the template is not a requirement (as you can do everything from scratch), but we heavily recommend to pick it up as it can drastically kickstart your development and cut on time required to get all things right. Simply check out the **[README](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/README.md)** of the template and it'll guide you further. Regardless, we'll cover the basics below in case you wanted to start from scratch, or get to understand better the concepts used in the plugin template.
 
-Dein Projekt sollte eine Standard .NET-Bibliothek sein, die auf das geeignete Framework ihrer Ziel-ASF-Version abzielt, wie in der **[Kompilierung](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compilation-de-DE)** angegeben. We recommend you to target .NET (Core), but .NET Framework plugins are also available.
+Dein Projekt sollte eine Standard .NET-Bibliothek sein, die auf das geeignete Framework Ihrer Ziel-ASF-Version abzielt, wie in der **[Kompilierung](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compilation-de-DE)** angegeben.
 
-Das Projekt muss auf die Haupt-Assembly `ArchiSteamFarm` verweisen, entweder auf die vorgefertigte `ArchiSteamFarm.dll`-Bibliothek, die Du als Teil der Veröffentlichung heruntergeladen hast, oder auf das Quellprojekt (z. B. wenn Du dich entschieden hast den ASF-Baum als Submodul hinzuzufügen). Dies ermöglicht es ihrenauf ASF-Strukturen, -Methoden und -Eigenschaften zuzugreifen und diese zu entdecken, insbesondere auf das Core `IPlugin`-Interface, von dem Du im nächsten Schritt erben musst. Das Projekt muss auch mindestens `System.Composition.AttributedModel` referenzieren, was es ihren erlaubt, dein `IPlugin` mittels `[Export]` für ASF bereitzustellen. Darüber hinaus kann/muss man auf andere gemeinsame Bibliotheken verweisen, um die Datenstrukturen zu interpretieren, die man in manchen Schnittstellen erhält, aber wenn man sie nicht explizit benötigt, reicht das fürs Erste.
+Das Projekt muss auf die Haupt-Assembly `ArchiSteamFarm` verweisen, entweder auf die vorgefertigte `ArchiSteamFarm.dll`-Bibliothek, die Du als Teil der Veröffentlichung heruntergeladen hast, oder auf das Quellprojekt (z. B. wenn Du dich entschieden hast den ASF-Baum als Submodul hinzuzufügen). Dies ermöglicht es Ihrenauf ASF-Strukturen, -Methoden und -Eigenschaften zuzugreifen und diese zu entdecken, insbesondere auf das Core `IPlugin`-Interface, von dem Du im nächsten Schritt erben musst. Das Projekt muss auch mindestens `System.Composition.AttributedModel` referenzieren, was es Ihren erlaubt, dein `IPlugin` mittels `[Export]` für ASF bereitzustellen. Darüber hinaus kann/muss man auf andere gemeinsame Bibliotheken verweisen, um die Datenstrukturen zu interpretieren, die man in manchen Schnittstellen erhält, aber wenn man sie nicht explizit benötigt, reicht das fürs Erste.
 
 Wenn Du alles richtig gemacht hast wird deine `csproj` Datei ähnlich wie unten aussehen:
 
 ```csproj
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" Version="7.0.0" />
+    <PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="ArchiSteamFarm" HintPath="C:\\Path\To\Downloaded\ArchiSteamFarm.dll" />
+    <ProjectReference Include="C:\\Path\To\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="false" />
 
-    <!-- If building as part of ASF source tree, use this instead of <Reference> above -->
-    <!-- <ProjectReference Include="C:\\Path\To\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="false" /> -->
+    <!-- If building with downloaded DLL binary, use this instead of <ProjectReference> above -->
+    <!-- <Reference Include="ArchiSteamFarm" HintPath="C:\\Path\To\Downloaded\ArchiSteamFarm.dll" /> -->
   </ItemGroup>
 </Project>
 ```
 
-Von der Quellcode-Seite muss ihre Plugin-Klasse von der Schnittstelle `IPlugin` erben (entweder explizit oder implizit von einer spezialisierteren Schnittstelle, wie `IASF`) und `[Export(typeof(IPlugin))]`, um von ASF während der Laufzeit erkannt zu werden. Das einfachste Beispiel, das dies ermöglicht, ist das folgende:
+Von der Quellcode-Seite muss Ihre Plugin-Klasse von der Schnittstelle `IPlugin` erben (entweder explizit oder implizit von einer spezialisierteren Schnittstelle, wie `IASF`) und `[Export(typeof(IPlugin))]`, um von ASF während der Laufzeit erkannt zu werden. Das einfachste Beispiel, das dies ermöglicht, ist das folgende:
 
 ```csharp
 using System;
@@ -77,7 +77,7 @@ public sealed class YourPluginName : IPlugin {
 }
 ```
 
-Um dein Plugin nutzen zu können, musst Du es zunächst kompilieren. Sie können das entweder von ihrer Entwicklungsumgebung aus oder aus dem Stammverzeichnis ihres Projekts mittels eines Befehls tun:
+Um dein Plugin nutzen zu können, musst Du es zunächst kompilieren. Sie können das entweder von Ihrer Entwicklungsumgebung aus oder aus dem Stammverzeichnis Ihres Projekts mittels eines Befehls tun:
 
 ```shell
 # Wenn dein Projekt eigenständig ist (es ist nicht notwendig, seinen Namen zu definieren, da es das einzige ist)
@@ -117,7 +117,7 @@ Wir werden unser Bestes tun um die öffentlichen Teile von ASF funktionsfähig u
 
 Dein Plugin enthält standardmäßig mindestens zwei Abhängigkeiten, die `ArchiSteamFarm` Referenz für die interne API und `PackageReference` von `System.Composition.AttributedModel`, die erforderlich ist, um als ASF-Plugin erkannt zu werden. Darüber hinaus könnte es mehr Abhängigkeiten in Bezug auf das, was Du in deinem Plugin getan hast, enthalten (z. B. `Discord.Net` Bibliothek, wenn Du dich für die Integration mit Discord entschieden hast).
 
-The output of your build will include your core `YourPluginName.dll` library, as well as all the dependencies that you've referenced. Since you're developing a plugin to already-working program, you don't have to, and even **shouldn't** include dependencies that ASF already includes, for example `ArchiSteamFarm`, `SteamKit2` or `Newtonsoft.Json`. Das Entfernen von mit ASF geteilten Abhängigkeiten in ihrem Build ist nicht die absolute Voraussetzung für die Funktionsfähigkeit eines Plugins, aber dies wird den Speicherbedarf und die Größe des Plugins drastisch reduzieren und gleichzeitig die Leistung erhöhen, da ASF seine eigenen Abhängigkeiten mit Ihnen teilt und nur die Bibliotheken lädt, die es nicht über sich selbst kennt.
+The output of your build will include your core `YourPluginName.dll` library, as well as all the dependencies that you've referenced. Since you're developing a plugin to already-working program, you don't have to, and even **shouldn't** include dependencies that ASF already includes, for example `ArchiSteamFarm`, `SteamKit2` or `Newtonsoft.Json`. Das Entfernen von mit ASF geteilten Abhängigkeiten in Ihrem Build ist nicht die absolute Voraussetzung für die Funktionsfähigkeit eines Plugins, aber dies wird den Speicherbedarf und die Größe des Plugins drastisch reduzieren und gleichzeitig die Leistung erhöhen, da ASF seine eigenen Abhängigkeiten mit Ihnen teilt und nur die Bibliotheken lädt, die es nicht über sich selbst kennt.
 
 In general, it's a recommended practice to include only those libraries that ASF either doesn't include, or includes in the wrong/incompatible version. Examples of those would be obviously `YourPluginName.dll`, but for example also `Discord.Net.dll` if you decided to depend on it, as ASF doesn't include it itself. Bundling libraries that are shared with ASF can still make sense if you want to ensure API compatibility (e.g. being sure that `Newtonsoft.Json` which you depend on in your plugin will always be in version `X` and not the one that ASF ships with), but obviously doing that comes for a price of increased memory/size and worse performance, and therefore should be carefully evaluated.
 
@@ -135,4 +135,4 @@ Dies ist bei generischen Builds nie ein Problem, da es sich hierbei nie um nativ
 
 Unfortunately, we had to make a hard choice between publishing whole runtime as part of our OS-specific builds, and deciding to cut it out of unused features, making the build over 50 MB smaller compared to the full one. We've picked the second option, and it's unfortunately impossible for you to include the missing runtime features together with your plugin. If your project requires access to runtime features that are left out, you have to include full .NET runtime that you depend on, and that means running your plugin together with `generic` ASF flavour. You can't run your plugin in OS-specific builds, as those builds are simply missing a runtime feature that you need, and .NET runtime as of now is unable to "merge" native dependency that you could've provided with our own. Perhaps it'll improve one day in the future, but as of now it's simply not possible.
 
-ASF's OS-specific builds include the bare minimum of additional functionality which is required to run our official plugins. Apart of that being possible, this also slightly extends the surface to extra dependencies required for the most basic plugins. Therefore not all plugins will need to worry about native dependencies to begin with - only those that go beyond what ASF and our official plugins directly need. This is done as an extra, since if we need to include additional native dependencies ourselves for our own use cases anyway, we can as well ship them directly with ASF, making them available, and therefore easier to cover, also for you. Leider reicht das nicht immer aus, und da ihr Plugin größer und komplexer wird, erhöht sich die Wahrscheinlichkeit, dass Sie in eingeschränkte Funktionalität laufen können. Daher empfehlen wir Ihnen normalerweise ihre benutzerdefinierten Plugins ausschließlich mit der `generic` ASF-Variante zu betreiben. Sie können immer noch manuell überprüfen, ob OS-spezifische ASF-Versionen alles haben, was das Plugin für seine Funktionalität benötigt - aber da sich dies sowohl bei ihren, als auch bei unserem Update ändert, könnte es schwierig sein dieses zu pflegen.
+ASF's OS-specific builds include the bare minimum of additional functionality which is required to run our official plugins. Apart of that being possible, this also slightly extends the surface to extra dependencies required for the most basic plugins. Therefore not all plugins will need to worry about native dependencies to begin with - only those that go beyond what ASF and our official plugins directly need. This is done as an extra, since if we need to include additional native dependencies ourselves for our own use cases anyway, we can as well ship them directly with ASF, making them available, and therefore easier to cover, also for you. Leider reicht das nicht immer aus, und da Ihr Plugin größer und komplexer wird, erhöht sich die Wahrscheinlichkeit, dass Sie in eingeschränkte Funktionalität laufen können. Daher empfehlen wir Ihnen normalerweise Ihre benutzerdefinierten Plugins ausschließlich mit der `generic` ASF-Variante zu betreiben. Sie können immer noch manuell überprüfen, ob OS-spezifische ASF-Versionen alles haben, was das Plugin für seine Funktionalität benötigt - aber da sich dies sowohl bei Ihren, als auch bei unserem Update ändert, könnte es schwierig sein dieses zu pflegen.

@@ -19,12 +19,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if NETFRAMEWORK || NETSTANDARD
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Converters;
-using IWebHostEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
-using IMvcBuilder = Microsoft.Extensions.DependencyInjection.IMvcCoreBuilder;
-#endif
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -53,15 +47,21 @@ using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
 namespace ArchiSteamFarm.IPC;
 
 internal sealed class Startup {
 	private readonly IConfiguration Configuration;
 
-	public Startup(IConfiguration configuration) => Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+	public Startup(IConfiguration configuration) {
+		ArgumentNullException.ThrowIfNull(configuration);
+
+		Configuration = configuration;
+	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "PathString is a primitive, it's unlikely to be trimmed to the best of our knowledge")]
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL3000", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	[UsedImplicitly]
 	public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
 		ArgumentNullException.ThrowIfNull(app);
@@ -121,8 +121,7 @@ internal sealed class Startup {
 						continue;
 					}
 
-					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-					physicalPath = Path.Combine(assemblyDirectory!, plugin.PhysicalPath);
+					physicalPath = Path.Combine(assemblyDirectory, plugin.PhysicalPath);
 				}
 
 				if (!Directory.Exists(physicalPath)) {
@@ -157,9 +156,7 @@ internal sealed class Startup {
 		);
 
 		// Use routing for our API controllers, this should be called once we're done with all the static files mess
-#if !NETFRAMEWORK && !NETSTANDARD
 		app.UseRouting();
-#endif
 
 		// We want to protect our API with IPCPassword and additional security, this should be called after routing, so the middleware won't have to deal with API endpoints that do not exist
 		app.UseWhen(static context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), static appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
@@ -176,11 +173,7 @@ internal sealed class Startup {
 		app.UseWebSockets();
 
 		// Finally register proper API endpoints once we're done with routing
-#if NETFRAMEWORK || NETSTANDARD
-		app.UseMvcWithDefaultRoute();
-#else
 		app.UseEndpoints(static endpoints => endpoints.MapControllers());
-#endif
 
 		// Add support for swagger, responsible for automatic API documentation generation, this should be on the end, once we're done with API
 		app.UseSwagger();
@@ -336,17 +329,6 @@ internal sealed class Startup {
 
 		mvc.AddControllersAsServices();
 
-#if NETFRAMEWORK || NETSTANDARD
-		// Use latest compatibility version for MVC
-		mvc.SetCompatibilityVersion(CompatibilityVersion.Latest);
-
-		// Add standard formatters
-		mvc.AddFormatterMappings();
-
-		// Add API explorer for swagger
-		mvc.AddApiExplorer();
-#endif
-
 		mvc.AddNewtonsoftJson(
 			static options => {
 				// Fix default contract resolver to use original names and not a camel case
@@ -355,11 +337,6 @@ internal sealed class Startup {
 				if (Debugging.IsUserDebugging) {
 					options.SerializerSettings.Formatting = Formatting.Indented;
 				}
-
-#if NETFRAMEWORK || NETSTANDARD
-				// .NET Framework serializes Version as object by default, serialize it as string just like .NET Core
-				options.SerializerSettings.Converters.Add(new VersionConverter());
-#endif
 			}
 		);
 	}

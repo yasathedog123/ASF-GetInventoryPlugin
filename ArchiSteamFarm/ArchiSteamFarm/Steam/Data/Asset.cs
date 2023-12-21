@@ -38,9 +38,16 @@ public sealed class Asset {
 	[PublicAPI]
 	public const ulong SteamCommunityContextID = 6;
 
+	[PublicAPI]
+	public const ulong SteamPointsShopInstanceID = 3865004543;
+
 	[JsonIgnore]
 	[PublicAPI]
 	public IReadOnlyDictionary<string, JToken>? AdditionalPropertiesReadOnly => AdditionalProperties;
+
+	[JsonIgnore]
+	[PublicAPI]
+	public bool IsSteamPointsShopItem => !Tradable && (InstanceID == SteamPointsShopInstanceID);
 
 	[JsonIgnore]
 	[PublicAPI]
@@ -196,21 +203,10 @@ public sealed class Asset {
 
 	// Constructed from trades being received or plugins
 	public Asset(uint appID, ulong contextID, ulong classID, uint amount, ulong instanceID = 0, ulong assetID = 0, bool marketable = true, bool tradable = true, ImmutableHashSet<Tag>? tags = null, uint realAppID = 0, EType type = EType.Unknown, ERarity rarity = ERarity.Unknown) {
-		if (appID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(appID));
-		}
-
-		if (contextID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(contextID));
-		}
-
-		if (classID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(classID));
-		}
-
-		if (amount == 0) {
-			throw new ArgumentOutOfRangeException(nameof(amount));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentOutOfRangeException.ThrowIfZero(contextID);
+		ArgumentOutOfRangeException.ThrowIfZero(classID);
+		ArgumentOutOfRangeException.ThrowIfZero(amount);
 
 		AppID = appID;
 		ContextID = contextID;

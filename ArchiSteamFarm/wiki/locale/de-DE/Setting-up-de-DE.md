@@ -2,9 +2,9 @@
 
 Wenn Du hier zum ersten Mal angekommen bist, herzlich willkommen! Wir freuen uns sehr, einen weiteren Reisenden zu sehen, der sich für unser Projekt interessiert, obwohl wir berücksichtigen müssen, dass mit großer Macht eine große Verantwortung einhergeht - ASF ist in der Lage, viele verschiedene Dinge rund um Steam zu tun, aber nur, solange man sich **genug kümmert, um zu lernen, wie man ihn benutzt**. Es gibt hier eine steile Lernkurve, und wir erwarten von dir, dass Du das Wiki in dieser Hinsicht liest, das im Detail erklärt, wie alles funktioniert.
 
-Wenn Du immer noch hier bist, heißt das, dass Du den Text oben überstanden hast, was toll ist. Außer Du hast ihn übersprungen, was heißt, dass Du bald **[schlechte Zeiten](https://www.youtube.com/watch?v=WJgt6m6njVw)** vor ihren hast... Wie auch immer. ASF ist eine Konsolenanwendung, was bedeutet, dass das Programm standardmäßig selber keine Benutzeroberfläche hat, wie Du es eventuell gewohnt bist. ASF sollte hauptsächlich auf Servern laufen, sodass es als Dienst (Daemon) und nicht als Desktop-App fungiert.
+Wenn Du immer noch hier bist, heißt das, dass Du den Text oben überstanden hast, was toll ist. Außer Du hast ihn übersprungen, was heißt, dass Du bald **[schlechte Zeiten](https://www.youtube.com/watch?v=WJgt6m6njVw)** vor Ihren hast... Wie auch immer. ASF ist eine Konsolenanwendung, was bedeutet, dass das Programm standardmäßig selber keine Benutzeroberfläche hat, wie Du es eventuell gewohnt bist. ASF sollte hauptsächlich auf Servern laufen, sodass es als Dienst (Daemon) und nicht als Desktop-App fungiert.
 
-Das bedeutet jedoch nicht, dass Du es nicht auf ihrem PC benutzen kannst oder dass die Benutzung etwas komplizierter ist als sonst, nichts dergleichen. ASF ist ein eigenständiges Programm, das keine Installation benötigt und sofort einsatzbereit ist. Allerdings wird eine Konfiguration erfordert, bevor es nützlich wird. Die Konfiguration sagt ASF, was es nach dem Start tatsächlich tun soll. Wenn Du ASF ohne Konfiguration startest, dann wird es nichts tun. Ganz einfach.
+Das bedeutet jedoch nicht, dass Du es nicht auf Ihrem PC benutzen kannst oder dass die Benutzung etwas komplizierter ist als sonst, nichts dergleichen. ASF ist ein eigenständiges Programm, das keine Installation benötigt und sofort einsatzbereit ist. Allerdings wird eine Konfiguration erfordert, bevor es nützlich wird. Die Konfiguration sagt ASF, was es nach dem Start tatsächlich tun soll. Wenn Du ASF ohne Konfiguration startest, dann wird es nichts tun. Ganz einfach.
 
 ---
 
@@ -15,7 +15,7 @@ Folgendes werden wir in den nächsten paar Minuten machen:
 - Die **[neueste ASF-Version](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)** in der entsprechenden betriebssystemspezifischen Variante herunterladen.
 - Das Archiv an einen neuen Ort entpacken.
 - **[ASF konfigurieren](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-de-DE)**.
-- ASF starten und der Magie ihren Lauf lassen.
+- ASF starten und der Magie Ihren Lauf lassen.
 
 Hört sich einfach an, richtig? Dann lassen Sie uns beginnen.
 
@@ -25,7 +25,7 @@ Hört sich einfach an, richtig? Dann lassen Sie uns beginnen.
 
 Der erste Schritt ist sicherzustellen, dass dein Betriebssystem ASF überhaupt richtig ausführen kann. ASF ist in C# basierend auf der .NET Plattform programmiert und benötigt eventuell native Bibliotheken, die auf deinem System noch nicht verfügbar sind. Abhängig davon, ob Sie Windows, Linux oder macOS verwenden, haben Sie unterschiedliche Anforderungen, wenngleich alle in **[aufgelistet sind. ET Voraussetzungen](https://docs.microsoft.com/dotnet/core/install)** Dokument, dem Sie folgen sollten. Dieses ist Referenzmaterial, das verwendet werden sollte, allerdings haben wir im Sinne der Einfachheit auch alle benötigten Pakete unten aufgelistet, damit Du nicht das gesamte Dokument lesen musst.
 
-Es ist völlig normal, dass manche (oder sogar alle) Abhängigkeiten bereits in ihrem System existieren, weil sie mit der Software Dritter, welche Du verwendest, mitinstalliert wurden. Trotzdem solltest Du sicherstellen, dass dies wirklich der Fall ist indem Du das entsprechende Installationsprogramm für dein Betriebssytem ausführst - Ohne diese Abhängigkeiten wird ASF nicht einmal starten.
+Es ist völlig normal, dass manche (oder sogar alle) Abhängigkeiten bereits in Ihrem System existieren, weil sie mit der Software Dritter, welche Du verwendest, mitinstalliert wurden. Trotzdem solltest Du sicherstellen, dass dies wirklich der Fall ist indem Du das entsprechende Installationsprogramm für dein Betriebssytem ausführst - Ohne diese Abhängigkeiten wird ASF nicht einmal starten.
 
 Keep in mind that you don't need to do anything else for OS-specific builds, especially installing .NET SDK or even runtime, since OS-specific package includes all of that already. You need only .NET prerequisites (dependencies) to run .NET runtime included in ASF.
 
@@ -38,14 +38,14 @@ Paketnamen hängen von der Linux-Distribution, die Du verwendest, ab. Wir listen
 
 - `ca-certificates` (Standard SSL Zertifikate für HTTPS Verbindungen)
 - `libc6` (`libc`)
-- `libgcc1` (`libgcc`)
-- `libicu` (`icu-libs`, die neueste Version für ihre Distribution, zum Beispiel `libicu67`)
+- `libgcc-s1` (`libgcc1`, `libgcc`)
+- `libicu` (`icu-libs`, latest version for your distribution, for example `libicu72`)
 - `libgssapi-krb5-2` (`libkrb5-3`, `krb5-libs`)
-- `libssl1.1` (`libssl`, `openssl-libs`, neueste Version für deine Distribution, mindestens jedoch `1.1.X`, da `1.0.X` eventuell nicht länger funktioniert)
+- `libssl1.1` (`libssl`, `openssl-libs`, latest version for your distribution, at least `1.1.X`)
 - `libstdc++6` (`libstdc++`, Version `5.0` oder höher)
 - `zlib1g` (`zlib`)
 
-Zumindest ein Großteil davon sollte bereits nativ auf ihrem System verfügbar sein. Die minimale Installation von Debian Stable erfordert nur `libicu67`.
+Zumindest ein Großteil davon sollte bereits nativ auf Ihrem System verfügbar sein. The minimal installation of Debian stable required only `libicu72`.
 
 #### **[macOS](https://docs.microsoft.com/de-de/dotnet/core/install/macos)**:
 - Keine Version von macOS, aber Sie sollten die neueste Version von macOS installiert haben; mindestens 10.15+
@@ -54,7 +54,7 @@ Zumindest ein Großteil davon sollte bereits nativ auf ihrem System verfügbar s
 
 ### Herunterladen
 
-Da wir nun alle benötigten Abhängigkeiten installiert haben, ist der nächste Schritt das Herunterladen der **[neuesten ASF-Version](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)**. ASF ist in mehreren Varianten verfügbar, aber Du bist nur am Paket interessiert, das ihrem Betriebssystem und der Architektur ihres PCs entspricht. Zum Beispiel, wenn Du `64`-Bit `Win`dows verwendest, dann willst Du die `ASF-win-x64`-Variante. Für mehr Information über die verfügbaren Varianten, besuche bitte den Abschnitt **[ Kompatibilität](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compatibility-de-DE)**. ASF kann auch unter Betriebssystemen ausgeführt werden, für die wir kein betriebssystemspezifisches Paket zur Verfügung stellen. Ein Beispiel hierfür ist **32-bit Windows**. Dafür gehe bitte zur **[generischen Installation](#generic-setup)**.
+Da wir nun alle benötigten Abhängigkeiten installiert haben, ist der nächste Schritt das Herunterladen der **[neuesten ASF-Version](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)**. ASF ist in mehreren Varianten verfügbar, aber Du bist nur am Paket interessiert, das Ihrem Betriebssystem und der Architektur Ihres PCs entspricht. Zum Beispiel, wenn Du `64`-Bit `Win`dows verwendest, dann willst Du die `ASF-win-x64`-Variante. Für mehr Information über die verfügbaren Varianten, besuche bitte den Abschnitt **[ Kompatibilität](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compatibility-de-DE)**. ASF kann auch unter Betriebssystemen ausgeführt werden, für die wir kein betriebssystemspezifisches Paket zur Verfügung stellen. Ein Beispiel hierfür ist **32-bit Windows**. Dafür gehe bitte zur **[generischen Installation](#generic-setup)**.
 
 ![Assets](https://i.imgur.com/Ym2xPE5.png)
 
@@ -65,18 +65,18 @@ Stelle bitte sicher, dass Du ASF in **einen eigenen Ordner** entpackst und nicht
 Eine Beispiel-Struktur würde wie folgt aussehen:
 
 ```text
-C:\ASF (wo Sie ihre eigenen Dateien speichern)
-    ├── ASF shortcut.lnk (optional)
-    ├── Config shortcut.lnk (optional)
-    ├── Commands.txt (optional)
-    ├── MyExtraScript.bat (optional)
-    ├── (...) (alle anderen Dateien ihrer Wahl, optional)
-    └── Core (nur ASF gewidmet, wo Sie das Archiv extrahieren)
-         ├── ArchiSteamFarm(.exe)
-         ├── config
-         ├── logs
-         ├── plugins
-         └── (...)
+C:\ASF (wo Sie Ihre eigenen Dateien speichern)
+  ├── ASF shortcut.lnk (optional)
+  ├── Config shortcut.lnk (optional)
+  ├── Commands.txt (optional)
+  ├── MyExtraScript.bat (optional)
+  ├── (...) (alle anderen Dateien Ihrer Wahl, optional)
+  └── Core (nur ASF gewidmet, wo Sie das Archiv extrahieren)
+     ├── ArchiSteamFarm(.exe)
+     ├── config
+     ├── logs
+     ├── plugins
+     └── (...)
 ```
 
 ---
@@ -95,14 +95,14 @@ Nach dem Öffnen der Seite klicke auf "Bot". Du solltest nun eine ähnliche Seit
 
 ![Bot tab](https://i.imgur.com/aF3k8Rg.png)
 
-Wenn die Version von ASF, die Du gerade heruntergeladen hast, älter ist als der Konfigurationsgenerator, der standardmäßig verwendet wird, wähle einfach deine ASF-Version aus dem Dropdown-Menü. Dies kann passieren, da der Konfigurationsgenerator zum Erzeugen von Konfigurationen für neuere (Vorabversionen) ASF-Versionen verwendet werden kann, die noch nicht als stabil markiert wurden. Du hast die neueste stabile Version von ASF heruntergeladen, die auf ihre zuverlässige Funktion überprüft wurde.
+Wenn die Version von ASF, die Du gerade heruntergeladen hast, älter ist als der Konfigurationsgenerator, der standardmäßig verwendet wird, wähle einfach deine ASF-Version aus dem Dropdown-Menü. Dies kann passieren, da der Konfigurationsgenerator zum Erzeugen von Konfigurationen für neuere (Vorabversionen) ASF-Versionen verwendet werden kann, die noch nicht als stabil markiert wurden. Du hast die neueste stabile Version von ASF heruntergeladen, die auf Ihre zuverlässige Funktion überprüft wurde.
 
 Beginne damit, den Namen deines Bot in das rot markierte Feld zu schreiben. Dies kann jeder beliebige Name sein, den Du verwenden möchtest, wie z. B. dein Spitzname, Kontoname, eine Nummer oder etwas anderes. Es gibt nur ein Wort, das Du nicht verwenden kannst, nämlich `ASF`, da dieses Schlüsselwort für die globale Konfigurationsdatei reserviert ist. Außerdem kann dein Bot-Name nicht mit einem Punkt beginnen (ASF ignoriert diese Dateien absichtlich). Wir empfehlen dir auch keine Leerzeichen zu verwenden. Du solltest bei Bedarf `_` als Trennzeichen verwenden.
 
 Nachdem Du dich für einen Namen entschieden hast, aktiviere den `Enabled` Schalter. Hiermit wird festgelegt, ob dein Bot von ASF automatisch nach dem Start (des Programms) gestartet werden soll.
 
 Jetzt kannst Du dich für zwei Dinge entscheiden:
-- Sie können ihren Benutzernamen in das Feld `SteamLogin` und ihr Passwort in das `SteamPassword` Feld eintragen
+- Sie können Ihren Benutzernamen in das Feld `SteamLogin` und Ihr Passwort in das `SteamPassword` Feld eintragen
 - Oder Du kannst sie leer lassen
 
 Wenn Du das erste tust, kann ASF deine Konto-Anmeldeinformationen während des Startvorgangs automatisch verwenden, sodass Du sie nicht jedes Mal manuell eingeben musst, wenn ASF sie benötigt. Du kannst sie jedoch auch weglassen. In diesem Fall werden sie nicht gespeichert, sodass ASF nicht ohne deine Hilfe automatisch starten kann und Du sie während der Laufzeit eingeben musst.
@@ -151,9 +151,9 @@ Dies schließt unseren sehr einfachen Einrichtungsleitfaden ab. Du kannst nun en
 
 #### Auf mehreren Konten gleichzeitig sammeln
 
-ASF supports farming more than one account at a time, which is its primary function. Du kannst weitere Konten zu ASF hinzufügen, indem Du mehr Bot-Konfigurationsdateien erzeugst, genau so wie Du deine erste vor wenigen Minuten generiert hast. Du musst nur zwei Dinge sicherstellen:
+ASF supports farming more than one account at a time, which is its primary function. Du kannst weitere Konten zu ASF hinzufügen, indem Du mehr Bot-Konfigurationsdateien erzeugst, genau so, wie Du deine erste vor wenigen Minuten generiert hast. Du musst nur zwei Dinge sicherstellen:
 
-- Eindeutiger Bot-Name, wenn Du bereits ihren ersten Bot "HauptKonto" genannt hast, kannst Du keinen weiteren so nennen.
+- Eindeutiger Bot-Name, wenn Du bereits Ihren ersten Bot "HauptKonto" genannt hast, kannst Du keinen weiteren so nennen.
 - Gültige Anmeldedaten, wie z. B. `SteamLogin`, `SteamPassword` und `SteamParentalCode` (bei Verwendung der Steam Parental Einstellungen)
 
 Mit anderen Worten, gehe einfach erneut zur Konfiguration und mache genau das Gleiche, nur für dein zweites oder drittes Konto. Vergiss nicht für alle deine Bots eindeutige Namen zu verwenden.
@@ -172,7 +172,7 @@ Lass uns das jetzt ändern. Aktiviere die erweiterten Einstellungen im Webkonfig
 
 ![Bot tab 3](https://i.imgur.com/gHqdEqb.png)
 
-Nun kannst Du die neue Konfigurationsdatei auf genau die gleiche Weise herunterladen, dann **überschreibe** deine alte Konfigurationsdatei mit der neuen. Du kannst natürlich auch deine alte Konfigurationsdatei löschen und an ihre Stelle die neue einfügen.
+Nun kannst Du die neue Konfigurationsdatei auf genau die gleiche Weise herunterladen, dann **überschreibe** deine alte Konfigurationsdatei mit der neuen. Du kannst natürlich auch deine alte Konfigurationsdatei löschen und an Ihre Stelle die neue einfügen.
 
 Sobald Du das getan hast und ASF erneut startest, wirst Du feststellen, dass ASF nun deinen benutzerdefinierten Text an der vorherigen Stelle anzeigt:
 
@@ -188,7 +188,7 @@ Editing your ASF configs can be done much easier by using our ASF-ui frontend, w
 
 ASF ist eine Konsolenanwendung und beinhaltet keine grafische Benutzeroberfläche. Wir arbeiten jedoch aktiv an unserem IPC-Schnittstellen Frontend **[ASF-UI](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC-de-DE#asf-ui)**, was eine sehr gute und benutzerfreundliche Möglichkeit sein kann, auf verschiedene ASF-Funktionen zuzugreifen.
 
-In order to use ASF-ui, you need to have `IPC` enabled, which is the default option starting with ASF V5.1.0.0. Once you launch ASF, you should be able to confirm that it properly started the IPC interface automatically:
+In order to use ASF-ui, you need to have `IPC` enabled, which is the default option. Once you launch ASF, you should be able to confirm that it properly started the IPC interface automatically:
 
 ![IPC](https://i.imgur.com/ZmkO8pk.png)
 
@@ -224,6 +224,6 @@ Mit zusätzlichen Schritten:
 - Download **[latest ASF release](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)** in `generic` variant.
 - Das Archiv an einen neuen Ort entpacken.
 - **[ASF konfigurieren](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-de-DE)**.
-- Starte ASF entweder mit einem Hilfsskript oder führe `dotnet /pfad/zu/ArchiSteamFarm.dll` aus ihrer Lieblingsshell heraus manuell aus.
+- Starte ASF entweder mit einem Hilfsskript oder führe `dotnet /pfad/zu/ArchiSteamFarm.dll` aus Ihrer Lieblingsshell heraus manuell aus.
 
 Hilfs-Skripte (z. B. `ArchiSteamFarm.cmd` für Windows und `ArchiSteamFarm.sh` Linux/macOS befinden sich neben der `ArchiSteamFarm.dll` Binärdatei - diese sind lediglich in der `generic` Variante enthalten. Sie können diese verwenden, wenn Sie den Befehl `dotnet` nicht manuell ausführen möchten. Obviously helper scripts won't work if you didn't install .NET SDK and you don't have `dotnet` executable available in your `PATH`. Hilfs-Skripte sind völlig optional verwendbar, Sie können jederzeit `dotnet /pfad/zu/ArchiSteamFarm.dll` manuell eingeben.

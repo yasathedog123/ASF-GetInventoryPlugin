@@ -58,13 +58,19 @@ El límite "duro" de memoria para el proceso de ASF, este parámetro ajusta el r
 
 Por otro lado, establecer este valor lo suficientemente alto es una forma perfecta de asegurar que ASF nunca usará más memoria de la que puedes permitirte realmente, dando a tu máquina un respiro incluso bajo una carga pesada, y permitiendo al programa hacer su trabajo de manera tan eficiente como sea posible.
 
+### [`Low-memory setup`](https://learn.microsoft.com/dotnet/core/runtime-config/garbage-collector#conserve-memory)
+
+> Configura el recolector de elementos no utilizados para conservar memoria a costa de recolecciones más frecuentes y posiblemente tiempos de pausa más largos.
+
+Se puede usar un valor entre 0-9. Cuanto más grande sea el valor, más el recolector de elementos no utilizados optimizará la memoria sobre el rendimiento.
+
 ### [`GCHighMemPercent`](https://docs.microsoft.com/es-es/dotnet/core/run-time-config/garbage-collector#high-memory-percent)
 
 > Especifica la cantidad de memoria usada después de lo cual el recolector de basura se vuelve más agresivo.
 
 Esta configuración ajusta el límite de memoria de todo tu sistema operativo, causando que el recolector de basura se vuelva más agresivo e intente ayudar al sistema operativo a reducir la carga de memoria al ejecutar un proceso de recolección de basura más intensivo y como resultado libera más memoria de vuelta al sistema operativo. Es una buena idea establecer esta propiedad a la cantidad máxima de memoria (como porcentaje) que consideres "crítica" para el rendimiento de tu sistema operativo. Por defecto es 90%, y normalmente quieres mantenerlo en un rango de 80-97%, ya que un valor demasiado bajo ocasionará una agresión innecesaria del recolector de basura y la degradación del rendimiento sin motivo alguno, mientras que un valor muy alto causará una carga innecesaria a tu sistema operativo, considerando que ASF podría liberar parte de su memoria para ayudar.
 
-### **[`GCLatencyLevel`](https://github.com/dotnet/runtime/blob/4b90e803262cb5a045205d946d800f9b55f88571/src/coreclr/gc/gcpriv.h#L375-L398)**
+### **[`GCLatencyLevel`](https://github.com/dotnet/runtime/blob/a1d48d6c00b5aecc063d1a58b0d9281c611ada91/src/coreclr/gc/gcpriv.h#L445-L468)**
 
 > Especifica el nivel de latencia del recolector de basura para el que deseas optimizar.
 
@@ -85,6 +91,7 @@ Puedes habilitar las propiedades seleccionadas configurando las variables de ent
 export DOTNET_GCHeapHardLimitPercent=0x4B # 75% as hex
 export DOTNET_GCHighMemPercent=0x50 # 80% as hex
 
+export DOTNET_GCConserveMemory=9
 export DOTNET_GCLatencyLevel=0
 export DOTNET_gcTrimCommitOnLowMemory=1
 
@@ -99,6 +106,7 @@ O en Windows (powershell):
 $Env:DOTNET_GCHeapHardLimitPercent=0x4B # 75% as hex
 $Env:DOTNET_GCHighMemPercent=0x50 # 80% as hex
 
+$Env:DOTNET_GCConserveMemory=9
 $Env:DOTNET_GCLatencyLevel=0
 $Env:DOTNET_gcTrimCommitOnLowMemory=1
 

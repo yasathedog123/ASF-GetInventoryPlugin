@@ -92,6 +92,12 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 	private InventoryResponse() { }
 
 	internal sealed class Description {
+		[JsonProperty("appid", Required = Required.Always)]
+		internal readonly uint AppID;
+
+		[JsonProperty("tags", Required = Required.DisallowNull)]
+		internal readonly ImmutableHashSet<Tag> Tags = ImmutableHashSet<Tag>.Empty;
+
 		internal Asset.ERarity Rarity {
 			get {
 				foreach (Tag tag in Tags) {
@@ -218,17 +224,10 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 			set;
 		}
 
-		[JsonProperty("appid", Required = Required.Always)]
-		internal uint AppID { get; set; }
-
-		internal ulong ClassID { get; set; }
-		internal ulong InstanceID { get; set; }
-		internal bool Marketable { get; set; }
-
-		[JsonProperty("tags", Required = Required.DisallowNull)]
-		internal ImmutableHashSet<Tag> Tags { get; set; } = ImmutableHashSet<Tag>.Empty;
-
-		internal bool Tradable { get; set; }
+		internal ulong ClassID { get; private set; }
+		internal ulong InstanceID { get; private set; }
+		internal bool Marketable { get; private set; }
+		internal bool Tradable { get; private set; }
 
 		[JsonProperty("classid", Required = Required.Always)]
 		private string ClassIDText {
@@ -276,7 +275,23 @@ internal sealed class InventoryResponse : OptionalResultResponse {
 			set => Tradable = value > 0;
 		}
 
+		// Constructed from trades being received/sent
+		internal Description(uint appID, ulong classID, ulong instanceID, bool marketable, IReadOnlyCollection<Tag>? tags = null) {
+			ArgumentOutOfRangeException.ThrowIfZero(appID);
+			ArgumentOutOfRangeException.ThrowIfZero(classID);
+
+			AppID = appID;
+			ClassID = classID;
+			InstanceID = instanceID;
+			Marketable = marketable;
+			Tradable = true;
+
+			if (tags?.Count > 0) {
+				Tags = tags.ToImmutableHashSet();
+			}
+		}
+
 		[JsonConstructor]
-		internal Description() { }
+		private Description() { }
 	}
 }

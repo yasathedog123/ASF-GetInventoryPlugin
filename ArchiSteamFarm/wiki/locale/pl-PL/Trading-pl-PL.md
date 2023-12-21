@@ -1,6 +1,6 @@
 # Handel
 
-ASF zawiera wsparcie dla nieinteraktywnych (offline) transakcji Steam. Zarówno odbieranie (akceptacja/odrzucenie), jak i wysyłanie transakcji jest dostępne od razu i nie wymaga specjalnej konfiguracji, ale oczywiście wymaga nieograniczonego konta Steam (które wydało już równowartość 5 dolarów amerykańskich w sklepie). Moduł handlowy jest niedostępny dla ograniczonych kont.
+ASF zawiera wsparcie dla nieinteraktywnych (offline) transakcji Steam. Zarówno odbieranie (akceptacja/odrzucenie), jak i wysyłanie transakcji jest dostępne od razu i nie wymaga specjalnej konfiguracji, ale oczywiście wymaga nieograniczonego konta Steam (które wydało już równowartość 5 dolarów amerykańskich w sklepie). Only limited trading functionality is available for restricted accounts.
 
 ---
 

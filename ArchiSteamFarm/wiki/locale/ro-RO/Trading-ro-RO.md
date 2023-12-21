@@ -1,6 +1,6 @@
 # Tranzacționare
 
-ASF include suport pentru tranzacții Steam non-interactive (offline). Atât primirea (acceptarea/declinul), cât și trimiterea de tranzacții sunt disponibile imediat și nu necesită configurație specială, dar evident necesita un cont Steam nelimitat (cel care a cheltuit deja 5$ în magazin). Modulul de tranzacționare nu este disponibil pentru conturile restricționate.
+ASF include suport pentru tranzacții Steam non-interactive (offline). Atât primirea (acceptarea/declinul), cât și trimiterea de tranzacții sunt disponibile imediat și nu necesită configurație specială, dar evident necesita un cont Steam nelimitat (cel care a cheltuit deja 5$ în magazin). Only limited trading functionality is available for restricted accounts.
 
 ---
 

@@ -28,7 +28,7 @@ Os pontos principais são apresentados aqui novamente, pois geralmente as pessoa
 - **Você precisa ter o jogo na sua Biblioteca Steam para ser elegível a ganhar cartas dele. Compartilhamento de biblioteca não conta.**
 - **Você não pode coletar de um jogo infinitamente, cada jogo tem um número fixo de cartas. Quando você terminar de coletar todas elas (cerca de metade do conjunto completo), o jogo não dará mais cartas. Não importa se você vendeu, trocou, criou insígnias ou esqueceu o que aconteceu com as cartas que você obteve, assim que acabarem as cartas disponíveis para determinado jogo. ele estará concluído.**
 - **Não é possível coletar cartas de jogos F2P (gratuitos para jogar) sem gastar nenhum dinheiro neles. Isso significa jogos permanentemente gratuitos como Team Fortress 2 ou Dota 2. Possuir jogos F2P não te garante cartas.**
-- **Você não pode receber cartas em [contas limitadas](https://support.steampowered.com/kb_article.php?ref=3330-iagk-7663&l=portuguese), independentemente dos jogos que possua. Isso foi possível no passado, mas não é mais o caso.**
+- **You can't drop cards on [limited accounts](https://help.steampowered.com/faqs/view/71D3-35C2-AD96-AA3A), regardless of owned games. Isso foi possível no passado, mas não é mais o caso.**
 - **Jogos pagos que você obteve de graça durante alguma promoção não são legíveis para coleta de cartas, independente do que é mostrado na página da loja. Isso foi possível no passado, mas não é mais o caso.**
 
 Então, como você pode ver, Cartas Colecionáveis Steam são concedidas a você por jogar um jogo que você comprou, ou um jogo gratuito no qual você colocou dinheiro. Se você jogar tais jogos por tempo suficiente, todas as cartas para aquele jogo vão eventualmente aparecer no seu inventário, tornando possível que você complete uma insígnia (após obter a metade restante do jogo de cartas), venda-as, ou faça o que mais você quiser.
@@ -77,7 +77,7 @@ O ASF te mostra um tempo aproximado com base no número de cartas que você prec
 
 O ASF é um programa C# que requer a implementação funcional do .NET. O Android tornou-se uma plataforma válida começando com .NET 6.0, no entanto, atualmente há a impossibilidade de fazer o ASF rodar no Android devido à **[falta do runtime ASP.NET disponível para ele](https://github.com/dotnet/aspnetcore/issues/35077)**. Embora não haja uma opção nativa disponível, existem compilações próprias e funcionais para GNU/Linux na arquitetura ARM, portanto, é totalmente possível usar algo como o **[Linux Deploy](https://play.google.com/store/apps/details?id=ru.meefik.linuxdeploy)** para instalar o Linux e, usar o ASF nesse Linux chroot normalmente.
 
-Quando/Se todos os requisitos do ASF forem satisfeitos, consideraremos lançar uma compilação oficial para o Android.
+When/If all ASF requirements are satisfied, we'll consider releasing an official Android build.
 
 ---
 
@@ -117,7 +117,7 @@ Sim, o ASF não vai baixar nenhum arquivo de jogo, então ele funciona com todas
 
 ### O ASF é similar ao Idle Master?
 
-A única semelhança é o propósito geral de ambos os programas, que é rodar jogos Steam a fim de coletar drop de cartas. Todo o resto, incluindo o método de coleta, algoritmos usados, estrutura do programa, funcionalidade, compatibilidade, até mesmo o próprio código-fonte, é totalmente diferente e esses dois programas não têm nada em comum um com o outro, até mesmo a base principal - o IM está sendo executado no .NET Framework, o ASF em .NET (Core). O ASF foi criado para resolver alguns problemas do IM que não eram possíveis de serem resolvidos com uma simples edição no código - é por isso que o ASF foi escrito do zero, sem usar nem uma simples linha de código ou mesmo a ideia geral do IM, pois aquele código e aquelas idéias eram totalmente falhas para começo de conversa. O IM e o ASF são como Windows e Linux - ambos são sistemas operacionais e ambos podem ser instalados no seu PC, mas eles não compartilham nada entre si além de servirem para o mesma finalidade.
+A única semelhança é o propósito geral de ambos os programas, que é rodar jogos Steam a fim de coletar drop de cartas. Everything else, including the actual farming method, program structure, functionality, compatibility, used algorithms, especially the source code itself, is entirely different and those two programs have nothing common with each other, even the core foundation - IM is running on .NET Framework, ASF on .NET (Core). O ASF foi criado para resolver alguns problemas do IM que não eram possíveis de serem resolvidos com uma simples edição no código - é por isso que o ASF foi escrito do zero, sem usar nem uma simples linha de código ou mesmo a ideia geral do IM, pois aquele código e aquelas idéias eram totalmente falhas para começo de conversa. O IM e o ASF são como Windows e Linux - ambos são sistemas operacionais e ambos podem ser instalados no seu PC, mas eles não compartilham nada entre si além de servirem para o mesma finalidade.
 
 Por esse motivo também você não deve comparar o ASF com o IM baseado no que é esperado do IM. Você deve tratar o ASF e o IM como programas completamente diferentes com suas características próprias e exclusivas. Algumas dessas características podem se sobrepor e você poderá encontrar uma característica particular em ambos, mas muito raramente, uma vez que o ASF serve a esse propósito de uma madeira muito diferente comparado ao IM.
 
@@ -135,7 +135,7 @@ Além disso, o ASF é **muito mais estável e confiável** quando se trata de pr
 
 Essas são 3 razões **muito importantes** pelas quais você deve considerar usar o ASF, já que elas afetam diretamente todos que coletam cartas Steam e não há como alguém dizer "isso não me preocupa", pois as manutenções do Steam e suas falhas acontecem com todos. Há outras dezenas de motivos mais ou menos importantes que você verá no resto desse FAQ. Então resumindo, **sim**, você deve usar o ASF mesmo se não precisar de nenhuma função extra do ASF que não exista no IM.
 
-Além do mais, o IM está oficialmente descontinuado e pode parar de funcionar completamente no futuro sem que ninguém se preocupe em consertá-lo, considerando a existência de soluções muito mais poderosas (não apenas o ASF). O IM já não funciona para um monte de gente, e esse número só aumenta. Deve-se evitar o uso de softwares obsoletos, não apenas o IM, mas qualquer outro programa descontinuado. Não ter manutenção ativa significa que ninguém se importa se ele funciona ou não, ninguém verifica isso e **ninguém se responsabiliza pela sua funcionalidade**, o que é uma questão crucial em termos de segurança. Pode ser que occora algum bug crítico que cause problemas na infraestrutura do Steam - sem que haja alguém para consertá-lo o Steam pode emitir outra onda de banimento na qual você será atingido sem sequer estar ciente do problema, como já aconteceu no passado com pessoas usando, adivinhe: uma versãoo obsoleta do ASF.
+Além do mais, o IM está oficialmente descontinuado e pode parar de funcionar completamente no futuro sem que ninguém se preocupe em consertá-lo, considerando a existência de soluções muito mais poderosas (não apenas o ASF). O IM já não funciona para um monte de gente, e esse número só aumenta. Deve-se evitar o uso de softwares obsoletos, não apenas o IM, mas qualquer outro programa descontinuado. No active maintainer means that nobody cares whether it works or not and **nobody is responsible for its functionality**, which is a crucial matter in terms of security. Pode ser que occora algum bug crítico que cause problemas na infraestrutura do Steam - sem que haja alguém para consertá-lo o Steam pode emitir outra onda de banimento na qual você será atingido sem sequer estar ciente do problema, como já aconteceu no passado com pessoas usando, adivinhe: uma versãoo obsoleta do ASF.
 
 ---
 
@@ -145,7 +145,7 @@ Depende do que é "interessante" para você. Se você planeja coletar automatica
 
 Primeiro e mais importante, você tem algumas funcionalidades padrão mencionadas **[acima](#vale-a-pena-usar-o-ASF-se-eu-estiver-usando-o-idle-master-e-ele-funciona-bem-parar-mim)** que são cruciais para o processo de coleta automático independente do seu objetivo final, e muitas vezes isso já é o suficiente para considerar usar o ASF. Mas você já sabe disso, então vamos avançar para algumas características mais interessantes:
 
-- **Você pode farmar off-line** (função de `OnlineStatus`, `Off-line`). Coletar cartas off-line torna possível que você evite completamente de exibir o status "Em Jogo" no Steam, o que te permite coletar cartas com o ASF enquanto exibe seu status como "Disponível" no Steam ao mesmo tempo, sem que seus amigos se quer percebam que o ASF está jogando algum jogo em seu nome. Essa é uma característica muito boa, pois ela permite que você fique on-line no seu cliente Steam sem atormentar seus amigos com constantes mudanças de jogos, ou sem confundi-los a acharem que você está jogando um jogo quando de fato não está. Se você respeita seus amigos esse ponto sozinho já faz valer a pena usar o ASF, mas é apenas o começo. Também é bom notar que esse recurso não tem nada a ver com as configurações de privacidade do Steam - se você iniciar um jogo o estado "Em jogo" vai aparecer normalmente para seus amigos, ele torna apenas a parte do ASF invisível e não afeta em nada a sua conta.
+- **You can farm offline** (`OnlineStatus` in `Offline` setting). Coletar cartas off-line torna possível que você evite completamente de exibir o status "Em Jogo" no Steam, o que te permite coletar cartas com o ASF enquanto exibe seu status como "Disponível" no Steam ao mesmo tempo, sem que seus amigos se quer percebam que o ASF está jogando algum jogo em seu nome. Essa é uma característica muito boa, pois ela permite que você fique on-line no seu cliente Steam sem atormentar seus amigos com constantes mudanças de jogos, ou sem confundi-los a acharem que você está jogando um jogo quando de fato não está. Se você respeita seus amigos esse ponto sozinho já faz valer a pena usar o ASF, mas é apenas o começo. Também é bom notar que esse recurso não tem nada a ver com as configurações de privacidade do Steam - se você iniciar um jogo o estado "Em jogo" vai aparecer normalmente para seus amigos, ele torna apenas a parte do ASF invisível e não afeta em nada a sua conta.
 
 - **Você pode pular jogos reembolsáveis** (função `SkipRefundableGames`). O ASF tem uma lógica própria para tratar jogos reembolsáveis e você pode configurá-lo para não rodar automaticamente esses jogos. Isso permite que você avalie se um jogo recém comprado na Loja Steam valeu o seu dinheiro, sem que o ASF tente coletar cartas dele cedo demais. Se você jogar um jogo por mais de 2 horas ou se passarem 2 semanas desde sua compra, então o ASF vai rodar ele, pois ele já não será mais reembolsável. Até lá você já tem tempo suficiente para saber se gostou dele ou não e você pode facilmente pedir reembolso se for preciso, sem ter que bloqueá-lo manualmente ou não usar o ASF durante esse período.
 
@@ -217,7 +217,7 @@ Não, isso não é possível porque o ASF (diferente do Idle Master ou SAM) não
 
 ---
 
-### Usar o ASF pode impedir que eu jogue em servidores protegidos pelo VAC, como descrito **[aqui](https://support.steampowered.com/kb_article.php?ref=2117-ilzv-2837)**?
+### Usar o ASF pode impedir que eu jogue em servidores protegidos pelo VAC, como descrito **[aqui](https://help.steampowered.com/faqs/view/22C0-03D0-AE4B-04E8)**?
 
 O ASF não precisa que o cliente Steam esteja sendo executado e nem mesmo que ele seja instalado. De acordo com esse conceito, ele **não** deve causar nenhum problema relacionado ao VAC, pois o ASF garante não interferir com o cliente Steam nem seus processos - esse é o ponto principal quando se fala na garantia que o ASF oferece em termos do VAC.
 
@@ -239,7 +239,7 @@ Porém, no fim, é sempre uma questão de confiança no(s) desenvolvedor(es) do 
 
 ### Posso banido por isso?
 
-Para poder responder essa pergunta nós devemos dar uma olhada no **[Acordo de Assinatura do Steam](https://store.steampowered.com/subscriber_agreement)**. O Steam não proíbe o uso de várias contas, na verdade **[ela permite isso](https://support.steampowered.com/kb_article.php?ref=8625-WRAH-9030#share)** quando diz que você pode usar o mesmo autenticador móvel em mais de uma conta. O que ela não permite é compartilhar sua conta com outras pessoas, e isso nós não fazemos.
+Para poder responder essa pergunta nós devemos dar uma olhada no **[Acordo de Assinatura do Steam](https://store.steampowered.com/subscriber_agreement)**. O Steam não proíbe o uso de várias contas, na verdade **[ela permite isso](https://help.steampowered.com/faqs/view/7EFD-3CAE-64D3-1C31#share)** quando diz que você pode usar o mesmo autenticador móvel em mais de uma conta. O que ela não permite é compartilhar sua conta com outras pessoas, e isso nós não fazemos.
 
 O único ponto que realmente considera o ASF é o seguinte:
 > Você não poderá usar métodos de Trapaça, software de automação (bots), mods, hacks, ou qualquer software não autorizado de terceiros, para modificar ou automatizar qualquer processo do Mercado de Assinaturas.
@@ -257,11 +257,15 @@ Portanto, assim como todos os softwares da Valve, o ASF não é autorizado por e
 Especialmente porque:
 > Em relação a todas as Assinaturas, Conteúdo e Serviços que não sejam de autoria da Valve, a Valve não examina esses conteúdos de terceiros disponíveis no Steam ou por meio de outras fontes. A Valve não assume qualquer responsabilidade ou passivo por esses conteúdos de terceiros. É possível que determinados softwares aplicativos de terceiros sejam usados pelas empresas para propósitos empresariais; contudo, você poderá adquirir esse Software apenas por meio do Steam para uso privado.
 
-No entanto, a Valve reconhece claramente a existência de "Steam Idlers" (programas que rodam jogos automaticamente) conforme afirmado **[aqui](https://support.steampowered.com/kb_article.php?ref=2117-ilzv-2837)**, então se você me perguntasse eu diria que tenho certeza de que se a Valve não os quer, eles já teriam feito algo mais concreto que apenas apontar que isso pode causar problemas com o VAC. A palavra chave aqui é **Steam** idlers, por exemplo o ASF, e não **game** idlers.
+No entanto, a Valve reconhece claramente a existência de "Steam Idlers" (programas que rodam jogos automaticamente) conforme afirmado **[aqui](https://help.steampowered.com/faqs/view/22C0-03D0-AE4B-04E8)**, então se você me perguntasse eu diria que tenho certeza de que se a Valve não os quer, eles já teriam feito algo mais concreto que apenas apontar que isso pode causar problemas com o VAC. A palavra chave aqui é **Steam** idlers, por exemplo o ASF, e não **game** idlers.
 
 Perceba que o que foi dito acima é apenas a nossa interpretação do **[Acordo de Assinatura do Steam](https://store.steampowered.com/subscriber_agreement)** e alguns pontos - o ASF é licenciado pela Licença Apache 2.0, que diz claramente:
 
-> A menos que exigido por lei ou acordado por escrito, o ASF é distribuído "COMO ESTÁ", SEM GARANTIAS OU CONDIÇÕES DE QUALQUER TIPO, expressas ou implícitas.
+```
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+```
 
 Você está usando este software por sua conta e risco. É muito improvável que você seja banido por isso, mas se isso acontecer, você pode culpar apenas a si mesmo.
 
@@ -275,7 +279,7 @@ O primeiro caso foi de um cara com mais de 1000 bots que teve um bloqueio de tro
 
 > Olá, XXX, Obrigado por contatar o Suporte Steam. Parece que esta conta foi usada para gerenciar uma rede de contas bot. O uso de bots viola o Acordo de Assinatura do Steam.
 
-Por favor, use o bom senso e não assuma que você pode fazer essas coisas malucas só porque o ASF te dá essa possibilidade. Usar o `loot ASF` em mais de mil de bots pode ser facilmente considerado um ataque **[DDoS](https://pt.wikipedia.org/wiki/Ataque_de_nega%C3%A7%C3%A3o_de_servi%C3%A7o#Ataque_distribu%C3%ADdo)** e eu pessoalmente não estou chocado que alguém foi banido para uma coisa dessas. Use sempre o bom senso e um mínimo de uso justo em relação ao serviço do Steam, e **provavelmente** você estará seguro.
+Por favor, use o bom senso e não assuma que você pode fazer essas coisas malucas só porque o ASF te dá essa possibilidade. Usar o `loot ASF` em mais de mil de bots pode ser facilmente considerado um ataque **[DDoS](https://pt.wikipedia.org/wiki/Ataque_de_nega%C3%A7%C3%A3o_de_servi%C3%A7o#Ataque_distribu%C3%ADdo)** e eu pessoalmente não estou chocado que alguém foi banido para uma coisa dessas. Keep minimum of fair use in regards to Steam service, and **most likely** you'll be fine.
 
 O segundo caso foi de um cara com mais de 170 bots que foi banido durante a Promoção de Inverno 2017 do Steam.
 
@@ -297,7 +301,7 @@ O caso mais recente aconteceu por volta de junho de 2021, de acordo com o usuár
 
 ---
 
-Todos os incidentes acima têm uma coisa em comum - o ASF é apenas uma ferramenta e é **sua** a decisão de como utilizá-la. Você não será banido por usar o ASF, mas por **como** você o usa. Ele pode ser uma ferramenta auxiliar na coleta de apenas uma conta ou de uma rede massiva de coleta com milhares de bots. Em qualquer dos casos, eu não estou oferecendo aconselhamento legal e você deve decidir por sua conta como você usará o ASF. Não estou escondendo nenhuma informação que poderia te ajudar, o fato do ASF ter causado o banimento de algumas pessoas por exemplo, uma vez que eu não tenho motivo para isso; é escolha sua o que você quer fazer com essa informação. Se quiser minha opinião: use o bom senso, evite ter mais bot que a quantidade que recomendamos, não envie centenas de trocas ao mesmo tempo, sempre utilize o ASF atualizado e tudo _deverá_ dar certo. Todo incidente dessa natureza, por **alguma razão**, sempre aconteceu com pessoas que ignoraram nossa recomendação e decidiram que sabem melhor que nós quantos bots podem ser executados. Se isso é apenas coincidência ou algum fator real, cabe a você decidir. Não estou oferecendo qualquer aconselhamento legal, estou apenas compartilhando meus pensamentos, você pode achá-los úteis ou ignorá-los totalmente e considerar apenas os fatos acima relacionados.
+Todos os incidentes acima têm uma coisa em comum - o ASF é apenas uma ferramenta e é **sua** a decisão de como utilizá-la. Você não será banido por usar o ASF, mas por **como** você o usa. Ele pode ser uma ferramenta auxiliar na coleta de apenas uma conta ou de uma rede massiva de coleta com milhares de bots. In any case, I'm not offering legal advice, and you should decide yourself about your ASF usage in the first place. Não estou escondendo nenhuma informação que poderia te ajudar, o fato do ASF ter causado o banimento de algumas pessoas por exemplo, uma vez que eu não tenho motivo para isso; é escolha sua o que você quer fazer com essa informação. Se quiser minha opinião: use o bom senso, evite ter mais bot que a quantidade que recomendamos, não envie centenas de trocas ao mesmo tempo, sempre utilize o ASF atualizado e tudo _deverá_ dar certo. Todo incidente dessa natureza, por **alguma razão**, sempre aconteceu com pessoas que ignoraram nossa recomendação e decidiram que sabem melhor que nós quantos bots podem ser executados. Se isso é apenas coincidência ou algum fator real, cabe a você decidir. Não estou oferecendo qualquer aconselhamento legal, estou apenas compartilhando meus pensamentos, você pode achá-los úteis ou ignorá-los totalmente e considerar apenas os fatos acima relacionados.
 
 ---
 
@@ -347,7 +351,7 @@ O ASF é um aplicativo de console, não há janela para ser minimizada pois as j
 
 ### Usar o ASF mantém a elegibilidade para receber pacotes de cartas?
 
-**Sim**. O ASF usa o mesmo método para se conectar a Rede Steam que o cliente oficial, então ele também preserva a habilidade de receber pacotes para as contas que estão sendo usadas no ASF. Além disso, preservar essa habilidade não requer nem entrar na Comunidade Steam, então você pode setar a configuração `OnlineStatus` para `Off-line` e se manter invisível sem medo.
+**Sim**. O ASF usa o mesmo método para se conectar a Rede Steam que o cliente oficial, então ele também preserva a habilidade de receber pacotes para as contas que estão sendo usadas no ASF. Moreover, preserving that ability doesn't even require logging in into Steam community, so you can safely use `OnlineStatus` in `Offline` setting if you'd like to.
 
 ---
 
@@ -553,7 +557,7 @@ Você provavelmente está usando o Windows e seu console está com modo de ediç
 
 ### O ASF não pode aceita ou envia trocas!
 
-O óbvio primeiro: novas contas são limitadas. Até que você desbloqueie a conta colocando pelo menos $5 (dólares) na sua Carteira Steam ou gastando esse valor na loja, o ASF não pode aceitar nem enviar trocas usando essa conta. Neste caso, o ASF indicará que esse inventário parece vazio, porque todas as cartas nele não são trocáveis. Também não será possível receber qualquer troca, já que para isso o ASF precisa ser capaz de obter uma chave de API e esse recurso é desabilitado em contas limitadas. Resumindo, trocas estão fora de questão para contas limitadas, sem exceções.
+O óbvio primeiro: novas contas são limitadas. Até que você desbloqueie a conta colocando pelo menos $5 (dólares) na sua Carteira Steam ou gastando esse valor na loja, o ASF não pode aceitar nem enviar trocas usando essa conta. Neste caso, o ASF indicará que esse inventário parece vazio, porque todas as cartas nele não são trocáveis.
 
 Depois, se você não usa o **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-pt-BR)**, é possível que o ASF tenha aceitado/enviado a troca, mas você precisa confirmar ela através de seu e-mail. Do mesmo jeito, se você usa o 2FA padrão, você precisa confirmar a troca pelo autenticador. As confirmações são **obrigatórias**, então se você não quer aceitá-las manualmente, considere importar seu autenticador para o ASF 2FA.
 

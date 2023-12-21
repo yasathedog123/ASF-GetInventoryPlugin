@@ -155,7 +155,7 @@ public sealed class GlobalConfig {
 			Uri uri;
 
 			try {
-				uri = new Uri(WebProxyText!);
+				uri = new Uri(WebProxyText);
 			} catch (UriFormatException e) {
 				ASF.ArchiLogger.LogGenericException(e);
 
@@ -472,7 +472,7 @@ public sealed class GlobalConfig {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(OptimizationMode), OptimizationMode));
 		}
 
-		if (!string.IsNullOrEmpty(SteamMessagePrefix) && !SteamChatMessage.IsValidPrefix(SteamMessagePrefix!)) {
+		if (!string.IsNullOrEmpty(SteamMessagePrefix) && !SteamChatMessage.IsValidPrefix(SteamMessagePrefix)) {
 			return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamMessagePrefix), SteamMessagePrefix));
 		}
 
@@ -488,9 +488,7 @@ public sealed class GlobalConfig {
 	}
 
 	internal static async Task<(GlobalConfig? GlobalConfig, string? LatestJson)> Load(string filePath) {
-		if (string.IsNullOrEmpty(filePath)) {
-			throw new ArgumentNullException(nameof(filePath));
-		}
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
 
 		if (!File.Exists(filePath)) {
 			return (null, null);
@@ -525,8 +523,7 @@ public sealed class GlobalConfig {
 
 		if (!valid) {
 			if (!string.IsNullOrEmpty(errorMessage)) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				ASF.ArchiLogger.LogGenericError(errorMessage!);
+				ASF.ArchiLogger.LogGenericError(errorMessage);
 			}
 
 			return (null, null);
@@ -537,7 +534,7 @@ public sealed class GlobalConfig {
 				case ArchiCryptoHelper.EHashingMethod.PlainText when !string.IsNullOrEmpty(globalConfig.IPCPassword):
 					Utilities.InBackground(
 						() => {
-							(bool isWeak, string? reason) = Utilities.TestPasswordStrength(globalConfig.IPCPassword!, ForbiddenIPCPasswordPhrases);
+							(bool isWeak, string? reason) = Utilities.TestPasswordStrength(globalConfig.IPCPassword, ForbiddenIPCPasswordPhrases);
 
 							if (isWeak) {
 								ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakIPCPassword, reason));
@@ -566,10 +563,7 @@ public sealed class GlobalConfig {
 	}
 
 	internal static async Task<bool> Write(string filePath, GlobalConfig globalConfig) {
-		if (string.IsNullOrEmpty(filePath)) {
-			throw new ArgumentNullException(nameof(filePath));
-		}
-
+		ArgumentException.ThrowIfNullOrEmpty(filePath);
 		ArgumentNullException.ThrowIfNull(globalConfig);
 
 		string json = JsonConvert.SerializeObject(globalConfig, Formatting.Indented);

@@ -52,9 +52,8 @@ public sealed class Confirmation {
 		Generic,
 		Trade,
 		Market,
-
-		// We're missing information about definition of number 4 type
 		PhoneNumberChange = 5,
-		AccountRecovery = 6
+		AccountRecovery = 6,
+		ApiKeyRegistration = 9
 	}
 }

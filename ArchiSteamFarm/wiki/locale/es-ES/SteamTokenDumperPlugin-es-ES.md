@@ -1,6 +1,6 @@
 # SteamTokenDumperPlugin
 
-`SteamTokenDumperPlugin` es un **[plugin](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Plugins-es-ES)** oficial para ASF, disponible a partir de ASF V4.2.2, desarrollado por nosotros, el cual te permite contribuir al proyecto **[SteamDB](https://steamdb.info)** compartiendo tokens de paquetes, tokens de aplicaciones y claves de depósito a los que tiene acceso tu cuenta de Steam. La información extendida de los datos recolectados y por qué SteamDB los necesita se puede encontrar en la página **[Token Dumper](https://steamdb.info/tokendumper)** de SteamDB. Los datos enviados no incluyen ninguna información potencialmente sensible, y no presenta riesgo de seguridad/privacidad, como se indica en la descripción previa.
+`SteamTokenDumperPlugin` es un **[plugin](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Plugins-es-ES)** oficial para ASF desarrollado por nosotros, el cual te permite contribuir al proyecto **[SteamDB](https://steamdb.info)** compartiendo tokens de paquetes, tokens de aplicaciones y claves de depósito a los que tiene acceso tu cuenta de Steam. La información extendida de los datos recolectados y por qué SteamDB los necesita se puede encontrar en la página **[Token Dumper](https://steamdb.info/tokendumper)** de SteamDB. Los datos enviados no incluyen ninguna información potencialmente sensible, y no presenta riesgo de seguridad/privacidad, como se indica en la descripción previa.
 
 ---
 
@@ -36,9 +36,17 @@ En cualquier caso, el personal de SteamDB te agradece de antemano por tu ayuda. 
 
 ---
 
+## Comando
+
+El plugin STD viene con un comando adicional para ASF, `!std [Bots]`,  que te permite activar bajo demanda la actualización y el envío para los bots seleccionados. Usar el comando no requiere que esté habilitado en la configuración, lo que te permite omitir la recolección y envío automáticos, y controlar el proceso manualmente. Naturalmente, también puede ser ejecutado estando habilitado en la configuración, lo que activará los procesos de recolección y envío normales antes de lo esperado.
+
+Recomendamos `!std ASF` para activar la actualización para todos los bots disponibles. Sin embargo, también puedes activarlo para los seleccionados si lo deseas.
+
+---
+
 ## Configuración avanzada
 
-A partir de ASF V5.1.0.0, nuestro plugin soporta una configuración avanzada que puede resultar útil para las personas que deseen ajustar la configuración interna del plugin a su preferencia.
+Nuestro plugin soporta una configuración avanzada que puede ser útil para las personas que deseen hacer ajustes de acuerdo a sus preferencias.
 
 La configuración avanzada tiene la siguiente estructura en el archivo `ASF.json`:
 

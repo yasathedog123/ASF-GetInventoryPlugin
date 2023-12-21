@@ -36,8 +36,8 @@ public sealed class TradeOffer {
 	[PublicAPI]
 	public IReadOnlyCollection<Asset> ItemsToReceiveReadOnly => ItemsToReceive;
 
-	internal readonly HashSet<Asset> ItemsToGive = new();
-	internal readonly HashSet<Asset> ItemsToReceive = new();
+	internal readonly HashSet<Asset> ItemsToGive = [];
+	internal readonly HashSet<Asset> ItemsToReceive = [];
 
 	[PublicAPI]
 	public ulong OtherSteamID64 { get; private set; }
@@ -50,13 +50,8 @@ public sealed class TradeOffer {
 
 	// Constructed from trades being received
 	internal TradeOffer(ulong tradeOfferID, uint otherSteamID3, ETradeOfferState state) {
-		if (tradeOfferID == 0) {
-			throw new ArgumentOutOfRangeException(nameof(tradeOfferID));
-		}
-
-		if (otherSteamID3 == 0) {
-			throw new ArgumentOutOfRangeException(nameof(otherSteamID3));
-		}
+		ArgumentOutOfRangeException.ThrowIfZero(tradeOfferID);
+		ArgumentOutOfRangeException.ThrowIfZero(otherSteamID3);
 
 		if (!Enum.IsDefined(state)) {
 			throw new InvalidEnumArgumentException(nameof(state), (int) state, typeof(ETradeOfferState));
@@ -73,6 +68,6 @@ public sealed class TradeOffer {
 			throw new ArgumentNullException(nameof(acceptedTypes));
 		}
 
-		return ItemsToGive.All(item => item is { AppID: Asset.SteamAppID, ContextID: Asset.SteamCommunityContextID, AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown } && acceptedTypes.Contains(item.Type));
+		return ItemsToGive.All(item => item is { AppID: Asset.SteamAppID, ContextID: Asset.SteamCommunityContextID, AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0 and not Asset.SteamAppID, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown } && acceptedTypes.Contains(item.Type));
 	}
 }

@@ -6,13 +6,13 @@ If you're interested in what is currently going on, you can check **[ASF Crowdin
 
 ---
 
-## Scope
+## Obim
 
 Our platform supports localization of our main ASF program, as well as whole localizable content that we offer together with it. This includes especially our ASF-WebConfigGenerator, ASF-ui, as well as our wiki. All of that is possible to translate through convenient crowdin interface.
 
 ---
 
-## Signing up
+## Registracija
 
 If you'd like to help with ASF, either by translating, reviewing or approving translations, please sign up on our **[Crowdin project page](https://crowdin.com/project/archisteamfarm)**. Registration is easy and absolutely free! After logging in you can pick languages that you'd like to get assigned to, then proceed to ASF strings and help the rest of the community with translating ASF into all most popular languages!
 
@@ -227,7 +227,7 @@ This way our local link will keep working, since it'll now point to name of the 
 
 ---
 
-### Code blocks
+### Kod blok
 
 Be extremely careful when you translate sentences with `<code></code>` blocks inside. Code block indicates fixed ASF code names or terms that should not be translated. Na primjer:
 
@@ -245,11 +245,11 @@ If you believe that something inappropriate is included in a code block, or that
 
 ---
 
-## Hall of fame
+## Kuća slavnih
 
 We'd like to show our eternal gratitude to people that have spent a significant amount of their time and willings to make ASF localization better. Their effort is incredible, and you can enjoy complete translations, including the wiki, mostly thanks to them. As a token of appreciation, all people listed here are offered free access to **[`MatchActively`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/ItemsMatcherPlugin#matchactively)** feature upon a **[request](https://crowdin.com/messages/create/13177432/240376)**.
 
-| Contributor                                                | Jezici            |
+| Kontributori                                               | Jezici            |
 | ---------------------------------------------------------- | ----------------- |
 | **[Astaroth](https://crowdin.com/profile/astaroth2012)**   | LOLCAT, Španjski  |
 | **[Dead_Sam](https://crowdin.com/profile/Dead_Sam)**       | Portugalski (BR)  |
@@ -260,4 +260,4 @@ We'd like to show our eternal gratitude to people that have spent a significant 
 | **[MrBurrBurr](https://crowdin.com/profile/MrBurrBurr)**   | LOLCAT, Njemački  |
 | **[XinxingChen](https://crowdin.com/profile/XinxingChen)** | Kineski (HK)      |
 
-Thank you all for improving our ASF localization quality!
+Hvala Vam svima što poboljšavate kvalitetu lokalizacije ASF-a!

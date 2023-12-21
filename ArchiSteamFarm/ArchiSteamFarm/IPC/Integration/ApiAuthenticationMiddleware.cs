@@ -19,9 +19,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if NETFRAMEWORK || NETSTANDARD
-using MvcNewtonsoftJsonOptions = Microsoft.AspNetCore.Mvc.MvcJsonOptions;
-#endif
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -58,9 +55,10 @@ internal sealed class ApiAuthenticationMiddleware {
 	private readonly RequestDelegate Next;
 
 	public ApiAuthenticationMiddleware(RequestDelegate next, IOptions<ForwardedHeadersOptions> forwardedHeadersOptions) {
-		Next = next ?? throw new ArgumentNullException(nameof(next));
-
+		ArgumentNullException.ThrowIfNull(next);
 		ArgumentNullException.ThrowIfNull(forwardedHeadersOptions);
+
+		Next = next;
 
 		ForwardedHeadersOptions = forwardedHeadersOptions.Value ?? throw new InvalidOperationException(nameof(forwardedHeadersOptions));
 

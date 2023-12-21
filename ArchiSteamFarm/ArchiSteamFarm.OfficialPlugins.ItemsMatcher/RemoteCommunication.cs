@@ -23,13 +23,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
-using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 using ArchiSteamFarm.Steam;
@@ -54,8 +55,8 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private const byte MaxTradeOffersActive = 5; // The actual upper limit is 30, but we should use lower amount to allow some bots to react before we hit the maximum allowed
 	private const byte MinAnnouncementTTL = 5; // Minimum amount of minutes we must wait before the next Announcement
 	private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
-	private const byte MinimumSteamGuardEnabledDays = 15; // As imposed by Steam limits
 	private const byte MinimumPasswordResetCooldownDays = 5; // As imposed by Steam limits
+	private const byte MinimumSteamGuardEnabledDays = 15; // As imposed by Steam limits
 	private const byte MinPersonaStateTTL = 5; // Minimum amount of minutes we must wait before requesting persona state update
 
 	private static readonly ImmutableHashSet<Asset.EType> AcceptedMatchableTypes = ImmutableHashSet.Create(
@@ -68,15 +69,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private readonly Bot Bot;
 	private readonly Timer? HeartBeatTimer;
 
-	// We access this collection only within a semaphore, therefore there is no need for concurrent access
-	private readonly Dictionary<ulong, uint> LastAnnouncedItems = new();
-
 	private readonly SemaphoreSlim MatchActivelySemaphore = new(1, 1);
 	private readonly Timer? MatchActivelyTimer;
 	private readonly SemaphoreSlim RequestsSemaphore = new(1, 1);
 	private readonly WebBrowser WebBrowser;
 
-	private string? LastAnnouncedTradeToken;
+	private string BotCacheFilePath => Path.Combine(SharedInfo.ConfigDirectory, $"{Bot.BotName}.{nameof(ItemsMatcher)}.cache");
+
+	private BotCache? BotCache;
 	private DateTime LastAnnouncement;
 	private DateTime LastHeartBeat;
 	private DateTime LastPersonaStateRequest;
@@ -92,7 +92,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 		if (Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) && Bot.BotConfig.RemoteCommunication.HasFlag(BotConfig.ERemoteCommunication.PublicListing)) {
 			HeartBeatTimer = new Timer(
-				HeartBeat,
+				OnHeartBeatTimer,
 				null,
 				TimeSpan.FromMinutes(1) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots?.Count ?? 0),
 				TimeSpan.FromMinutes(1)
@@ -114,12 +114,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	}
 
 	public void Dispose() {
-		// Those are objects that are always being created if constructor doesn't throw exception
-		MatchActivelySemaphore.Dispose();
-		RequestsSemaphore.Dispose();
-		WebBrowser.Dispose();
-
-		// Those are objects that might be null and the check should be in-place
+		// Dispose timers first so we won't launch new events
 		HeartBeatTimer?.Dispose();
 
 		if (MatchActivelyTimer != null) {
@@ -128,6 +123,25 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				MatchActivelyTimer.Dispose();
 			}
 		}
+
+		// Ensure the semaphores are closed, then dispose the rest
+		try {
+			MatchActivelySemaphore.Wait();
+		} catch (ObjectDisposedException) {
+			// Ignored, this is fine
+		}
+
+		try {
+			RequestsSemaphore.Wait();
+		} catch (ObjectDisposedException) {
+			// Ignored, this is fine
+		}
+
+		BotCache?.Dispose();
+
+		MatchActivelySemaphore.Dispose();
+		RequestsSemaphore.Dispose();
+		WebBrowser.Dispose();
 	}
 
 	public async ValueTask DisposeAsync() {
@@ -144,8 +158,19 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 
 		// Ensure the semaphores are closed, then dispose the rest
-		await MatchActivelySemaphore.WaitAsync().ConfigureAwait(false);
-		await RequestsSemaphore.WaitAsync().ConfigureAwait(false);
+		try {
+			await MatchActivelySemaphore.WaitAsync().ConfigureAwait(false);
+		} catch (ObjectDisposedException) {
+			// Ignored, this is fine
+		}
+
+		try {
+			await RequestsSemaphore.WaitAsync().ConfigureAwait(false);
+		} catch (ObjectDisposedException) {
+			// Ignored, this is fine
+		}
+
+		BotCache?.Dispose();
 
 		MatchActivelySemaphore.Dispose();
 		RequestsSemaphore.Dispose();
@@ -250,17 +275,18 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			bool matchEverything = Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything);
 
+			uint index = 0;
 			ulong previousAssetID = 0;
 
-			List<AssetForListing> assetsForListing = new();
+			List<AssetForListing> assetsForListing = [];
 
 			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), bool> tradableSets = new();
 
 			foreach (Asset item in inventory) {
-				if (item is { AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown } && acceptedMatchableTypes.Contains(item.Type)) {
+				if (item is { AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown, IsSteamPointsShopItem: false } && acceptedMatchableTypes.Contains(item.Type)) {
 					// Only tradable assets matter for MatchEverything bots
 					if (!matchEverything || item.Tradable) {
-						assetsForListing.Add(new AssetForListing(item, previousAssetID));
+						assetsForListing.Add(new AssetForListing(item, index, previousAssetID));
 					}
 
 					// But even for Fair bots, we should track and skip sets where we don't have any item to trade with
@@ -277,6 +303,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					}
 				}
 
+				index++;
 				previousAssetID = item.AssetID;
 			}
 
@@ -301,22 +328,25 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				}
 			}
 
-			if (assetsForListing.Count > MaxItemsCount) {
-				// We're not eligible, record this as a valid check
-				LastAnnouncement = DateTime.UtcNow;
-				ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
+			BotCache ??= await BotCache.CreateOrLoad(BotCacheFilePath).ConfigureAwait(false);
 
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(assetsForListing)} > {MaxItemsCount}"));
+			string inventoryChecksumBeforeDeduplication = Backend.GenerateChecksumFor(assetsForListing);
 
-				return;
-			}
+			if ((tradeToken == BotCache.LastAnnouncedTradeToken) && !string.IsNullOrEmpty(BotCache.LastInventoryChecksumBeforeDeduplication)) {
+				if (inventoryChecksumBeforeDeduplication == BotCache.LastInventoryChecksumBeforeDeduplication) {
+					// We've determined our state to be the same, we can skip announce entirely and start sending heartbeats exclusively
+					bool triggerImmediately = !ShouldSendHeartBeats;
 
-			if (ShouldSendHeartBeats && (tradeToken == LastAnnouncedTradeToken) && (assetsForListing.Count == LastAnnouncedItems.Count) && assetsForListing.All(item => LastAnnouncedItems.TryGetValue(item.AssetID, out uint amount) && (item.Amount == amount))) {
-				// There is nothing new to announce, this is fine, skip the request
-				LastAnnouncement = DateTime.UtcNow;
-				ShouldSendAnnouncementEarlier = false;
+					LastAnnouncement = DateTime.UtcNow;
+					ShouldSendAnnouncementEarlier = false;
+					ShouldSendHeartBeats = true;
 
-				return;
+					if (triggerImmediately) {
+						Utilities.InBackground(() => OnHeartBeatTimer());
+					}
+
+					return;
+				}
 			}
 
 			if (!SignedInWithSteam) {
@@ -340,84 +370,405 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				SignedInWithSteam = true;
 			}
 
-			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
+			if (!matchEverything) {
+				// We should deduplicate our sets before sending them to the server, for doing that we'll use ASFB set parts data
+				HashSet<uint> realAppIDs = [];
+				Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> state = new();
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			BasicResponse? response = await Backend.AnnounceForListing(Bot.SteamID, WebBrowser, assetsForListing, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
+				foreach (AssetForListing asset in assetsForListing) {
+					realAppIDs.Add(asset.RealAppID);
 
-			if (response == null) {
-				// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
-				ShouldSendHeartBeats = false;
+					(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (asset.RealAppID, asset.Type, asset.Rarity);
 
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
+					if (state.TryGetValue(key, out Dictionary<ulong, uint>? set)) {
+						set[asset.ClassID] = set.TryGetValue(asset.ClassID, out uint amount) ? amount + asset.Amount : asset.Amount;
+					} else {
+						state[key] = new Dictionary<ulong, uint> { { asset.ClassID, asset.Amount } };
+					}
+				}
 
-				return;
-			}
+				ObjectResponse<GenericResponse<ImmutableHashSet<SetPart>>>? setPartsResponse = await Backend.GetSetParts(WebBrowser, Bot.SteamID, acceptedMatchableTypes, realAppIDs).ConfigureAwait(false);
 
-			if (response.StatusCode.IsRedirectionCode()) {
-				ShouldSendHeartBeats = false;
-
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
-
-				if (response.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.FinalUri), response.FinalUri));
+				if (setPartsResponse == null) {
+					// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
+					ShouldSendHeartBeats = false;
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(setPartsResponse)));
 
 					return;
 				}
 
-				// We've expected the result, not the redirection to the sign in, we need to authenticate again
-				SignedInWithSteam = false;
+				if (setPartsResponse.StatusCode.IsRedirectionCode()) {
+					ShouldSendHeartBeats = false;
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, setPartsResponse.StatusCode));
+
+					if (setPartsResponse.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
+						ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(setPartsResponse.FinalUri), setPartsResponse.FinalUri));
+
+						return;
+					}
+
+					// We've expected the result, not the redirection to the sign in, we need to authenticate again
+					SignedInWithSteam = false;
+
+					return;
+				}
+
+				if (!setPartsResponse.StatusCode.IsSuccessCode()) {
+					// ArchiNet told us that we've sent a bad request, so the process should restart from the beginning at later time
+					ShouldSendHeartBeats = false;
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, setPartsResponse.StatusCode));
+
+					switch (setPartsResponse.StatusCode) {
+						case HttpStatusCode.Forbidden:
+							// ArchiNet told us to stop submitting data for now
+							LastAnnouncement = DateTime.UtcNow.AddYears(1);
+
+							return;
+						case HttpStatusCode.TooManyRequests:
+							// ArchiNet told us to try again later
+							LastAnnouncement = DateTime.UtcNow.AddDays(1);
+
+							return;
+						default:
+							// There is something wrong with our payload or the server, we shouldn't retry for at least several hours
+							LastAnnouncement = DateTime.UtcNow.AddHours(6);
+
+							return;
+					}
+				}
+
+				if (setPartsResponse.Content?.Result == null) {
+					// This should never happen if we got the correct response
+					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(setPartsResponse), setPartsResponse.Content?.Result));
+
+					return;
+				}
+
+				Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), HashSet<ulong>> databaseSets = setPartsResponse.Content.Result.GroupBy(static setPart => (setPart.RealAppID, setPart.Type, setPart.Rarity)).ToDictionary(static group => group.Key, static group => group.Select(static setPart => setPart.ClassID).ToHashSet());
+
+				HashSet<(ulong ClassID, uint Amount)> setCopy = [];
+
+				foreach (((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key, Dictionary<ulong, uint> set) in state) {
+					if (!databaseSets.TryGetValue(key, out HashSet<ulong>? databaseSet)) {
+						// We have no clue about this set, we can't do any optimization
+						continue;
+					}
+
+					if ((databaseSet.Count != set.Count) || !databaseSet.SetEquals(set.Keys)) {
+						// User either has more or less classIDs than we know about, we can't optimize this
+						continue;
+					}
+
+					// User has all classIDs we know about, we can deduplicate his items based on lowest count
+					setCopy.Clear();
+
+					uint minimumAmount = uint.MaxValue;
+
+					foreach ((ulong classID, uint amount) in set) {
+						if (amount < minimumAmount) {
+							minimumAmount = amount;
+						}
+
+						setCopy.Add((classID, amount));
+					}
+
+					foreach ((ulong classID, uint amount) in setCopy) {
+						if (minimumAmount >= amount) {
+							set.Remove(classID);
+
+							continue;
+						}
+
+						set[classID] = amount - minimumAmount;
+					}
+				}
+
+				HashSet<AssetForListing> assetsForListingFiltered = [];
+
+				foreach (AssetForListing asset in assetsForListing.Where(asset => state.TryGetValue((asset.RealAppID, asset.Type, asset.Rarity), out Dictionary<ulong, uint>? setState) && setState.TryGetValue(asset.ClassID, out uint targetAmount) && (targetAmount > 0)).OrderByDescending(static asset => asset.Tradable).ThenByDescending(static asset => asset.Index)) {
+					(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (asset.RealAppID, asset.Type, asset.Rarity);
+
+					if (!state.TryGetValue(key, out Dictionary<ulong, uint>? setState) || !setState.TryGetValue(asset.ClassID, out uint targetAmount) || (targetAmount == 0)) {
+						// We're not interested in this combination
+						continue;
+					}
+
+					if (asset.Amount >= targetAmount) {
+						asset.Amount = targetAmount;
+
+						if (setState.Remove(asset.ClassID) && (setState.Count == 0)) {
+							state.Remove(key);
+						}
+					} else {
+						setState[asset.ClassID] = targetAmount - asset.Amount;
+					}
+
+					assetsForListingFiltered.Add(asset);
+				}
+
+				assetsForListing = assetsForListingFiltered.OrderBy(static asset => asset.Index).ToList();
+
+				if (assetsForListing.Count == 0) {
+					// We're not eligible, record this as a valid check
+					LastAnnouncement = DateTime.UtcNow;
+					ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
+
+					// There is a possibility that our inventory has changed even if our announced assets did not, record that
+					BotCache.LastInventoryChecksumBeforeDeduplication = inventoryChecksumBeforeDeduplication;
+
+					return;
+				}
+			}
+
+			if (assetsForListing.Count > MaxItemsCount) {
+				// We're not eligible, record this as a valid check
+				LastAnnouncement = DateTime.UtcNow;
+				ShouldSendAnnouncementEarlier = ShouldSendHeartBeats = false;
+
+				// There is a possibility that our inventory has changed even if our announced assets did not, record that
+				BotCache.LastInventoryChecksumBeforeDeduplication = inventoryChecksumBeforeDeduplication;
+
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(assetsForListing)} > {MaxItemsCount}"));
 
 				return;
 			}
 
-			if (response.StatusCode.IsClientErrorCode()) {
-				// ArchiNet told us that we've sent a bad request, so the process should restart from the beginning at later time
-				ShouldSendHeartBeats = false;
+			string checksum = Backend.GenerateChecksumFor(assetsForListing);
+			string? previousChecksum = BotCache.LastAnnouncedAssetsForListing.Count > 0 ? Backend.GenerateChecksumFor(BotCache.LastAnnouncedAssetsForListing) : null;
 
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
+			if ((tradeToken == BotCache.LastAnnouncedTradeToken) && (checksum == previousChecksum)) {
+				// We've determined our state to be the same, we can skip announce entirely and start sending heartbeats exclusively
+				bool triggerImmediately = !ShouldSendHeartBeats;
 
-				switch (response.StatusCode) {
-					case HttpStatusCode.Forbidden:
-						// ArchiNet told us to stop submitting data for now
-						LastAnnouncement = DateTime.UtcNow.AddYears(1);
+				LastAnnouncement = DateTime.UtcNow;
+				ShouldSendAnnouncementEarlier = false;
+				ShouldSendHeartBeats = true;
+
+				if (triggerImmediately) {
+					Utilities.InBackground(() => OnHeartBeatTimer());
+				}
+
+				// There is a possibility that our inventory has changed even if our announced assets did not, record that
+				BotCache.LastInventoryChecksumBeforeDeduplication = inventoryChecksumBeforeDeduplication;
+
+				return;
+			}
+
+			if (BotCache.LastAnnouncedAssetsForListing.Count > 0) {
+				Dictionary<ulong, AssetForListing> previousInventoryState = BotCache.LastAnnouncedAssetsForListing.ToDictionary(static asset => asset.AssetID);
+
+				HashSet<AssetForListing> inventoryAddedChanged = assetsForListing.Where(asset => !previousInventoryState.Remove(asset.AssetID, out AssetForListing? previousAsset) || (asset.BackendHashCode != previousAsset.BackendHashCode)).ToHashSet();
+
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
+
+				ObjectResponse<GenericResponse<BackgroundTaskResponse>>? diffResponse = null;
+				Guid diffRequestID = Guid.Empty;
+
+				for (byte i = 0; i < WebBrowser.MaxTries; i++) {
+					if (diffRequestID != Guid.Empty) {
+						diffResponse = await Backend.PollResult(WebBrowser, Bot.SteamID, diffRequestID).ConfigureAwait(false);
+					} else {
+						diffResponse = await Backend.AnnounceDiffForListing(WebBrowser, Bot.SteamID, inventoryAddedChanged, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, previousInventoryState.Values, previousChecksum, nickname, avatarHash).ConfigureAwait(false);
+					}
+
+					if (diffResponse == null) {
+						// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
+						ShouldSendHeartBeats = false;
+						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(diffResponse)));
 
 						return;
-#if NETFRAMEWORK || NETSTANDARD
-					case (HttpStatusCode) 429:
-#else
-					case HttpStatusCode.TooManyRequests:
-#endif
+					}
 
-						// ArchiNet told us to try again later
-						LastAnnouncement = DateTime.UtcNow.AddDays(1);
+					if (diffResponse.StatusCode.IsRedirectionCode()) {
+						ShouldSendHeartBeats = false;
+						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, diffResponse.StatusCode));
+
+						if (diffResponse.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
+							ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(diffResponse.FinalUri), diffResponse.FinalUri));
+
+							return;
+						}
+
+						// We've expected the result, not the redirection to the sign in, we need to authenticate again
+						SignedInWithSteam = false;
 
 						return;
-					default:
-						// There is something wrong with our payload or the server, we shouldn't retry for at least several hours
-						LastAnnouncement = DateTime.UtcNow.AddHours(6);
+					}
+
+					if (!diffResponse.StatusCode.IsSuccessCode()) {
+						// ArchiNet told us that we've sent a bad request, so the process should restart from the beginning at later time
+						ShouldSendHeartBeats = false;
+						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, diffResponse.StatusCode));
+
+						switch (diffResponse.StatusCode) {
+							case HttpStatusCode.Conflict:
+								// ArchiNet told us to do full announcement instead, the only non-OK response we accept
+								break;
+							case HttpStatusCode.Forbidden:
+								// ArchiNet told us to stop submitting data for now
+								LastAnnouncement = DateTime.UtcNow.AddYears(1);
+
+								return;
+							case HttpStatusCode.TooManyRequests:
+								// ArchiNet told us to try again later
+								LastAnnouncement = DateTime.UtcNow.AddDays(1);
+
+								return;
+							default:
+								// There is something wrong with our payload or the server, we shouldn't retry for at least several hours
+								LastAnnouncement = DateTime.UtcNow.AddHours(6);
+
+								return;
+						}
+
+						break;
+					}
+
+					// Great, do we need to wait?
+					if (diffResponse.Content?.Result == null) {
+						// This should never happen if we got the correct response
+						Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(diffResponse), diffResponse.Content?.Result));
 
 						return;
+					}
+
+					if (diffResponse.Content.Result.Finished) {
+						break;
+					}
+
+					diffRequestID = diffResponse.Content.Result.RequestID;
+					diffResponse = null;
+				}
+
+				if (diffResponse == null) {
+					// We've waited long enough, something is definitely wrong with us or the backend
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(diffResponse)));
+
+					return;
+				}
+
+				if (diffResponse.StatusCode.IsSuccessCode() && diffResponse.Content is { Success: true, Result.Finished: true }) {
+					// Our diff announce has succeeded, we have nothing to do further
+					Bot.ArchiLogger.LogGenericInfo(Strings.Success);
+
+					LastAnnouncement = LastHeartBeat = DateTime.UtcNow;
+					ShouldSendAnnouncementEarlier = false;
+					ShouldSendHeartBeats = true;
+					BotCache.LastAnnouncedAssetsForListing.ReplaceWith(assetsForListing);
+					BotCache.LastAnnouncedTradeToken = tradeToken;
+					BotCache.LastInventoryChecksumBeforeDeduplication = inventoryChecksumBeforeDeduplication;
+
+					return;
 				}
 			}
 
-			LastAnnouncement = LastHeartBeat = DateTime.UtcNow;
-			ShouldSendAnnouncementEarlier = false;
-			ShouldSendHeartBeats = true;
+			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ListingAnnouncing, Bot.SteamID, nickname ?? Bot.SteamID.ToString(CultureInfo.InvariantCulture), assetsForListing.Count));
 
-			LastAnnouncedTradeToken = tradeToken;
-			LastAnnouncedItems.Clear();
+			ObjectResponse<GenericResponse<BackgroundTaskResponse>>? announceResponse = null;
+			Guid announceRequestID = Guid.Empty;
 
-			foreach (AssetForListing item in assetsForListing) {
-				LastAnnouncedItems[item.AssetID] = item.Amount;
+			for (byte i = 0; i < WebBrowser.MaxTries; i++) {
+				if (announceRequestID != Guid.Empty) {
+					announceResponse = await Backend.PollResult(WebBrowser, Bot.SteamID, announceRequestID).ConfigureAwait(false);
+				} else {
+					announceResponse = await Backend.AnnounceForListing(WebBrowser, Bot.SteamID, assetsForListing, checksum, acceptedMatchableTypes, (uint) inventory.Count, matchEverything, tradeToken, nickname, avatarHash).ConfigureAwait(false);
+				}
+
+				if (announceResponse == null) {
+					// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
+					ShouldSendHeartBeats = false;
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(announceResponse)));
+
+					return;
+				}
+
+				if (announceResponse.StatusCode.IsRedirectionCode()) {
+					ShouldSendHeartBeats = false;
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, announceResponse.StatusCode));
+
+					if (announceResponse.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
+						ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(announceResponse.FinalUri), announceResponse.FinalUri));
+
+						return;
+					}
+
+					// We've expected the result, not the redirection to the sign in, we need to authenticate again
+					SignedInWithSteam = false;
+
+					return;
+				}
+
+				if (!announceResponse.StatusCode.IsSuccessCode()) {
+					// ArchiNet told us that we've sent a bad request, so the process should restart from the beginning at later time
+					ShouldSendHeartBeats = false;
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, announceResponse.StatusCode));
+
+					switch (announceResponse.StatusCode) {
+						case HttpStatusCode.Conflict:
+							// ArchiNet told us to that we've applied wrong deduplication logic, we can try again in a second
+							LastAnnouncement = DateTime.UtcNow.AddMinutes(5);
+
+							return;
+						case HttpStatusCode.Forbidden:
+							// ArchiNet told us to stop submitting data for now
+							LastAnnouncement = DateTime.UtcNow.AddYears(1);
+
+							return;
+						case HttpStatusCode.TooManyRequests:
+							// ArchiNet told us to try again later
+							LastAnnouncement = DateTime.UtcNow.AddDays(1);
+
+							return;
+						default:
+							// There is something wrong with our payload or the server, we shouldn't retry for at least several hours
+							LastAnnouncement = DateTime.UtcNow.AddHours(6);
+
+							return;
+					}
+				}
+
+				// Great, do we need to wait?
+				if (announceResponse.Content?.Result == null) {
+					// This should never happen if we got the correct response
+					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(announceResponse), announceResponse.Content?.Result));
+
+					return;
+				}
+
+				if (announceResponse.Content.Result.Finished) {
+					break;
+				}
+
+				announceRequestID = announceResponse.Content.Result.RequestID;
+				announceResponse = null;
 			}
 
-			LastAnnouncedItems.TrimExcess();
+			if (announceResponse == null) {
+				// We've waited long enough, something is definitely wrong with us or the backend
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(announceResponse)));
+
+				return;
+			}
+
+			if (announceResponse.StatusCode.IsSuccessCode() && announceResponse.Content is { Success: true, Result.Finished: true }) {
+				// Our diff announce has succeeded, we have nothing to do further
+				Bot.ArchiLogger.LogGenericInfo(Strings.Success);
+
+				LastAnnouncement = LastHeartBeat = DateTime.UtcNow;
+				ShouldSendAnnouncementEarlier = false;
+				ShouldSendHeartBeats = true;
+				BotCache.LastAnnouncedAssetsForListing.ReplaceWith(assetsForListing);
+				BotCache.LastAnnouncedTradeToken = tradeToken;
+				BotCache.LastInventoryChecksumBeforeDeduplication = inventoryChecksumBeforeDeduplication;
+
+				return;
+			}
+
+			// Everything we've tried has failed
+			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 		} finally {
 			RequestsSemaphore.Release();
 		}
-
-		Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 	}
 
 	internal void TriggerMatchActivelyEarlier() {
@@ -428,64 +779,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 		lock (MatchActivelySemaphore) {
 			MatchActivelyTimer.Change(TimeSpan.Zero, TimeSpan.FromHours(6));
-		}
-	}
-
-	private async void HeartBeat(object? state = null) {
-		if (!Bot.IsConnectedAndLoggedOn || (Bot.HeartBeatFailures > 0)) {
-			return;
-		}
-
-		// Request persona update if needed
-		if ((DateTime.UtcNow > LastPersonaStateRequest.AddMinutes(MinPersonaStateTTL)) && (DateTime.UtcNow > LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL))) {
-			LastPersonaStateRequest = DateTime.UtcNow;
-			Bot.RequestPersonaStateUpdate();
-		}
-
-		if (!ShouldSendHeartBeats || (DateTime.UtcNow < LastHeartBeat.AddMinutes(MinHeartBeatTTL))) {
-			return;
-		}
-
-		if (!await RequestsSemaphore.WaitAsync(0).ConfigureAwait(false)) {
-			return;
-		}
-
-		try {
-			BasicResponse? response = await Backend.HeartBeatForListing(Bot, WebBrowser).ConfigureAwait(false);
-
-			if (response == null) {
-				// This is actually a network failure, we should keep sending heartbeats for now
-				return;
-			}
-
-			if (response.StatusCode.IsRedirectionCode()) {
-				ShouldSendHeartBeats = false;
-
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
-
-				if (response.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.FinalUri), response.FinalUri));
-
-					return;
-				}
-
-				// We've expected the result, not the redirection to the sign in, we need to authenticate again
-				SignedInWithSteam = false;
-
-				return;
-			}
-
-			if (response.StatusCode.IsClientErrorCode()) {
-				ShouldSendHeartBeats = false;
-
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
-
-				return;
-			}
-
-			LastHeartBeat = DateTime.UtcNow;
-		} finally {
-			RequestsSemaphore.Release();
 		}
 	}
 
@@ -576,24 +869,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			return false;
 		}
 
-		// Bot must have valid API key (e.g. not being restricted account)
-		bool? hasValidApiKey = await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false);
-
-		if (hasValidApiKey != true) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.ArchiWebHandler.HasValidApiKey)}: {hasValidApiKey?.ToString() ?? "null"}"));
-
-			return hasValidApiKey.HasValue ? false : null;
-		}
-
-		// Bot can't be trade banned
-		(bool _, bool? Result) economyBan = await Bot.ArchiWebHandler.CachedEconomyBan.GetValue(ECacheFallback.SuccessPreviously).ConfigureAwait(false);
-
-		if (economyBan.Result != false) {
-			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(economyBan)}: {economyBan.Result?.ToString() ?? "null"}"));
-
-			return economyBan.Result.HasValue ? false : null;
-		}
-
 		return true;
 	}
 
@@ -642,7 +917,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			Dictionary<ulong, Asset> ourInventory;
 
 			try {
-				ourInventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => item is { AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown } && acceptedMatchableTypes.Contains(item.Type) && !Bot.BotDatabase.MatchActivelyBlacklistAppIDs.Contains(item.RealAppID)).ToDictionaryAsync(static item => item.AssetID).ConfigureAwait(false);
+				ourInventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => item is { AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown, IsSteamPointsShopItem: false } && acceptedMatchableTypes.Contains(item.Type) && !Bot.BotDatabase.MatchActivelyBlacklistAppIDs.Contains(item.RealAppID)).ToDictionaryAsync(static item => item.AssetID).ConfigureAwait(false);
 			} catch (HttpRequestException e) {
 				Bot.ArchiLogger.LogGenericWarningException(e);
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ourInventory)));
@@ -682,7 +957,6 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 			(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)? response = await Backend.GetListedUsersForMatching(ASF.GlobalConfig.LicenseID.Value, Bot, WebBrowser, ourInventory.Values, acceptedMatchableTypes).ConfigureAwait(false);
 
 			if (response == null) {
@@ -757,16 +1031,16 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		matchActivelyTradeOfferIDs ??= new HashSet<ulong>();
+		matchActivelyTradeOfferIDs ??= [];
 
-		HashSet<ulong> deprioritizedSteamIDs = new();
+		HashSet<ulong> deprioritizedSteamIDs = [];
 
 		if (matchActivelyTradeOfferIDs.Count > 0) {
 			// This is not a mandatory step, we allow it to fail
 			HashSet<TradeOffer>? sentTradeOffers = await Bot.ArchiWebHandler.GetTradeOffers(true, false, true, false).ConfigureAwait(false);
 
 			if (sentTradeOffers != null) {
-				HashSet<ulong> activeTradeOfferIDs = new();
+				HashSet<ulong> activeTradeOfferIDs = [];
 
 				foreach (TradeOffer tradeOffer in sentTradeOffers.Where(tradeOffer => (tradeOffer.State == ETradeOfferState.Active) && matchActivelyTradeOfferIDs.Contains(tradeOffer.TradeOfferID))) {
 					deprioritizedSteamIDs.Add(tradeOffer.OtherSteamID64);
@@ -788,7 +1062,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			}
 		}
 
-		HashSet<ulong> pendingMobileTradeOfferIDs = new();
+		HashSet<ulong> pendingMobileTradeOfferIDs = [];
 
 		byte maxTradeHoldDuration = ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration;
 
@@ -835,13 +1109,13 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				continue;
 			}
 
-			HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> skippedSetsThisUser = new();
+			HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> skippedSetsThisUser = [];
 
 			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> theirTradableState = Trading.GetTradableInventoryState(theirInventory);
 
 			for (byte i = 0; i < Trading.MaxTradesPerAccount; i++) {
 				byte itemsInTrade = 0;
-				HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> skippedSetsThisTrade = new();
+				HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> skippedSetsThisTrade = [];
 
 				Dictionary<ulong, uint> classIDsToGive = new();
 				Dictionary<ulong, uint> classIDsToReceive = new();
@@ -1095,5 +1369,84 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Localization.Strings.ActivelyMatchingItemsRound, matchedSets));
 
 		return matchedSets > 0;
+	}
+
+	private async void OnHeartBeatTimer(object? state = null) {
+		if (!Bot.IsConnectedAndLoggedOn || (Bot.HeartBeatFailures > 0)) {
+			return;
+		}
+
+		// Request persona update if needed
+		if ((DateTime.UtcNow > LastPersonaStateRequest.AddMinutes(MinPersonaStateTTL)) && (DateTime.UtcNow > LastAnnouncement.AddMinutes(ShouldSendAnnouncementEarlier ? MinAnnouncementTTL : MaxAnnouncementTTL))) {
+			LastPersonaStateRequest = DateTime.UtcNow;
+			Bot.RequestPersonaStateUpdate();
+		}
+
+		if (!ShouldSendHeartBeats || (DateTime.UtcNow < LastHeartBeat.AddMinutes(MinHeartBeatTTL))) {
+			return;
+		}
+
+		if (!await RequestsSemaphore.WaitAsync(0).ConfigureAwait(false)) {
+			return;
+		}
+
+		try {
+			if (!SignedInWithSteam) {
+				HttpStatusCode? signInWithSteam = await ArchiNet.SignInWithSteam(Bot, WebBrowser).ConfigureAwait(false);
+
+				if (signInWithSteam == null) {
+					// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
+					ShouldSendHeartBeats = false;
+
+					return;
+				}
+
+				if (!signInWithSteam.Value.IsSuccessCode()) {
+					// SignIn procedure failed and it wasn't a network error, hold off with future tries at least for a full day
+					LastAnnouncement = DateTime.UtcNow.AddDays(1);
+					ShouldSendHeartBeats = false;
+
+					return;
+				}
+
+				SignedInWithSteam = true;
+			}
+
+			BasicResponse? response = await Backend.HeartBeatForListing(Bot, WebBrowser).ConfigureAwait(false);
+
+			if (response == null) {
+				// This is actually a network failure, we should keep sending heartbeats for now
+				return;
+			}
+
+			if (response.StatusCode.IsRedirectionCode()) {
+				ShouldSendHeartBeats = false;
+
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
+
+				if (response.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.FinalUri), response.FinalUri));
+
+					return;
+				}
+
+				// We've expected the result, not the redirection to the sign in, we need to authenticate again
+				SignedInWithSteam = false;
+
+				return;
+			}
+
+			if (response.StatusCode.IsClientErrorCode()) {
+				ShouldSendHeartBeats = false;
+
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
+
+				return;
+			}
+
+			LastHeartBeat = DateTime.UtcNow;
+		} finally {
+			RequestsSemaphore.Release();
+		}
 	}
 }

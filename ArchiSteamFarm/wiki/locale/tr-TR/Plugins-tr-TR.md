@@ -1,6 +1,6 @@
 # Eklentiler
 
-ASF V4 ile başlarken, programın kendisi runtime sırasında özel eklentiler için destek vermeyi içermektedir. Eklentiler ASF'in davranışlarını özelleştirmeye yarar, örnek olarak özel komutlar ekleyerek, özel takas mantığı ekleyerek veya üçüncü parti servisleri ve uygulama programlama arayüzü ile entegrasyon ekleyerek.
+ASF includes support for custom plugins that can be loaded during runtime. Eklentiler ASF'in davranışlarını özelleştirmeye yarar, örnek olarak özel komutlar ekleyerek, özel takas mantığı ekleyerek veya üçüncü parti servisleri ve uygulama programlama arayüzü ile entegrasyon ekleyerek.
 
 ---
 
@@ -28,7 +28,7 @@ Eklentiler, ASF ile ortak `IPlugin` arayüzünü devralan standart .NET kütüph
 
 We've prepared **[ASF-PluginTemplate](https://github.com/JustArchiNET/ASF-PluginTemplate)** for you, which you can use as a base for your plugin project. Using the template is not a requirement (as you can do everything from scratch), but we heavily recommend to pick it up as it can drastically kickstart your development and cut on time required to get all things right. Simply check out the **[README](https://github.com/JustArchiNET/ASF-PluginTemplate/blob/main/README.md)** of the template and it'll guide you further. Regardless, we'll cover the basics below in case you wanted to start from scratch, or get to understand better the concepts used in the plugin template.
 
-**[Derlemede](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compilation)** belirtildiği gibi, projeniz hedef ASF sürümünüzün uygun çerçevesini hedefleyen standart bir .NET kitaplığı olmalıdır. We recommend you to target .NET (Core), but .NET Framework plugins are also available.
+**[Derlemede](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compilation)** belirtildiği gibi, projeniz hedef ASF sürümünüzün uygun çerçevesini hedefleyen standart bir .NET kitaplığı olmalıdır.
 
 Proje esas `ArchiSteamFarm` birleştirmesine veya sürümün bir parçası olarak indirdiğiniz önceden oluşturulmuş `ArchiSteamFarm.dl ` kitaplığına başvurmalıdır, ya da projenin kaynağına (örneğin. ASF dizin ağacını alt modül olarak eklemeye karar verdiyseniz). Bu, ASF yapılarına, metodlarına ve özelliklerine, özellikle bir sonraki adımda devralmanız gereken çekirdek `IPlugin` arayüzüne erişmenize ve keşfetmenize olanak tanır. Proje aynı zamanda minimum olarak `System.Composition.AttributedModel`i referans almalıdır; bu, ASF'in kullanılması için `[Export]` `IPlugin`' i sağlar. Ek olarak, bazı arayüzlerde size verilen veri yapılarını yorumlamak için diğer ortak kütüphanelere başvurmak isteyebilir/ihtiyaç duyabilirsiniz, ancak bunlara açıkça ihtiyaç duymadığınız sürece şimdilik yeterli olacaktır.
 
@@ -37,18 +37,18 @@ Eğer her şeyi doğru bir şekilde yaptıysanız, `csproj` dosyanız aşağıda
 ```csproj
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" Version="7.0.0" />
+    <PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="ArchiSteamFarm" HintPath="C:\\Path\To\Downloaded\ArchiSteamFarm.dll" />
+    <ProjectReference Include="C:\\Path\To\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="false" />
 
-    <!-- If building as part of ASF source tree, use this instead of <Reference> above -->
-    <!-- <ProjectReference Include="C:\\Path\To\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="false" /> -->
+    <!-- If building with downloaded DLL binary, use this instead of <ProjectReference> above -->
+    <!-- <Reference Include="ArchiSteamFarm" HintPath="C:\\Path\To\Downloaded\ArchiSteamFarm.dll" /> -->
   </ItemGroup>
 </Project>
 ```
