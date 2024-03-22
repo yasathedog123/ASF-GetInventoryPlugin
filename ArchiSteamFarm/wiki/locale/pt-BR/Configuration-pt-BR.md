@@ -42,7 +42,7 @@ O uso é muito simples: selecione se você deseja gerar uma configuração `ASF`
 
 Nossa interface IPC **[ASF-ui](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC-pt-BR#asf-ui)** também permite que você configure o ASF, e é a melhor forma de reconfigurar o ASF depois de gerar as configurações iniciais devido ao fato de você poder editar as configurações in-loco, diferente do Gerador de Configuração web que as gera estaticamente.
 
-Para usar a ASF-ui você deve habilitar nossa interface **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC-pt-BR)**. `IPC` is enabled by default, therefore you can access it right away, as long as you didn't disable it yourself.
+Para usar a ASF-ui você deve habilitar nossa interface **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC-pt-BR)**. O `IPC` está ativado por padrão, portanto você pode acessá-lo imediatamente, desde que não o tenha desativado por conta própria.
 
 Depois de iniciar o programa simplesmente navegue para o endereço **[IPC](http://localhost:1242)** do ASF. Se tudo funcionou corretamente, você poderá alterar a configuração do ASF por lá também.
 
@@ -191,7 +191,7 @@ Se você estiver executando o ASF no servidor, provavelmente desejará usar essa
 
 ### `IdleFarmingPeriod`
 
-Tipo `byte` com o valor padrão `8`. Quanto o ASF não tem o que coletar, ele vai checar periodicamente a cada hora informada em `FarmingDelay`, para ver se todas as cartas já foram obtidas. Esse recurso não é necessário se tratando de jogos novos, já que neste caso o ASF verifica automaticamente a página de insígnias. O `IdleFarmingPeriod` existe, principalmente, para situações onde jogos antigos que já possuímos passem a ter cartas. Neste caso não há evento algum, por isso o ASF deve verificar periodicamente a página de insígnias para mantermos tudo sob controle. O valor `0` desativa este recurso. Veja também: `ShutdownOnFarmingFinished`.
+Tipo `byte` com o valor padrão `8`. Quanto o ASF não tem o que coletar, ele vai checar periodicamente a cada hora informada em `FarmingDelay`, para ver se todas as cartas já foram obtidas. Esse recurso não é necessário se tratando de jogos novos, já que neste caso o ASF verifica automaticamente a página de insígnias. O `IdleFarmingPeriod` existe, principalmente, para situações onde jogos antigos que já possuímos passem a ter cartas. Neste caso não há evento algum, por isso o ASF deve verificar periodicamente a página de insígnias para mantermos tudo sob controle. O valor `0` desativa este recurso. Confira também: a preferência `ShutdownOnFarmingFinished` em `FarmingPreferences`.
 
 ---
 
@@ -289,7 +289,7 @@ Tipo `byte flags` com o valor padrão `7`. Esta propriedade define os protocolos
 | 2     | UDP       | **[User Datagram Protocol](https://pt.wikipedia.org/wiki/Protocolo_de_datagrama_do_usu%C3%A1rio)**           |
 | 4     | WebSocket | **[WebSocket](https://pt.wikipedia.org/wiki/WebSocket)**                                                     |
 
-Por favor note que esta propriedade é um campo do tipo `flags`, portanto é possível escolher qualquer combinação de valores disponíveis. Check out **[json mapping](#json-mapping)** if you'd like to learn more. Não habilitar nenhum flag resulta na opção `None`, e essa opção é inválida, por si só.
+Por favor note que esta propriedade é um campo do tipo `flags`, portanto é possível escolher qualquer combinação de valores disponíveis. Confira o **[mapeamento json](#mapeamento-json)** se você quiser aprender mais. Não habilitar nenhum flag resulta na opção `None`, e essa opção é inválida, por si só.
 
 Por padrão o ASF vai usar todos os protocolos Steam disponíveis como medida para lutar contra tempos de inatividade e outras questões semelhantes do Steam. Normalmente, você vai querer alterar esta propriedade se quiser limitar o ASF a usar apenas um ou dois protocolos específicos. Tal medida poderia ser necessário se você está habilitando, por exemplo, apenas tráfego TCP em seu firewall e você não quer que o ASF tente conectar via UDP. No entanto, a menos que você está depurando determinado problema ou questão, você quase sempre vai desejar garantir que o ASF esteja livre para usar qualquer protocolo que é atualmente suportado e não apenas um ou dois. A menos que você tenha uma razão muito **forte** para editar essa propriedade, você deve mantê-la padrão.
 
@@ -368,15 +368,13 @@ A configuração do bot tem a seguinte estrutura:
 ```json
 {
     "AcceptGifts": false,
-    "AutoSteamSaleEvent": false,
     "BotBehaviour": 0,
     "CompleteTypesToSend": [],
     "CustomGamePlayedWhileFarming": null,
     "CustomGamePlayedWhileIdle": null,
     "Enabled": false,
-    "EnableRiskyCardsDiscovery": false,
     "FarmingOrders": [],
-    "FarmPriorityQueueOnly": false,
+    "FarmingPreferences": 0,
     "GamesPlayedWhileIdle": [],
     "HoursUntilCardDrops": 3,
     "LootableTypes": [1, 3, 5],
@@ -384,13 +382,9 @@ A configuração do bot tem a seguinte estrutura:
     "OnlineFlags": 0,
     "OnlineStatus": 1,
     "PasswordFormat": 0,
-    "Paused": false,
     "RedeemingPreferences": 0,
     "RemoteCommunication": 3,
-    "SendOnFarmingFinished": false,
     "SendTradePeriod": 0,
-    "ShutdownOnFarmingFinished": false,
-    "SkipRefundableGames": false,
     "SteamLogin": null,
     "SteamMasterClanID": 0,
     "SteamParentalCode": null,
@@ -417,14 +411,6 @@ Esta opção é recomendada apenas para contas alternativas, já que é muito pr
 
 ---
 
-### `AutoSteamSaleEvent`
-
-Tipo `bool` com o valor padrão `false`. Durante as promoções de verão/Inverno é comum que o Steam conceda cartas extras pela exploração diária da lista de descobrimento, bem como por outras atividades específicas do evento. Quando esta opção é habilitada, o ASF verifica automaticamente a lista de descobrimento a cada `8` horas (iniciando uma hora após o programa ser aberto) e executa essa tarefa, se necessário. Esta opção não é recomendada se você quer ver sua lista de descobrimento manualmente, e normalmente ela deve fazer sentido apenas nas contas bot. Além disso, você precisa garantir que sua conta tenha pelo menos nível `8` se você espera receber essas cartas, o que é um requerimento do Steam. Se você não tiver certeza se quer esse recurso habilitado ou não, mantenha-o com o valor `false` padrão.
-
-Por favor, note que devido a constantes problemas e mudanças no Steam, **nós não damos nenhuma garantia de que esta função vai funcionar corretamente**, portanto, é inteiramente possível que ela **não funcione de modo algum**. Não aceitamos **nenhum** relatório de bugs, nem pedidos de suporte para essa opção. Ela é oferecida com absolutamente nenhuma garantia, você estará usando por seu próprio risco.
-
----
-
 ### `BotBehaviour`
 
 Tipo `byte flags` com o valor padrão `0`. Esta propriedade define o comportamento do bot do ASF durante vários eventos e é definida conforme indicado abaixo:
@@ -439,11 +425,11 @@ Tipo `byte flags` com o valor padrão `0`. Esta propriedade define o comportamen
 | 16    | MarkReceivedMessagesAsRead    | Fará com que o ASF marque automaticamente todas as mensagens recebidas como lidas                                             |
 | 32    | MarkBotMessagesAsRead         | Fará com que o ASF marque automaticamente todas as mensagens dos outros bots (ativos na mesma instância) recebidas como lidas |
 
-Por favor note que esta propriedade é um campo do tipo `flags`, portanto é possível escolher qualquer combinação de valores disponíveis. Check out **[json mapping](#json-mapping)** if you'd like to learn more. Não habilitar nem um flag resultará na opção `None`.
+Por favor note que esta propriedade é um campo do tipo `flags`, portanto é possível escolher qualquer combinação de valores disponíveis. Confira o **[mapeamento json](#mapeamento-json)** se você quiser aprender mais. Não habilitar nem um flag resultará na opção `None`.
 
 Em geral você vai desejar modificar esta propriedade se você espera que o ASF faça certa quantidade de automação relacionados à sua atividade, como seria de esperar de uma conta bot, mas não uma conta primária usada no ASF. Portanto, alterar esta propriedade faz sentido principalmente para contas alternativas, embora você seja livre para usar as opções selecionadas para contas principais também.
 
-Normal (`None`) ASF behaviour is to only automate things that user wants (e.g. cards farming or `SteamTradeMatcher` offers processing, if set in `TradingPreferences`). Este é o modo menos invasivo, e é benéfico para a maioria dos usuários já que você permanece com controle completo sobre sua conta e pode decidir se deseja permitir certas interações fora do escopo ou não.
+O comportamento normal (`None`) do ASF é automatizar apenas as ações que o usuário deseja (por exemplo, coleta de cartas ou processamento de trocas do `SteamTradeMatcher`, se configurado em `TradingPreferences`). Este é o modo menos invasivo, e é benéfico para a maioria dos usuários já que você permanece com controle completo sobre sua conta e pode decidir se deseja permitir certas interações fora do escopo ou não.
 
 Convite de amizade inválido é um convite que não vem de um usuário com permissão `FamilySharing` ou superior (definida na opção `SteamUserPermissions`). No modo normal o ASF ignora esses convites, como seria de esperar, dando-lhe liberdade de escolha se deseja aceitá-los ou não. `RejectInvalidFriendInvites` fará com que esses convites sejam rejeitados automaticamente, que praticamente impedirá que outra pessoas te adicionem a lista de amigos delas (uma vez que o ASF negará todos os pedidos, exceto das pessoas definidas em ` SteamUserPermissions`). A menos que você queira negar completamente todos os convites de amizade, você não deve habilitar esta opção.
 
@@ -472,9 +458,9 @@ O seguintes tipos de itens são suportados nesta configuração:
 | 3     | FoilTradingCard | Versão brilhante da `Carta Colecionável`                                          |
 | 5     | TradingCard     | Cartas colecionáveis Steam, sendo usadas para fabricar insígnias (não brilhantes) |
 
-Please note that regardless of the settings above, ASF will only ask for **[Steam community items](https://steamcommunity.com/my/inventory/#753_6)** (`appID` of 753, `contextID` of 6), so all game items, gifts and likewise, are excluded from the trade offer by definition.
+Observe que, independentemente das configurações acima, o ASF solicitará apenas **[itens da comunidade Steam](https://steamcommunity.com/my/inventory/#753_6)** (`appID` 753, `contextID` 6), excluindo assim todos os itens de jogos, presentes e similares da proposta de troca por definição.
 
-Devido a sobrecarga adicional causada por essa opção, recomendamos usá-la apenas em contas bot que tenhoam alguma chance real de terminar os sets por conta própria - por exemplo, não faz sentido ativar essa opção caso você use os comandos `SendOnFarmingFinished`, `SendTradePeriod` ou `loot` de forma regular.
+Devido ao custo adicional de usar essa opção, é recomendável ativá-la apenas em contas bot que têm uma chance realista de completar conjuntos por conta própria. Por exemplo, não faz sentido ativá-la caso você já estiver usando a preferência `SendOnFarmingFinished` em `FarmingPreferences`, `SendTradePeriod` ou o comando `loot` regularmente.
 
 Se você está inseguro de como configurar esta opção, é melhor deixá-la padrão.
 
@@ -497,16 +483,6 @@ Tipo `string` com o valor padrão `null`. Similar a `CustomGamePlayedWhileFarmin
 ### `Enabled`
 
 Tipo `bool` com o valor padrão `false`. Essa propriedade define se o bot está habilitado. Uma conta bot habilitada (`true`) vai ser iniciada automaticamente quado o ASF for iniciado, enquanto uma conta bot desabilitada (`false`) terá que ser iniciada manualmente. Por padrão, todo bot é desabilitado, então provavelmente você vai querer mudar essa propriedade para `true` para todos os bots que devem ser iniciados automaticamente.
-
----
-
-### `EnableRiskyCardsDiscovery`
-
-Tipo `bool` com o valor padrão `false`. Essa propriedade habilita uma alternativa adicional que entra em ação quando o ASF não consegue carregar uma ou mais páginas de insignias e, portanto, não consegue encontrar jogos disponíveis para coleta. Em particular, algumas contas com uma grande quantidade de drops de cartas podem causar uma situação em que o carregamento das páginas de insignias não seja mais possível (devido à sobrecarga), e essas contas se tornam impossíveis de serem coletadas simplesmente porque não conseguimos carregar as informações com base nas quais podemos iniciar o processo. For those handful cases, this option allows alternative algorithm to be used, which uses a combination of boosters possible to craft and booster packs the account is eligible for, in order to find potentially available games to idle, then spends excessive amount of resources for verifying and fetching required information, and attempts to start the process of farming on limited amount of data and information in order to eventually reach a situation when badge page loads and we'll be able to use normal approach. Por favor, observe que ao usar esse recurso alternativo, o ASF opera apenas com dados limitados, portanto, é completamente normal que o ASF encontre muito menos drops do que na realidade - outros drops serão encontrados em uma etapa posterior do processo de coleta.
-
-Essa opção é chamada de "arriscada" por uma boa razão - ela é extremamente lenta e requer uma quantidade significativa de recursos (incluindo solicitações de rede) para funcionar, portanto, **não é recomendado** ativá-la, especialmente a longo prazo. Você deve usar essa opção apenas se você determinou previamente que sua conta está enfrentando problemas para carregar as páginas de insignias e o ASF não pode operar nela, sempre falhando ao carregar as informações necessárias para iniciar o processo. Mesmo que tenhamos feito o nosso melhor para otimizar o processo o máximo possível, ainda é possível que essa opção tenha resultados indesejados e possa resultar em suspensões temporárias, e talvez até permanentes, por parte do Steam, devido ao envio de um grande volume de solicitações e à sobrecarga causada nos servidores do Steam. Portanto, alertamos você com antecedência e oferecemos essa opção sem absolutamente nenhuma garantia. Você a está utilizando por sua conta e risco.
-
-A menos que você saiba o que está fazendo, você deve mantê-la com o valor `false` padrão.
 
 ---
 
@@ -541,9 +517,43 @@ Há também uma lista de prioridade de coleta acessível através de **[comandos
 
 ---
 
-### `FarmPriorityQueueOnly`
+### `FarmingPreferences`
 
-Tipo `bool` com valor padrão `false`. Esta propriedade define se o ASF deve considerar para coleta automática apenas os apps que você adicionou a fila de prioridade disponível com o **[comando](https://github.com/JustArchi/ArchiSteamFarm/wiki/Commands-pt-BR)** `fq`. Quando esta opção estiver habilitada, o ASF ignorará todos `appIDs` que não estejam na lista, permitindo que você escolha efetivamente os jogos que deseja que o ASF colete. Tenha em mente que se você não adicionar nenhum jogo na lista o ASF atuará como se não houvesse nada para coletar na sua conta. Se você não tiver certeza se quer esse recurso habilitado ou não, mantenha-o com o valor `false` padrão.
+Tipo `byte flags` com o valor padrão `0`. Essa propriedade define o comportamento do ASF quando estiver coletando, e é definida da seguinte forma:
+
+| Valor | Nome                      |
+| ----- | ------------------------- |
+| 0     | None                      |
+| 1     | FarmingPausedByDefault    |
+| 2     | ShutdownOnFarmingFinished |
+| 4     | SendOnFarmingFinished     |
+| 8     | FarmPriorityQueueOnly     |
+| 16    | SkipRefundableGames       |
+| 32    | SkipUnplayedGames         |
+| 64    | EnableRiskyCardsDiscovery |
+| 128   | AutoSteamSaleEvent        |
+
+Por favor note que esta propriedade é um campo do tipo `flags`, portanto é possível escolher qualquer combinação de valores disponíveis. Confira o **[mapeamento json](#mapeamento-json)** se você quiser aprender mais. Não habilitar nem um flag resultará na opção `None`.
+
+Todas as opções estão descritas abaixo.
+
+`FarmingPausedByDefault` define o estado inicial do módulo `CardsFarmer`. Normalmente, o bot iniciará automaticamente a coleta de cartas quando for iniciado, seja por causa de `Enabled` ou do comando `start`. Usar `FarmingPausedByDefault` pode ser útil caso você quiser retomar manualmente o processo de coleta automático com `resume`, por exemplo, caso você deseja usar `play` o tempo todo e nunca usar o módulo automático `CardsFarmer` - isso funciona exatamente da mesma forma que o **[comando](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-pt-BR)** `pause`.
+
+`ShutdownOnFarmingFinished` permite que você desligue o bot assim que ele terminar a coleta. Normalmente, o ASF "ocupa" uma conta durante todo o tempo em que o processo está ativo. Quando ele termina a coleta nessa conta, o ASF verifica periodicamente (a cada hora configurada em `IdleFarmingPeriod`), se algum novo jogo com cartas Steam foi adicionado, então ele pode retomar a coleta naquela conta sem a necessidade de reiniciar o processo. Isso é útil para a maioria das pessoas, já que o ASF pode retomar automaticamente a coleta quando necessário. No entanto, você pode querer interromper o processo quando a conta específica terminar de coletar tudo. Você pode alcançar isso usando essa flag. Quando habilitado, o ASF vai desconectar quando a conta for totalmente explorada, o que significa que ela não será periodicamente verificada ou ocupada. Você deve decidir se você prefere que o ASF trabalhe em determinada conta bot o tempo todo, ou se o ASF deve interrompê-la quando o processo de coleta for terminado. Quando todas as contas estiverem paradas e o processo não estiver rodando no **[modo](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Command-Line-Arguments-pt-BR)** `--process-required`, o ASF também se desligará, colocando seu computador em espera e permitindo que você programe outras ações, tais como suspender ou desligar assim que a última carta for recebida.
+
+`SendOnFarmingFinished` permite que você envie automaticamente uma oferta de troca Steam contendo tudo que foi coletado até o momento para o usuário com permissão `Master`, o que é muito conveniente se você não quiser se preocupar com as trocas pessoalmente. Esta opção funciona da mesma forma que o comando `loot`, portanto, tenha em mente que ele requer um usuário com o conjunto de permissões `Master`, você também pode precisar de um `SteamTradeToken` válido, tanto quanto o uso de uma conta que seja, em primeiro lugar, elegível para trocas. Quando essa opção está ativada, além de iniciar o `loot` após terminar a coleta, o ASF também inicia o `loot` a cada notificação de novos itens (quando não estiver coletando) e depois de completar trocas que resultem em novos itens (sempre). Isso é especialmente útil para "encaminhar" itens recebidos de outras pessoas para a nossa conta. Normalmente, você vai querer usar o **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-pt-BR)** junto com essa funcionalidade, embora não seja um requisito se você pretende lidar manualmente com as confirmações de 2FA de maneira oportuna.
+
+`FarmPriorityQueueOnly` define se o ASF deve considerar para a coleta automática apenas os aplicativos que você adicionou manualmente à fila de coleta prioritária, disponível através dos **[comandos](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-pt-BR)** `fq`. Quando esta opção estiver habilitada, o ASF ignorará todos `appIDs` que não estejam na lista, permitindo que você escolha efetivamente os jogos que deseja que o ASF colete. Tenha em mente que se você não adicionar nenhum jogo na lista o ASF atuará como se não houvesse nada para coletar na sua conta.
+
+`SkipRefundableGames` define se o ASF deve ignorar jogos que ainda são reembolsáveis da coleta automática. Um jogo reembolsável é um jogo que você comprou na Loja Steam nas últimas duas semanas e que ainda não foi jogado por mais de 2 horas, como indicado na página **[Reembolsos no Steam](https://store.steampowered.com/steam_refunds)**. Por padrão, o ASF ignora completamente a política de reembolso do Steam e realiza a coleta em todos os jogos, como a maioria das pessoas esperaria. No entanto, você pode usar esta opção para garantir que o ASF não coletará as cartas de nenhum de seus jogos reembolsáveis tão cedo, permitindo que você avalie esses jogos por conta própria e solicite reembolso, se necessário, sem se preocupar com o ASF afetando negativamente o tempo de jogo. Observe que se você habilitar essa opção os jogos que você comprar da loja do Steam não serão executados pelo ASF antes de 14 dias da data de ativação e será mostrado que não há jogos a serem coletados caso sua conta não tenha mais jogos a serem coletados.
+
+`SkipUnplayedGames` define se o ASF deve ignorar jogos que você ainda não iniciou. Jogo não jogado neste contexto significa que você não tem nenhuma hora de jogo registrada para ele no Steam. Caso você use esta flag, esses jogos serão ignorados até que o Steam registre qualquer tempo de jogo para eles. Isso permite que você tenha um controle melhor sobre quais jogos o ASF está apto a coletar, ignorando aqueles que você ainda não teve a chance de experimentar, mantendo recursos selecionados do Steam mais úteis - como sugerir jogos não jogados para jogar.
+
+`EnableRiskyCardsDiscovery` ativa um recurso adicional de contingência que é acionado quando o ASF não consegue carregar uma ou mais páginas de insígnias e, portanto, não consegue encontrar jogos disponíveis para coletar. Em particular, algumas contas com uma grande quantidade de drops de cartas podem causar uma situação em que o carregamento das páginas de insígnias não seja mais possível (devido à sobrecarga), e essas contas se tornam impossíveis de serem coletadas simplesmente porque não conseguimos carregar as informações com base nas quais podemos iniciar o processo. Para esses casos raros, esta opção permite o uso de um algoritmo alternativo que utiliza uma combinação de boosters possíveis para criar e pacotes de boosters para os quais a conta é elegível, a fim de encontrar potencialmente jogos disponíveis para coleta. Em seguida, gasta uma quantidade excessiva de recursos para verificar e obter as informações necessárias, tentando iniciar o processo de coleta com uma quantidade limitada de dados e informações para eventualmente chegar a uma situação em que a página do insígnia é carregada e podemos usar a abordagem normal. Por favor, observe que ao usar esse recurso alternativo, o ASF opera apenas com dados limitados, portanto, é completamente normal que o ASF encontre muito menos drops do que na realidade - outros drops serão encontrados em uma etapa posterior do processo de coleta.
+
+Essa opção é chamada de "arriscada" por uma boa razão - ela é extremamente lenta e requer uma quantidade significativa de recursos (incluindo solicitações de rede) para funcionar, portanto, **não é recomendado** ativá-la, especialmente a longo prazo. Você deve usar essa opção apenas se você determinou previamente que sua conta está enfrentando problemas para carregar as páginas de insignias e o ASF não pode operar nela, sempre falhando ao carregar as informações necessárias para iniciar o processo. Mesmo que tenhamos feito o nosso melhor para otimizar o processo o máximo possível, ainda é possível que essa opção tenha resultados indesejados e possa resultar em suspensões temporárias, e talvez até permanentes, por parte do Steam, devido ao envio de um grande volume de solicitações e à sobrecarga causada nos servidores do Steam. Portanto, alertamos você com antecedência e oferecemos essa opção sem absolutamente nenhuma garantia. Você a está utilizando por sua conta e risco.
+
+`AutoSteamSaleEvent` permite que você reivindique cartas adicionais durante eventos de venda de verão/inverno do Steam ao explorar sua lista de descobrimento diariamente. Quando esta opção é habilitada, o ASF verifica automaticamente a lista de descobrimento a cada `8` horas (iniciando uma hora após o programa ser aberto) e executa essa tarefa, se necessário. Esta opção não é recomendada se você quer ver sua lista de descobrimento manualmente, e normalmente ela deve fazer sentido apenas nas contas bot. Por favor, note que devido a constantes problemas e mudanças no Steam, **nós não damos nenhuma garantia de que esta função vai funcionar corretamente**, portanto, é inteiramente possível que ela **não funcione de modo algum**. Não aceitamos **nenhum** relatório de bugs, nem pedidos de suporte para essa opção. Ela é oferecida com absolutamente nenhuma garantia, você estará usando por seu próprio risco.
 
 ---
 
@@ -583,7 +593,7 @@ Tipo `ImmutableHashSet <byte>` com valor padrão de tipos de itens Steam `1, 3, 
 | 15    | KeyboardSkin          | Skin especial de teclado para Steam deck                                    |
 | 16    | StartupVideo          | Vídeo de inicialização especial para o Steam deck                           |
 
-Please note that regardless of the settings above, ASF will only ask for **[Steam community items](https://steamcommunity.com/my/inventory/#753_6)** (`appID` of 753, `contextID` of 6), so all game items, gifts and likewise, are excluded from the trade offer by definition.
+Observe que, independentemente das configurações acima, o ASF solicitará apenas **[itens da comunidade Steam](https://steamcommunity.com/my/inventory/#753_6)** (`appID` 753, `contextID` 6), excluindo assim todos os itens de jogos, presentes e similares da proposta de troca por definição.
 
 A configuração padrão do ASF baseia-se no uso mais comum do bot, coletando apenas pacotes de cartas e cartas colecionáveis (incluindo as brilhantes). A propriedade definida aqui permite que você mude esse comportamento da forma que te satisfaça. Por favor, tenha em mente que todos os tipos não definidos acima serão classificados como `Unknown`, o que é especialmente importante quando a Valve libera um novo item da Steam, que será marcado como `Unknown` pelo ASF também, até que seja adicionado aqui (em uma versão futura). É por isso que, em geral, não é recomendado incluir o tipo `Unknown` em seu `LootableTypes`, a menos que você saiba o que está fazendo, e compreende também que o ASF enviará seu inventário inteiro em uma oferta de troca se a rede Steam der algum problema novamente e reportar todos os seus itens como `Unknown`. Minha sugestão é não incluir o tipo `Unknown` em `LootableTypes`, mesmo que você espere transferir tudo.
 
@@ -633,7 +643,7 @@ Tipo `ushort flags` com o valor padrão `0`. Esta propriedade funciona como um c
 | 1024  | ClientTypeTenfoot | Cliente está usando big picture       |
 | 2048  | ClientTypeVR      | Cliente está usando headset VR        |
 
-Por favor note que esta propriedade é um campo do tipo `flags`, portanto é possível escolher qualquer combinação de valores disponíveis. Check out **[json mapping](#json-mapping)** if you'd like to learn more. Não habilitar nem um flag resultará na opção `None`.
+Por favor note que esta propriedade é um campo do tipo `flags`, portanto é possível escolher qualquer combinação de valores disponíveis. Confira o **[mapeamento json](#mapeamento-json)** se você quiser aprender mais. Não habilitar nem um flag resultará na opção `None`.
 
 O tipo subjacente `EPersonaStateFlag` no qual essa propriedade se baseia inclui mais flags disponíveis, no entanto, até onde sabemos, eles não têm absolutamente nenhum efeito a partir de hoje, portanto, foram deixados de lado.
 
@@ -672,11 +682,7 @@ Se você não tem certeza de como configurar essa propriedade, é recomendado us
 
 Tipo `byte` com o valor padrão `0` (`PlainText`). Essa propriadade define o formato da propriedade `SteamPassword`, e atualmente suporta os valores especificados na seção **[segurança](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Security-pt-BR)**. Você deve seguir as instruções especificadas aqui, já que você precisará garantir que a propriedade `SteamPassword` de fato inclua a senha em `PasswordFormat`. Em outras palavras, quando você alterar o `PasswordFormat` então seu `SteamPassword` **já** deve estar nesse formato, não apenas esperando ser mudado posteriormente. A menos que você saiba o que está fazendo, você deve mantê-lo com o valor `0` padrão.
 
----
-
-### `Paused`
-
-Tipo `bool` com valor padrão `false`. Esta propriedade define o estado inicial do módulo `CardsFarmer`. Com o valor padrão `false`, o bot começará a coletar automaticamente quando for iniciado com o parâmetro `Enabled` ou o comando `start`. Mudar essa propriedade para `true` só deve ser feito se você quiser `retomar` manualmente o processo de coleta automática, por exemplo, se você quiser usar sempre o comando `play` e nunca usar o módulo automático `CardsFarmer` - isso funciona exatamente igual ao **[comando](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-pt-BR)** `pause`. Se você não tiver certeza se quer esse recurso habilitado ou não, mantenha-o com o valor `false` padrão.
+Caso você decida alterar o `PasswordFormat` de um bot que já tenha feito login na rede Steam pelo menos uma vez, é possível que você receba um erro de descriptografia único na próxima inicialização do bot - isso é causado pelo fato de que o `PasswordFormat` também é usado em relação à criptografia/descriptografia automática de propriedades sensíveis no arquivo de banco de dados `Bot.db`. Você pode ignorar com segurança esse erro, pois o ASF será capaz de se recuperar dessa situação por conta própria. Se isso estiver acontecendo constantemente, por exemplo, a cada reinicialização, deve ser investigado.
 
 ---
 
@@ -686,13 +692,13 @@ Tipo `byte flags` com o valor padrão `0`. Essa propriedade define o comportamen
 
 | Valor | Nome                               | Descrição                                                                                                                   |
 | ----- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| 0     | None                               | Sem preferências especiais de resgate, padrão                                                                               |
+| 0     | Nenhum                             | Sem preferências especiais de resgate, padrão                                                                               |
 | 1     | Forwarding                         | Encaminha keys indisponíveis para serem resgatadas por outros bots                                                          |
 | 2     | Distributing                       | Distribui todas as keys entre si e os outros bots                                                                           |
 | 4     | KeepMissingGames                   | Guarda as keys de jogos que (possivelmente) não estejam em sua conta, deixando-as sem uso                                   |
 | 8     | AssumeWalletKeyOnBadActivationCode | Assume que `BadActivationCode` são iguais à `CannotRedeemCodeFromClient` e, portanto, tenta resgatá-los como vales presente |
 
-Por favor note que esta propriedade é um campo do tipo `flags`, portanto é possível escolher qualquer combinação de valores disponíveis. Check out **[json mapping](#json-mapping)** if you'd like to learn more. Não habilitar nem um flag resultará na opção `None`.
+Por favor note que esta propriedade é um campo do tipo `flags`, portanto é possível escolher qualquer combinação de valores disponíveis. Confira o **[mapeamento json](#mapeamento-json)** se você quiser aprender mais. Não habilitar nem um flag resultará na opção `None`.
 
 `Forwarding` fará com que o bot encaminhe uma key que não pode ser ativadar, para outro bot conectado e rodando que não tenha aquele jogo em particular (se for possível verificar). A situação mais comum é encaminhar um jogo `AlreadyPurchased` (já comprado) para outro bot que não tenha aquele jogo, mas esta opção também abrange outros cenários, tal como `DoesNotOwnRequiredApp` (não possui o jogo base), `RateLimited` (limite de tentativas excedido) ou `RestrictedCountry` (restrição regional).
 
@@ -716,11 +722,11 @@ Tipo `byte flags` com o valor padrão `3`. Essa propriedade define o comportamen
 
 | Valor | Nome          | Descrição                                                                                                                                                                                                                                                        |
 | ----- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0     | Nenhum        | Não permitida nenhuma comunicação com terceiros, tornando os recursos ASF selecionados inutilizáveis                                                                                                                                                             |
+| 0     | None          | Não permitida nenhuma comunicação com terceiros, tornando os recursos ASF selecionados inutilizáveis                                                                                                                                                             |
 | 1     | SteamGroup    | Permite comunicação com o **[Grupo Steam do ASF](https://steamcommunity.com/groups/archiasf)**                                                                                                                                                                   |
 | 2     | PublicListing | Permite a comunicação com a **[lista STM do ASF](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/ItemsMatcherPlugin#publiclisting)** para ser listado, se o usuário também habilitou `SteamTradeMatcher` em **[`TradingPreferences `](#tradingpreferences)** |
 
-Por favor note que esta propriedade é um campo do tipo `flags`, portanto é possível escolher qualquer combinação de valores disponíveis. Check out **[json mapping](#json-mapping)** if you'd like to learn more. Não habilitar nem um flag resultará na opção `None`.
+Por favor note que esta propriedade é um campo do tipo `flags`, portanto é possível escolher qualquer combinação de valores disponíveis. Confira o **[mapeamento json](#mapeamento-json)** se você quiser aprender mais. Não habilitar nem um flag resultará na opção `None`.
 
 Esta opção não incluí todas as comunicações de terceiros oferecidos pelo ASF, somente aquelas que não são implícitas pelas outras configurações. Por exemplo, se você habilitou as atualizações automáticas do ASF, o ASF irá se comunicar com o GitHub (para downloads), e com o nosso servidor (para a verificação do checksum), de acordo com sua configuração. Do mesmo modo que habilitar `MatchActively` em **[`TradingPreferences`](#tradingpreferences)**, faz com que a comunicação seja feita com o nosso servidor para buscar bots listados, que é necessário para essa funcionalidade.
 
@@ -728,33 +734,11 @@ Mais informações a respeito deste assunto está disponível na seção **[Comu
 
 ---
 
-### `SendOnFarmingFinished`
-
-Tipo `bool` com valor padrão `false`. Quando o ASF termina a coleta em determinada conta, ele pode automaticamente enviar uma proposta de troca contendo tudo o que foi coletado até o momento para o usuário com permissão `Master`, o que é muito conveniente se você não quiser ficar se preocupando com trocas. Esta opção funciona da mesma forma que o comando `loot`, portanto, tenha em mente que ele requer um usuário com o conjunto de permissões `Master`, você também pode precisar de um `SteamTradeToken` válido, tanto quanto o uso de uma conta que seja, em primeiro lugar, elegível para trocas. Quando essa opção está ativada, além de iniciar o `loot` após terminar a coleta, o ASF também inicia o `loot` a cada notificação de novos itens (quando não estiver coletando) e depois de completar trocas que resultem em novos itens (sempre). Isso é especialmente útil para "encaminhar" itens recebidos de outras pessoas para a nossa conta.
-
-Typically you'll want to use **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication)** together with this feature, although it's not a requirement if you intend to handle 2FA confirmations manually in timely fashion. Se você não tem certeza de como definir essa propriedade, deixe-a com o valor padrão `false`.
-
----
-
 ### `SendTradePeriod`
 
-Tipo `byte` com o valor padrão `0`. Essa propriedade funciona de forma muito semelhante à propriedade `SendOnFarmingFinished`, com uma diferença - em vez de enviar a troca quando a coleta terminar, podemos envia-la no intervalo de tempo, em horas, determinado em `SendTradePeriod`, independente de quanto ainda temos para coletar. Isto é útil se você quiser receber os itens de suas contas adicionais regularmente ao invés de esperar que a coleta termine. O valor padrão `0` desativa este recurso e se você quer que o seu bot envie a proposta de troca, por exemplo, todos os dias, você deve colocar o valor `24` aqui.
+Tipo `byte` com o valor padrão `0`. Esta propriedade funciona de forma muito semelhante à preferência `SendOnFarmingFinished` em `FarmingPreferences`, com uma diferença - em vez de enviar uma troca quando a coleta é concluída, também podemos enviá-la a cada X horas, determinado em `SendTradePeriod`, independentemente do quanto ainda temos para coletar. Isto é útil se você quiser receber os itens de suas contas adicionais regularmente ao invés de esperar que a coleta termine. O valor padrão `0` desativa este recurso e se você quer que o seu bot envie a proposta de troca, por exemplo, todos os dias, você deve colocar o valor `24` aqui.
 
-Typically you'll want to use **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication)** together with this feature, although it's not a requirement if you intend to handle 2FA confirmations manually in timely fashion. Se você não tem certeza de como definir essa propriedade, deixe-a com o valor padrão `0`.
-
----
-
-### `ShutdownOnFarmingFinished`
-
-Tipo `bool` com valor padrão `false`. O ASF "ocupa" uma conta durante todo o tempo em que o processo esteja ativo. Quando ele termina a coleta nessa conta, o ASF verifica periodicamente (a cada hora configurada em `IdleFarmingPeriod`), se algum novo jogo com cartas Steam foi adicionado, então ele pode retomar a coleta naquela conta sem a necessidade de reiniciar o processo. Isso é útil para a maioria das pessoas, já que o ASF pode retomar automaticamente a coleta quando necessário. No entanto, você pode realmente querer parar o processo quando determinada conta for totalmente explorada, e você faz isso definindo essa propriedade como `true`. Quando habilitado, o ASF vai desconectar quando a conta for totalmente explorada, o que significa que ela não será periodicamente verificada ou ocupada. Você deve decidir se você prefere que o ASF trabalhe em determinada conta bot o tempo todo, ou se o ASF deve interrompê-la quando o processo de coleta for terminado. Quando todas as contas estiverem paradas e o processo não estiver rodando no **[modo](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Command-Line-Arguments-pt-BR)** `--process-required`, o ASF também se desligará, colocando seu computador em espera e permitindo que você programe outras ações, tais como suspender ou desligar assim que a última carta for recebida.
-
-Se você não tem certeza de como definir essa propriedade, deixe-a com o valor padrão `false`.
-
----
-
-### `SkipRefundableGames`
-
-Tipo `bool` com valor padrão `false`. Esta propriedade define se o ASF tem permissão para coletar de jogos que ainda são reembolsáveis. Um jogo reembolsável é um jogo que você comprou na Loja Steam nas últimas duas semanas e que ainda não foi jogado por mais de 2 horas, como indicado na página **[Reembolsos no Steam](https://store.steampowered.com/steam_refunds)**. Por padrão, quando esta opção estiver definida como `false`, o ASF ignora a política de reembolso inteiramente e coleta tudo, como a maioria das pessoas deve esperar. No entanto, você pode alterar esta opção para `true` se você deseja garantir que o ASF não coloete de qualquer um dos seus jogos reembolsáveis cedo demais, permitindo que você os avalie peça reembolso caso necessário, sem se preocupar com o ASF afetando negativamente seu tempo de jogo. Observe que se você habilitar essa opção os jogos que você comprar da loja do Steam não serão executados pelo ASF antes de 14 dias da data de ativação e será mostrado que não há jogos a serem coletados caso sua conta não tenha mais jogos a serem coletados. Se você não tiver certeza se quer esse recurso habilitado ou não, mantenha-o com o valor `false` padrão.
+Normalmente, você vai querer usar o **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-pt-BR)** junto com essa funcionalidade, embora não seja um requisito se você pretende lidar manualmente com as confirmações de 2FA de maneira oportuna. Se você não tem certeza de como definir essa propriedade, deixe-a com o valor padrão `0`.
 
 ---
 
@@ -805,7 +789,7 @@ Tipo `ImmutableDictionary<ulong, byte>` com o valor padrão vazio. Esta propried
 
 Em resumo, esta propriedade permite que você manipule permissões para determinados usuários. As permissões são importantes principalmente para acessar os **[comandos](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-pt-BR)** do ASF, mas também para habilitar muitos recursos, tais como aceitar trocas. Por exemplo, você pode querer definir sua própria conta como `Master` e dar acesso de `Operator` para 2 ou 3 dos seus amigos, assim eles podem facilmente resgatar keys para seu bot com o ASF, enquanto **não** são elegíveis, por exemplo, para parar o processo. Graças a isso você pode facilmente atribuir permissões para determinados usuários e deixá-los usarem seu bot para determinadas tarefas especificadas pelo seu nível.
 
-Recomendamos que defina exatamente um usuário como `Master` e quantos você quiser como `Operators` e abaixo. É tecnicamente possível definir vários `Masters` e o ASF funcionará corretamente com eles, por exemplo, ao aceitar todas as trocas enviadas para o bot, o ASF usará apenas um deles (com o ID Steam mais baixo) para cada ação que requer um único alvo, por exemplo, uma solicitação de `loot`, assim como as propriedades `SendOnFarmingFinished` ou `SendTradePeriod`. Se você entende perfeitamente essas limitações, especialmente o fato de que a solicitação de `loot` sempre enviará os itens para o `Master` com ID Steam mais baixo, independente do `Master` que tenha executado o comando, então você pode definir vários usuários com a permissão `Master` aqui, mas ainda assim recomendamos um único master.
+Recomendamos que defina exatamente um usuário como `Master` e quantos você quiser como `Operators` e abaixo. Embora seja tecnicamente possível definir vários `Masters` e o ASF funcionará corretamente com eles, por exemplo, aceitando todas as trocas enviadas para o bot por eles, o ASF usará apenas um deles (com o menor ID do Steam) para cada ação que requer um único alvo, como uma solicitação de `loot`, portanto, também propriedades como a preferência `SendOnFarmingFinished` em `FarmingPreferences` ou `SendTradePeriod`. Se você entende perfeitamente essas limitações, especialmente o fato de que a solicitação de `loot` sempre enviará os itens para o `Master` com ID Steam mais baixo, independente do `Master` que tenha executado o comando, então você pode definir vários usuários com a permissão `Master` aqui, mas ainda assim recomendamos um único master.
 
 É bom notar que há mais uma permissão extra `Owner` (proprietário), que é declarada com a propriedade de configuração global `SteamOwnerID`. Você não pode atribuir a permissão `Owner` para ninguém aqui, já que a propriedade `SteamUserPermissions` define apenas as permissões que estão relacionadas com a conta bot e não o ASF como um todo. Para tarefas relacionadas aos bots, `SteamOwnerID` é tratado da mesma forma que `Master`, então definir o seu `SteamOwnerID` aqui não é necessário.
 
@@ -830,7 +814,7 @@ Tipo `byte flags` com o valor padrão `0`. Essa propriedade define o comportamen
 | 8     | DontAcceptBotTrades | Não aceita automaticamente as trocas `loot` de outras contas bot                                                                                                                                                                               |
 | 16    | MatchActively       | Participa ativamente de trocas do tipo **[STM](https://www.steamtradematcher.com)**. Visite a seção **[ItemsMatcherPlugin](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/ItemsMatcherPlugin#matchactively)** para obter mais informações |
 
-Por favor note que esta propriedade é um campo do tipo `flags`, portanto é possível escolher qualquer combinação de valores disponíveis. Check out **[json mapping](#json-mapping)** if you'd like to learn more. Não habilitar nem um flag resultará na opção `None`.
+Por favor note que esta propriedade é um campo do tipo `flags`, portanto é possível escolher qualquer combinação de valores disponíveis. Confira o **[mapeamento json](#mapeamento-json)** se você quiser aprender mais. Não habilitar nem um flag resultará na opção `None`.
 
 Para obter mais explicações sobre a lógica de trocas do ASF e uma descrição de cada flag disponível, visite a seção **[trocas](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Trading-pt-BR)**.
 
@@ -860,7 +844,7 @@ Tipo `ImmutableHashSet <byte>` com valor padrão de tipos de itens Steam `1, 3, 
 | 15    | KeyboardSkin          | Skin especial de teclado para Steam deck                                          |
 | 16    | StartupVideo          | Vídeo de inicialização especial para o Steam deck                                 |
 
-Please note that regardless of the settings above, ASF will only ask for **[Steam community items](https://steamcommunity.com/my/inventory/#753_6)** (`appID` of 753, `contextID` of 6), so all game items, gifts and likewise, are excluded from the trade offer by definition.
+Observe que, independentemente das configurações acima, o ASF solicitará apenas **[itens da comunidade Steam](https://steamcommunity.com/my/inventory/#753_6)** (`appID` 753, `contextID` 6), excluindo assim todos os itens de jogos, presentes e similares da proposta de troca por definição.
 
 A configuração padrão do ASF baseia-se no uso mais comum do bot, transferindo apenas pacotes de cartas e cartas colecionáveis (incluindo as brilhantes). A propriedade definida aqui permite que você mude esse comportamento da forma que te satisfaça. Por favor, tenha em mente que todos os tipos não definidos acima serão classificados como `Unknown`, o que é especialmente importante quando a Valve libera um novo item da Steam, que será marcado como `Unknown` pelo ASF também, até que seja adicionado aqui (em uma versão futura). É por isso que, em geral, não é recomendado incluir o tipo `Unknown` em seu `TransferableTypes`, a menos que você saiba o que está fazendo, e compreende também que o ASF enviará seu inventário inteiro em uma oferta de troca se a rede Steam der algum problema novamente e reportar todos os seus itens como `Unknown`. Minha sugestão é não incluir tipo `Unknown` em `TransferableTypes`, mesmo que você espere transferir tudo.
 
@@ -1041,9 +1025,9 @@ Devido ao citado acima, o ASF migrará/otimizará automaticamente suas configura
 
 ---
 
-## Recarregamento automático
+## Reinício automático
 
-ASF is aware of configs being modified "on-the-fly" - thanks to that, ASF will automatically:
+O ASF está ciente de configurações sendo modificadas "em tempo real" - graças a isso, o ASF automaticamente:
 - Criar (e iniciar, se necessário) um novo bot, quando você criar a configuração do mesmo
 - Parar (se necessário) e remover o bot antigo, quando você excluir a sua configuração
 - Parar (e iniciar, se necessário) qualquer bot, quando você editar a configuração do mesmo

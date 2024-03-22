@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,18 +24,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using JetBrains.Annotations;
 using Nito.AsyncEx;
 
 namespace ArchiSteamFarm.Collections;
 
-internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
+public sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> where T : notnull {
 	[PublicAPI]
 	public event EventHandler? OnModified;
 
-	public bool IsReadOnly => false;
-
-	internal int Count {
+	[PublicAPI]
+	public int Count {
 		get {
 			using (Lock.ReaderLock()) {
 				return BackingCollection.Count;
@@ -41,7 +43,9 @@ internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 		}
 	}
 
-	private readonly List<T> BackingCollection = [];
+	public bool IsReadOnly => false;
+
+	private readonly List<T> BackingCollection;
 	private readonly AsyncReaderWriterLock Lock = new();
 
 	int ICollection<T>.Count => Count;
@@ -55,6 +59,8 @@ internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 		}
 
 		set {
+			ArgumentNullException.ThrowIfNull(value);
+
 			using (Lock.WriterLock()) {
 				BackingCollection[index] = value;
 			}
@@ -63,7 +69,18 @@ internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 		}
 	}
 
+	[JsonConstructor]
+	public ConcurrentList() => BackingCollection = [];
+
+	public ConcurrentList(IEnumerable<T> collection) {
+		ArgumentNullException.ThrowIfNull(collection);
+
+		BackingCollection = [..collection];
+	}
+
 	public void Add(T item) {
+		ArgumentNullException.ThrowIfNull(item);
+
 		using (Lock.WriterLock()) {
 			BackingCollection.Add(item);
 		}
@@ -80,12 +97,17 @@ internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 	}
 
 	public bool Contains(T item) {
+		ArgumentNullException.ThrowIfNull(item);
+
 		using (Lock.ReaderLock()) {
 			return BackingCollection.Contains(item);
 		}
 	}
 
 	public void CopyTo(T[] array, int arrayIndex) {
+		ArgumentNullException.ThrowIfNull(array);
+		ArgumentOutOfRangeException.ThrowIfNegative(arrayIndex);
+
 		using (Lock.ReaderLock()) {
 			BackingCollection.CopyTo(array, arrayIndex);
 		}
@@ -94,12 +116,17 @@ internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 	public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(BackingCollection, Lock.ReaderLock());
 
 	public int IndexOf(T item) {
+		ArgumentNullException.ThrowIfNull(item);
+
 		using (Lock.ReaderLock()) {
 			return BackingCollection.IndexOf(item);
 		}
 	}
 
 	public void Insert(int index, T item) {
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentNullException.ThrowIfNull(item);
+
 		using (Lock.WriterLock()) {
 			BackingCollection.Insert(index, item);
 		}
@@ -108,6 +135,8 @@ internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 	}
 
 	public bool Remove(T item) {
+		ArgumentNullException.ThrowIfNull(item);
+
 		using (Lock.WriterLock()) {
 			if (!BackingCollection.Remove(item)) {
 				return false;
@@ -120,6 +149,8 @@ internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 	}
 
 	public void RemoveAt(int index) {
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+
 		using (Lock.WriterLock()) {
 			BackingCollection.RemoveAt(index);
 		}
@@ -129,7 +160,10 @@ internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	internal void ReplaceWith(IEnumerable<T> collection) {
+	[PublicAPI]
+	public void ReplaceWith(IEnumerable<T> collection) {
+		ArgumentNullException.ThrowIfNull(collection);
+
 		using (Lock.WriterLock()) {
 			BackingCollection.Clear();
 			BackingCollection.AddRange(collection);

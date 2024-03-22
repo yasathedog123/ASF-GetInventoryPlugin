@@ -54,7 +54,7 @@ Remember to ensure that file containing the password is not readable by unauthor
 
 ---
 
-## 권장사항
+## Encryption recommendations
 
 호환성이 문제되지 않고, `ProtectedDataForCurrentUser` 방법의 동작 방법이 괜찮다면 ASF에서 암호를 저장하는 **권장** 옵션입니다. 이는 최고의 보안을 제공합니다. `AES` 방법은 원하는 어느 기기에서나 환경설정을 사용하길 원하는 사람들에게 좋은 선택입니다. 그리고 `평문`은 누구나 JSON 환경설정 파일을 들여다 볼 수 있다는 것을 개의치 않는다면 가장 단순한 암호 저장방식입니다.
 
@@ -110,6 +110,6 @@ ASF allows you to specify salt for this method via `--cryptkey` **[command-line 
 
 ---
 
-## 권장사항
+## Hashing recommendations
 
 If you'd like to use a hashing method for storing some secrets, such as `IPCPassword`, we recommend to use `SCrypt` with custom salt, as it provides a very decent security against brute-forcing attempts. `Pbkdf2` is offered only for compatibility reasons, mainly because we already have a working (and needed) implementation of it for other use cases across Steam platform (e.g. parental pins). It's still considered secure, but weak compared to alternatives (e.g. `SCrypt`).

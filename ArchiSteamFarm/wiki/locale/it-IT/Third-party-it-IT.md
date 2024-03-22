@@ -10,7 +10,7 @@ Sei pregato di notare che i seguenti programmi **non** sono mantenuti da svilupp
 
 ### **[Citrinate](https://github.com/Citrinate)**
 
-- **[BoosterManager](https://github.com/Citrinate/BoosterManager)**, plugin for ASF providing an easy-to-use interface for turning gems into booster packs as well as various features for managing inventories and market listings.
+- **[BoosterManager](https://github.com/Citrinate/BoosterManager)**, plugin per ASF che fornisce un'interfaccia semplice per cambiare le gemme in pacchetti di carte, avendo a disposizione anche funzionalità per la gestione dell'inventario e del mercato.
 - **[CS2Interface](https://github.com/Citrinate/CS2Interface)**, plugin for ASF that allows you to interact with Counter-Strike 2 using **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)**.
 - **[FreePackages](https://github.com/Citrinate/FreePackages)**, plugin for ASF that finds free packages on Steam and adds them to your account.
 

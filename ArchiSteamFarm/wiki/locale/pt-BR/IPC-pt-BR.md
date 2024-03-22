@@ -155,7 +155,7 @@ A autenticação pode ser feita de duas formas diferentes.
 
 ## `Authentication` (autenticação) de cabeçalho
 
-In general you should use **[HTTP request headers](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields)**, by setting `Authentication` field with your password as a value. A maneira de fazer isso depende da ferramenta que você está usando para acessar a interface IPC do ASF, por exemplo, se você estiver usando `curl`, então você deve adicionar `-H 'Authentication: MyPassword'` como um parâmetro. Dessa forma a autenticação será passada nos cabeçalhos da solicitação, onde ele de fato deve ocorrer.
+Em geral, você deve utilizar **[cabeçalhos de requisição HTTP](https://pt.wikipedia.org/wiki/Lista_de_campos_de_cabe%C3%A7alho_HTTP)**, configurando o campo `Authentication` com sua senha como valor. A maneira de fazer isso depende da ferramenta que você está usando para acessar a interface IPC do ASF, por exemplo, se você estiver usando `curl`, então você deve adicionar `-H 'Authentication: MyPassword'` como um parâmetro. Dessa forma a autenticação será passada nos cabeçalhos da solicitação, onde ele de fato deve ocorrer.
 
 ## Parâmetro `password` na string de consulta
 
@@ -287,7 +287,7 @@ Este erro indica que outra coisa em sua máquina já está usando essa porta ou 
 
 ### Por que estou recebendo o erro `403 Forbidden` quando não estou usando `IPCPassword`?
 
-ASF includes additional security measure that, by default, allows only loopback interface (`localhost`, your own machine) to access ASF API without `IPCPassword` set in the config. Isso porque usar um `IPCPassword` deve ser a **medida mínima** de segurança definida por todos os que decidem expor mais a interface do ASF.
+O ASF inclui medidas adicionais de segurança que, por padrão, permitem apenas que a interface de loopback (`localhost`, sua própria máquina) acesse a API do ASF sem que `IPCPassword` esteja configurada no arquivo de configuração. Isso porque usar um `IPCPassword` deve ser a **medida mínima** de segurança definida por todos os que decidem expor mais a interface do ASF.
 
 A mudança foi criada pelo fato de que uma enorme quantidade de ASFs hospedados globalmente por usuários desavisados estavam sendo roubados com intenções maliciosas, geralmente deixando as pessoas sem suas contas e sem os itens delas. Nós poderíamos dizer: "eles poderiam ler essa página antes de abrir o ASF para o mundo inteiro", mas faz mais sentido não permitir configurações inseguras do ASF por padrão e exigir dos usuários uma ação se eles explicitamente querem permiti-la, sobre a qual falaremos abaixo.
 

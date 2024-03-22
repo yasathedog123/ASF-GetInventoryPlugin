@@ -60,7 +60,7 @@ Due to the nature of this property, it's also possible to set cryptkey file by d
 
 ---
 
-`--ignore-unsupported-environment` - will cause ASF to ignore problems related to running in unsupported environment, which normally is signalized with an error and a forced exit. Unsupported environment includes for example running `win-x64` OS-specific build on `linux-x64`. While this flag will allow ASF to attempt running in such scenarios, be advised that we do not support those officially and you're forcing ASF to do it entirely **at your own risk**. As of today, **all** of the unsupported environment scenarios can be corrected. We strongly recommend to fix the outstanding problems instead of declaring this argument.
+`--ignore-unsupported-environment` - will cause ASF to ignore problems related to running in unsupported environment, which normally is signalized with an error and a forced exit. Unsupported environment includes for example running `win-x64` OS-specific build on `linux-x64`. While this flag will allow ASF to attempt running in such scenarios, be advised that we do not support those officially and you're forcing ASF to do it entirely **at your own risk**. It's important to point out that **all** of the unsupported environment scenarios **can be corrected**. We strongly recommend to fix the outstanding problems instead of declaring this argument.
 
 ---
 
@@ -78,7 +78,7 @@ Due to the nature of this property, it's also possible to set the value by decla
 
 ---
 
-`--no-config-migrate` - by default ASF will automatically migrate your config files to latest syntax. Migration includes conversion of deprecated properties into latest ones, removing properties with default values (as they have no effect), as well as cleaning up the file in general (correcting indentation and likewise). This is almost always a good idea, but you might have a particular situation where you'd prefer ASF to never overwrite the config files automatically. For example, you might want to `chmod 400` your config files (read permission for the owner only) or put `chattr +i` over them, in result denying write access for everyone, e.g. as a security measure. Usually we recommend to keep the config migration enabled, but if you have a particular reason for disabling it and would instead prefer ASF to not do that, you can use this switch for achieving that purpose.
+`--no-config-migrate` - by default ASF will automatically migrate your config files to latest syntax. Migration includes conversion of deprecated properties into latest ones, removing properties with default values (as they have no effect), as well as cleaning up the file in general (correcting indentation and likewise). This is almost always a good idea, but you might have a particular situation where you'd prefer ASF to never overwrite the config files automatically. For example, you might want to `chmod 400` your config files (read permission for the owner only) or put `chattr +i` over them, in result denying write access for everyone, e.g. as a security measure. Usually we recommend to keep the config migration enabled, but if you have a particular reason for disabling it and would instead prefer ASF to not do that, you can use this switch for achieving that purpose. Keep in mind however, that providing correct settings to ASF will become from now on your new responsibility, especially in regards to deprecations and refactors of properties in future ASF versions.
 
 ---
 
@@ -94,7 +94,7 @@ Due to the nature of this property, it's also possible to set the value by decla
 
 ---
 
-`--path <path>`或`--path=<path>`──ASF在啟動時始終會導航至自身所在的目錄。 By specifying this argument, ASF will navigate to given directory after initialization, which allows you to use custom path for various application parts (including `config`, `plugins` and `www` directories, as well as `NLog.config` file), without a need of duplicating binary in the same place. 如果您想將二進位檔案和實際配置檔案分開，這可能會非常有用，類似Linux 打包機制——這樣您就可以在多個設置中共用一個（最新的）二進位檔案。 此路徑既可以是基於當前 ASF 二進位檔案所在位置的相對路徑，也可以是絕對路徑。 Keep in mind that this command points to new "ASF home" - the directory that has the same structure as original ASF, with `config` directory inside, see below example for explanation.
+`--path <path>`或`--path=<path>`──ASF在啟動時始終會導航至自身所在的目錄。 By specifying this argument, ASF will navigate to given directory after initialization, which allows you to use custom path for various application parts (including `config`, `logs`, `plugins` and `www` directories, as well as `NLog.config` file), without a need of duplicating binary in the same place. 如果您想將二進位檔案和實際配置檔案分開，這可能會非常有用，類似Linux 打包機制——這樣您就可以在多個設置中共用一個（最新的）二進位檔案。 此路徑既可以是基於當前 ASF 二進位檔案所在位置的相對路徑，也可以是絕對路徑。 Keep in mind that this command points to new "ASF home" - the directory that has the same structure as original ASF, with `config` directory inside, see below example for explanation.
 
 Due to the nature of this property, it's also possible to set expected path by declaring `ASF_PATH` environment variable, which may be more appropriate for people that would want to avoid sensitive details in the process arguments.
 
@@ -137,4 +137,4 @@ ASF_PATH=/opt/TargetDirectory dotnet /opt/ASF/ArchiSteamFarm.dll # Same as env v
 
 `--system-required`──聲明此開關將導致 ASF 嘗試通知操作系統「此進程要求系統在其存留期內處於啟動狀態並正常運行」。 當前，此開關僅對 Windows 電腦有效，只要ASF進程正在運行，它就會阻止您的系統進入睡眠模式。 This can be proven especially useful when farming on your PC or laptop during night, as ASF will be able to keep your system awake while it's farming, then, once ASF is done, it'll shutdown itself like usual, making your system allowed to enter into sleep mode again, therefore saving power immediately once farming is finished.
 
-請注意，要让 ASF正確地自動關閉，您還需要其他設置──特別是避免 `--process-required`，且確保所有機械人都已啟用 `ShutdownOnFarmingFinished`。 當然，自動關機只是這個參數的用法之一，而非必需，因為您還可以將此參數配合 `--process-required` 使用，從而有效地使您的系統在 ASF 啟動之後無限運行下去。
+Keep in mind that for proper auto-shutdown of ASF you need other settings - especially avoiding `--process-required` and ensuring that all your bots are following `ShutdownOnFarmingFinished` in their `FarmingPreferences`. 當然，自動關機只是這個參數的用法之一，而非必需，因為您還可以將此參數配合 `--process-required` 使用，從而有效地使您的系統在 ASF 啟動之後無限運行下去。

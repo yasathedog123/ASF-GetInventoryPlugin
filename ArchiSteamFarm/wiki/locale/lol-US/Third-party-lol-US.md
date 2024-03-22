@@ -8,11 +8,11 @@ PLZ NOWT DAT BELOW PROGRAMS R **NOT** MAINTAIND BY ASF DEVELOPERS AN THEREFORE *
 
 ## ASF PLUGINS
 
-### **[Citrinate](https://github.com/Citrinate)**
+### **[CITRINATE](https://github.com/Citrinate)**
 
-- **[BoosterManager](https://github.com/Citrinate/BoosterManager)**, plugin for ASF providing an easy-to-use interface for turning gems into booster packs as well as various features for managing inventories and market listings.
-- **[CS2Interface](https://github.com/Citrinate/CS2Interface)**, plugin for ASF that allows you to interact with Counter-Strike 2 using **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)**.
-- **[FreePackages](https://github.com/Citrinate/FreePackages)**, plugin for ASF that finds free packages on Steam and adds them to your account.
+- **[BoosterManager](https://github.com/Citrinate/BoosterManager)**, PLUGIN 4 ASF PROVIDIN AN EASY-2-USE INTERFACE 4 TURNIN GEMS INTO BOOSTR PACKZ AS WELL AS VARIOUS FEATUREZ 4 MANAGIN INVENTORIEZ AN MARKIT LISTINGS.
+- **[CS2Interface](https://github.com/Citrinate/CS2Interface)**, PLUGIN 4 ASF DAT ALLOWS U 2 INTERACT WIF COUNTR-STRIKE 2 USIN**[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)**.
+- **[FreePackages](https://github.com/Citrinate/FreePackages)**, PLUGIN 4 ASF DAT FINDZ FREE PACKAGEZ ON STEAM AN ADDZ THEM 2 UR AKOWNT.
 
 ### **[Rudokhvist](https://github.com/Rudokhvist)**
 
@@ -35,7 +35,7 @@ PLZ NOWT DAT BELOW PROGRAMS R **NOT** MAINTAIND BY ASF DEVELOPERS AN THEREFORE *
 ### OTHR
 
 - **[ASFEnhance](https://github.com/chr233/ASFEnhance)**, PLUGIN 4 ASF ENHANCIN IT WIF VARIOUS NEW FEATUREZ, ESPECIALLY COMMANDZ.
-- **[ASFFreeGames](https://github.com/maxisoft/ASFFreeGames)**, plugin for ASF allowing one to automatically collect free steam games posted on reddit.
+- **[ASFFreeGames](https://github.com/maxisoft/ASFFreeGames)**, PLUGIN 4 ASF ALLOWIN WAN 2 AUTOMATICALLY COLLECT FREE STEAM GAMEZ POSTD ON REDDIT.
 
 ---
 

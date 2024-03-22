@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +22,8 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -33,6 +35,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.IPC;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
@@ -40,15 +43,16 @@ using ArchiSteamFarm.NLog.Targets;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
-using Newtonsoft.Json;
 using NLog;
 using SteamKit2;
 
 namespace ArchiSteamFarm;
 
 internal static class Program {
+	internal static bool AllowCrashFileRemoval { get; set; }
 	internal static bool ConfigMigrate { get; private set; } = true;
 	internal static bool ConfigWatch { get; private set; } = true;
+	internal static bool IgnoreUnsupportedEnvironment { get; private set; }
 	internal static string? NetworkGroup { get; private set; }
 	internal static bool ProcessRequired { get; private set; }
 	internal static bool RestartAllowed { get; private set; } = true;
@@ -58,16 +62,15 @@ internal static class Program {
 
 	private static readonly Dictionary<PosixSignal, PosixSignalRegistration> RegisteredPosixSignals = new();
 	private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new();
-	private static readonly ImmutableHashSet<PosixSignal> SupportedPosixSignals = ImmutableHashSet.Create(PosixSignal.SIGINT, PosixSignal.SIGTERM);
+	private static readonly FrozenSet<PosixSignal> SupportedPosixSignals = new HashSet<PosixSignal>(2) { PosixSignal.SIGINT, PosixSignal.SIGTERM }.ToFrozenSet();
 
-	private static bool IgnoreUnsupportedEnvironment;
 	private static bool InputCryptkeyManually;
 	private static bool Minimized;
 	private static bool SystemRequired;
 
 	internal static async Task Exit(byte exitCode = 0) {
 		if (exitCode != 0) {
-			ASF.ArchiLogger.LogGenericError(Strings.ErrorExitingWithNonZeroErrorCode);
+			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorExitingWithNonZeroErrorCode, exitCode));
 		}
 
 		await Shutdown(exitCode).ConfigureAwait(false);
@@ -205,13 +208,7 @@ internal static class Program {
 
 		OS.Init(ASF.GlobalConfig?.OptimizationMode ?? GlobalConfig.DefaultOptimizationMode);
 
-		if (!await InitGlobalDatabaseAndServices().ConfigureAwait(false)) {
-			return false;
-		}
-
-		await ASF.Init().ConfigureAwait(false);
-
-		return true;
+		return await InitGlobalDatabaseAndServices().ConfigureAwait(false) && await ASF.Init().ConfigureAwait(false);
 	}
 
 	private static async Task<bool> InitCore(IReadOnlyCollection<string>? args) {
@@ -358,7 +355,7 @@ internal static class Program {
 		}
 
 		if (globalConfig.Debug) {
-			ASF.ArchiLogger.LogGenericDebug($"{globalConfigFile}: {JsonConvert.SerializeObject(globalConfig, Formatting.Indented)}");
+			ASF.ArchiLogger.LogGenericDebug($"{globalConfigFile}: {globalConfig.ToJsonText(true)}");
 		}
 
 		if (!string.IsNullOrEmpty(globalConfig.CurrentCulture)) {
@@ -419,7 +416,7 @@ internal static class Program {
 		// If debugging is on, we prepare debug directory prior to running
 		if (Debugging.IsUserDebugging) {
 			if (Debugging.IsDebugConfigured) {
-				ASF.ArchiLogger.LogGenericDebug($"{globalDatabaseFile}: {JsonConvert.SerializeObject(ASF.GlobalDatabase, Formatting.Indented)}");
+				ASF.ArchiLogger.LogGenericDebug($"{globalDatabaseFile}: {globalDatabase.ToJsonText(true)}");
 			}
 
 			Logging.EnableTraceLogging();
@@ -450,7 +447,7 @@ internal static class Program {
 		return true;
 	}
 
-	private static async Task<bool> InitShutdownSequence() {
+	private static async Task<bool> InitShutdownSequence(byte exitCode = 0) {
 		if (ShutdownSequenceInitialized) {
 			// We've already initialized shutdown sequence before, we won't allow the caller to init shutdown sequence again
 			// While normally this will be respected, caller might not have any say in this for example because it's the runtime terminating ASF due to fatal exception
@@ -462,13 +459,26 @@ internal static class Program {
 
 		ShutdownSequenceInitialized = true;
 
+		// Unregister from registered signals
 		if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-			// Unregister from registered signals
 			foreach (PosixSignalRegistration registration in RegisteredPosixSignals.Values) {
 				registration.Dispose();
 			}
 
 			RegisteredPosixSignals.Clear();
+		}
+
+		// Remove crash file if allowed
+		if ((exitCode == 0) && AllowCrashFileRemoval) {
+			string crashFile = ASF.GetFilePath(ASF.EFileType.Crash);
+
+			if (File.Exists(crashFile)) {
+				try {
+					File.Delete(crashFile);
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericException(e);
+				}
+			}
 		}
 
 		// Sockets created by IPC might still be running for a short while after complete app shutdown
@@ -503,16 +513,13 @@ internal static class Program {
 		return await ShutdownResetEvent.Task.ConfigureAwait(false);
 	}
 
-	private static async void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e) => await Exit(130).ConfigureAwait(false);
+	private static async void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e) => await Exit().ConfigureAwait(false);
 
 	private static async void OnPosixSignal(PosixSignalContext signal) {
 		ArgumentNullException.ThrowIfNull(signal);
 
 		switch (signal.Signal) {
 			case PosixSignal.SIGINT:
-				await Exit(130).ConfigureAwait(false);
-
-				break;
 			case PosixSignal.SIGTERM:
 				await Exit().ConfigureAwait(false);
 
@@ -710,7 +717,7 @@ internal static class Program {
 	}
 
 	private static async Task Shutdown(byte exitCode = 0) {
-		if (!await InitShutdownSequence().ConfigureAwait(false)) {
+		if (!await InitShutdownSequence(exitCode).ConfigureAwait(false)) {
 			return;
 		}
 

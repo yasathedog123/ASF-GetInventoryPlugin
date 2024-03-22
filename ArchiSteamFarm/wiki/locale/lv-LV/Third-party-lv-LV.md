@@ -6,7 +6,7 @@ Please note that below programs are **not** maintained by ASF developers and the
 
 ---
 
-## ASF plugins
+## ASF spraudņi
 
 ### **[Citrinate](https://github.com/Citrinate)**
 

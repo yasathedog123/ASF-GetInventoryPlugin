@@ -22,7 +22,7 @@ Sie **können**:
 - Behaupten, dass Ihre Software/Dienstleistung **basierend auf** ASF (oder seinem Quellcode) ist
 - Ihre Software/Dienstleistung als **ASF Fork** bezeichnen
 - Behaupten, dass Ihre Software/Dienstleistung von ASF bereitgestellt wird, falls Sie **keine** Änderungen am Quellcode vorgenommen haben
-- ASF für verschiedene Referenzzwecke verwenden, wie z. B. die Verknüpfung von Software/Dienstherkunft, unserem Wiki oder *"je nach Bedarf für eine angemessene und übliche Verwendung zur Beschreibung der Herkunft des Werkes"*
+- ASF für verschiedene Referenzzwecke verwenden, z. B. die Verknüpfung von Software/Dienstherkunft, unserem Wiki oder *„je nach Bedarf für eine angemessene und übliche Verwendung zur Beschreibung der Herkunft des Werkes“*
 
 Sie **können nicht**:
 - Behaupten, dass Ihr Programm/Dienst ASF **ist**

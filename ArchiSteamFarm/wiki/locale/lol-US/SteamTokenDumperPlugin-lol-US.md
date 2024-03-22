@@ -38,9 +38,9 @@ IN ANY CASE, STEAMDB STAFF WUD LIEK 2 THANK U IN ADVANCE 4 UR HALP. TEH SUBMITTD
 
 ## COMMAND
 
-STD plugin comes with extra ASF command, `!std [Bots]`, which allows you to trigger refresh and submission for selected bots on demand. Using the command doesn't require enabled config, which allows you to skip automatic gathering and submission, and control the process yourself manually. Naturally it can also be executed with enabled config, which will simply trigger the usual gathering and submission procedures earlier than expected.
+STD PLUGIN COMEZ WIF EXTRA ASF COMMAND `!std [Bots]`, WHICH ALLOWS U 2 TRIGGR REFRESH AN SUBMISHUN 4 SELECTD BOTS ON DEMAND. USIN TEH COMMAND DOESNT REQUIRE ENABLD CONFIG, WHICH ALLOWS U 2 SKIP AUTOMATIC GATHERIN AN SUBMISHUN, AN CONTROL TEH PROCES YOURSELF MANUALLY. NATURALLY IT CAN ALSO BE EXECUTD WIF ENABLD CONFIG, WHICH WILL SIMPLY TRIGGR TEH USUAL GATHERIN AN SUBMISHUN PROCEDUREZ EARLIR THAN EXPECTD.
 
-We recommend `!std ASF` in order to trigger refresh for all available bots. However, you can also trigger it for selected ones if you'd like to.
+WE RECOMMEND `!std ASF` IN ORDR 2 TRIGGR REFRESH 4 ALL AVAILABLE BOTS. HOWEVR, U CAN ALSO TRIGGR IT 4 SELECTD ONEZ IF UD LIEK 2.
 
 ---
 

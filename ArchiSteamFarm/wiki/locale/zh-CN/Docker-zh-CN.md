@@ -1,6 +1,6 @@
 # Docker
 
-ASF 可以作为 [**Docker 容器**](https://www.docker.com/what-container)运行。 我们的 Docker 仓库同时部署于 **[ghcr.io](https://github.com/orgs/JustArchiNET/packages/container/archisteamfarm/versions)** 和 **[Docker Hub](https://hub.docker.com/r/justarchi/archisteamfarm)**。
+ASF 可以作为 [**Docker 容器**](https://www.docker.com/what-container)运行。 我们的 Docker 包目前可以在 **[ghcr.io](https://github.com/JustArchiNET/ArchiSteamFarm/pkgs/container/archisteamfarm)** 和 **[Docker Hub](https://hub.docker.com/r/justarchi/archisteamfarm)** 获取。
 
 重要的是，在 Docker 容器内运行 ASF 被认为是**进阶安装方式**，绝大多数用户是**不需要的**，与非容器方式相比，也没有明显优势。 如果您认为 Docker 是让 ASF 作为服务运行的一种方案，例如让它自动随操作系统一同启动，那么您可以考虑阅读[**管理**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Management-zh-CN#linux-的-systemd-服务)章节，正确设置 `systemd` 服务来代替，这种方案**通常总是**比在 Docker 内运行 ASF 更好。
 
@@ -65,7 +65,7 @@ docker run -it --name asf --pull always --rm justarchi/archisteamfarm
 
 `docker run` 会为您创建一个新的 ASF Docker 容器，并在前台运行它（`-it` 参数）。 `--pull always` 用于确保首先拉取最新的映像，`--rm` 参数用于确保我们的容器在停止之后会被完整删除，因为我们现在只是想测试一下是否一切正常，不需要保留。
 
-如果一切正常，在拉取所有层并启动容器后，您应该注意到 ASF 已正确启动并通知我们目前没有任何机器人，这是正常的——我们已经验证了 Docker 中的 ASF 运行正常。 按下 `CTRL+P` 和 `CTRL+Q` 以退出前台 Docker 容器，然后执行 `docker stop asf` 命令停止该容器。
+如果一切正常，在拉取所有层并启动容器后，您应该注意到 ASF 已正确启动并通知我们目前没有任何机器人，这是正常的——我们已经验证了 Docker 中的 ASF 运行正常。 按下 `CTRL+C` 以终止 ASF 进程，进而使容器停止。
 
 如果您仔细观察这些命令就会发现我们没有指定任何分支，实际上使用的是默认的 `latest` 分支。 如果您希望使用非 `latest` 分支，例如 `released`，就应该显式地指明：
 
@@ -85,7 +85,7 @@ docker run -it --name asf --pull always --rm justarchi/archisteamfarm:released
 docker run -it -v /home/archi/ASF/config:/app/config --name asf --pull always justarchi/archisteamfarm
 ```
 
-就这样，现在 ASF Docker 容器将会以读写模式使用您本地的共享目录，您可以在其中对 ASF 进行一切配置。 您可以用同样方式挂载 ASF 的其他目录，例如 `/app/logs` 或 `/app/plugins/MyCustomPluginDirectory`（您不应该覆盖 `/app/plugins` 本身，否则就会删除 ASF 自带的插件）。
+就这样，现在 ASF Docker 容器将会以读写模式使用您本地的共享目录，您可以在其中对 ASF 进行一切配置。 您可以用同样方式挂载 ASF 的其他目录，例如 `/app/logs` 或 `/app/plugins`。
 
 当然，这只是其中一种方法，如果您打算创建自己的 `Dockerfile` 将配置文件复制到 ASF 容器内的 `/app/config` 目录，我们也无法阻止您。 我们只会在本指南中介绍基本用法。
 
@@ -93,19 +93,27 @@ docker run -it -v /home/archi/ASF/config:/app/config --name asf --pull always ju
 
 ASF 容器默认以 `root` 用户初始化，这样容器就可以在内部处理权限问题，之后再切换到 `asf` 用户（UID 为 `1000`）处理主进程的其他工作。 尽管这样应该足以满足绝大多数用户的需求，但的确会影响共享卷，因为新创建文件的所有者将会是 `asf` 用户，如果您希望共享卷属于其他用户，这种情况就不适合了。
 
-Docker 允许您向 `docker run` 命令传递 `--user` **[参数](https://docs.docker.com/engine/reference/run/#user)**，定义运行 ASF 的默认用户。 您可以通过 `id` 命令等查询您的 `uid` 和 `gid`，然后将其放到命令参数中传递。 例如，假设您的目标用户的 `uid` 和 `gid` 都为 1001：
+有两种方法修改运行 ASF 的用户。 我们推荐使用第一种方式，即声明 `ASF_USER` 环境变量，其值为您要运行 ASF 的用户 UID。 另一种方式，则需要传入 `--user` **[参数](https://docs.docker.com/engine/reference/run/#user)**，由 Docker 直接支持。
+
+您可以通过 `id -u` 命令等查询您的 `uid`，然后将其按上文所述配置。 例如，假设您的目标用户的 `uid` 为 1001：
 
 ```shell
-docker run -it -u 1001:1001 -v /home/archi/ASF/config:/app/config --name asf --pull always justarchi/archisteamfarm
+docker run -it -e ASF_USER=1001 -v /home/archi/ASF/config:/app/config --name asf --pull always justarchi/archisteamfarm
+
+# 或者，如果您了解下文所述的限制
+docker run -it -u 1001 -v /home/archi/ASF/config:/app/config --name asf --pull always justarchi/archisteamfarm
 ```
 
-请记住，在默认情况下，ASF 使用的 `/app` 目录仍然为 `asf` 用户所有。 如果您在自定义用户下运行 ASF，则 ASF 进程将没有权限向自己的文件写入内容。 该权限不是必需的，但对于某些功能来说很重要，例如自动更新功能。 为了解决这个问题，只需要将所有 ASF 文件的所有者从默认的 `asf` 更改为您设定的新用户。
+`ASF_USER` 与 `--user` 参数之间的区别很小，但很重要。 `ASF_USER` 是由 ASF 支持的自定义机制，在这个场景下，Docker 容器仍然以 `root` 用户启动，然后 ASF 的启动脚本会以 `ASF_USER` 指定的用户运行主程序。 在使用 `--user` 参数时，您是以指定的用户启动整个进程，包括 ASF 启动脚本。 第一个选项允许 ASF 启动脚本自动为您处理权限等配置，解决一些您可能会造成的常见问题，例如，它能确保您的 `/app` 和 `/asf` 目录的所有者是 `ASF_USER`。 在第二种情况下，因为我们没有以 `root` 运行，就无法做到这一点，您必须自己提前处理好所有问题。
+
+如果您决定使用 `--user` 参数，您需要将所有 ASF 文件的所有者从默认的 `asf` 更改为您设定的新用户。 您可以执行下面的命令做到这一点：
 
 ```shell
-docker exec -u root asf chown -hR 1001:1001 /app
+# 仅在您未使用 ASF_USER 的情况下执行
+docker exec -u root asf chown -hR 1001 /app /asf
 ```
 
-在通过 `docker run` 命令创建 Docker 容器之后，您只需要执行一次该命令，并且只有您需要自定义执行 ASF 进程的用户时才需要。 也不要忘记将上述命令中的 `1001:1001` 更改为实际用户的 `uid` 和 `gid`。
+在通过 `docker run` 命令创建 Docker 容器之后，您需要仅执行一次该命令，并且只有在您决定通过 Docker 的 `--user` 参数来自定义用户的情况下才需要。 也不要忘记将上述命令中的 `1001` 更改为实际运行 ASF 的用户 `UID`。
 
 ### 启用 SELinux 时使用卷
 
@@ -189,7 +197,7 @@ docker run -it -p 127.0.0.1:1242:1242 -p [::1]:1242:1242 --name asf --pull alway
 结合上述的全部内容，完整安装的一个示例如下所示：
 
 ```shell
-docker run -p 127.0.0.1:1242:1242 -p [::1]:1242:1242 -v /home/archi/ASF/config:/app/config -v /home/archi/ASF/plugins:/app/plugins/custom --name asf --pull always justarchi/archisteamfarm
+docker run -p 127.0.0.1:1242:1242 -p [::1]:1242:1242 -v /home/archi/ASF/config:/app/config -v /home/archi/ASF/plugins:/app/plugins --name asf --pull always justarchi/archisteamfarm
 ```
 
 此示例假定您将使用单个 ASF 容器，所有配置文件都放在 `/home/archi/ASF/config`。 您需要修改此处的配置文件路径以匹配您的环境。 您也可以为 ASF 提供自定义插件，将他们放在 `/home/archi/ASF/plugins`。 如果您打算编写内容如下的 `IPC.config` 配置文件，则此 ASF 也能够正常启用 IPC 接口：

@@ -90,7 +90,8 @@ StackTrace:
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
 	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>Kończenie z niezerowym kodem błędu!</value>
+		<value>Zamykanie z kodem błędu {0}!</value>
+		<comment>{0} will be replaced by error code (number)</comment>
 	</data>
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Niepowodzenie żądania: {0}</value>
@@ -708,7 +709,7 @@ Czas procesu: {1}</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>Używasz {0} ustawienia właściwości {1}, ale nie podałeś niestandardowego --cryptkey. Powinieneś podać niestandardowy --cryptkey, aby zwiększyć bezpieczeństwo.</value>
+		<value>Używasz ustawienia {0} właściwości {1}, ale bez podania niestandardowego klucza --cryptkey. Opcjonalnie możesz podać niestandardowy --cryptkey dla zwiększenia bezpieczeństwa, jeśli chcesz.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
 	</data>
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
@@ -751,5 +752,62 @@ Czas procesu: {1}</value>
 	<data name="WarningRegionRestrictedPackage" xml:space="preserve">
 		<value>ASF nie może uruchomić aplikacji {0}, ponieważ ma ona ograniczenia regionalne dla {1} kraju, które obowiązują do {2}.</value>
 		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
+	</data>
+	<data name="WarningUnsupportedOfficialPlugins" xml:space="preserve">
+		<value>Próbujesz uruchomić oficjalną wtyczkę {0} w wersji niezgodnej z wersją ASF: {1} (oczekiwano: {2}). Sugeruje to, że robisz coś bardzo niewłaściwego; napraw konfigurację albo podaj argument --ignore-unsupported-environment, jeśli naprawdę wiesz, co robisz.</value>
+		<comment>{0} will be replaced by plugin name, {1} will be replaced by plugin's version number, {2} will be replaced by ASF's version number.</comment>
+	</data>
+	<data name="ErrorTooManyCrashes" xml:space="preserve">
+		<value>Twój plik ASF ulegał ostatnio awarii zbyt wiele razy i dlatego inicjalizacja procesu została wyłączona. Sprawdź, napraw konfigurację, a następnie usuń plik ASF.crash z katalogu konfiguracyjnego lub podaj argument --ignore-unsupported-environment, jeśli naprawdę wiesz, co robisz.</value>
+	</data>
+	<data name="IdlingGameNotPossiblePrivate" xml:space="preserve">
+		<value>Farmienie {0} ({1}) jest wyłączone, ponieważ ta gra jest obecnie oznaczona jako prywatna. Jeśli zamierzasz farmić tę grę z ASF, rozważ zmianę jej ustawień prywatności.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="WarningSkipping" xml:space="preserve">
+		<value>Pomijanie: {0}...</value>
+		<comment>{0} will be replaced by text value (string) of entry being skipped.</comment>
+	</data>
+	<data name="PluginUpdatesChecking" xml:space="preserve">
+		<value>Sprawdzanie dostępności aktualizacji wtyczek...</value>
+	</data>
+	<data name="PluginUpdateChecking" xml:space="preserve">
+		<value>Sprawdzanie aktualizacji wtyczki {0}...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateNotFound" xml:space="preserve">
+		<value>Brak aktualizacji wtyczki {0}: {1} ≥ {2}.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateFound" xml:space="preserve">
+		<value>Znaleziono aktualizację wtyczki {0} z wersji {1} do {2}...</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateNoAssetFound" xml:space="preserve">
+		<value>Brak dostępnych zasobów dla aktualizacji wtyczki {0} z wersji {1} do {2}. Zwykle oznacza to, że aktualizacja będzie dostępna w późniejszym czasie.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateConflictingAssetsFound" xml:space="preserve">
+		<value>Nie można określić żadnego zasobu dla aktualizacji wtyczki {0} z wersji {1} do {2}. Może się to zdarzyć, jeśli wydanie nie jest jeszcze ukończone – jeśli tak się stanie, należy powiadomić o tym twórcę wtyczki.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by current plugin's version, {2} will be replaced by remote plugin's version.</comment>
+	</data>
+	<data name="PluginUpdateInProgress" xml:space="preserve">
+		<value>Aktualizowanie wtyczki {0}...</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateFinished" xml:space="preserve">
+		<value>Aktualizacja wtyczki {0} powiodła się, zmiany zostaną załadowane przy następnym uruchomieniu ASF.</value>
+		<comment>{0} will be replaced by plugin name (string).</comment>
+	</data>
+	<data name="PluginUpdateEnabled" xml:space="preserve">
+		<value>Wtyczka {0}/{1} została zarejestrowana i włączona do automatycznych aktualizacji.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="PluginUpdateDisabled" xml:space="preserve">
+		<value>Wtyczka {0}/{1} została wyłączona z automatycznych aktualizacji, mimo że obsługuje taką funkcję.</value>
+		<comment>{0} will be replaced by plugin name (string), {1} will be replaced by plugin assembly name (string).</comment>
+	</data>
+	<data name="CustomPluginUpdatesEnabled" xml:space="preserve">
+		<value>Wtyczki niestandardowe zostały zarejestrowane do automatycznych aktualizacji. Zespół ASF przypomina, że dla własnego bezpieczeństwa należy włączyć automatyczne aktualizacje tylko od zaufanych stron. Jeśli nie masz tego zamiaru, możesz wyłączyć aktualizacje wtyczek w globalnej konfiguracji ASF.</value>
 	</data>
 </root>

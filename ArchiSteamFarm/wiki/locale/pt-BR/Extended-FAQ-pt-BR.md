@@ -1,12 +1,12 @@
 # Perguntas frequentes adicionais
 
-Nosso FAQ (Perguntas Frequentes) estendido cobre perguntas e respostas um pouco menos comuns que você pode ter. Para questões mais comuns, visite o nosso **[FAQ básico](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/FAQ)**.
+Nosso FAQ (Perguntas Frequentes) estendido cobre perguntas e respostas um pouco menos comuns que você pode ter. Para questões mais comuns, visite o nosso **[FAQ básico](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/FAQ-pt-BR)**.
 
 ---
 
 ### Quem criou o ASF?
 
-O ASF foi criado em outubro de 2015 por **[Archi](https://github.com/JustArchi)**. Caso você se pergunte, eu sou um **[usuário do Steam](https://steamcommunity.com/profiles/76561198006963719)** como você. Além de jogar eu também amo colocar em uso minhas habilidades e determinação que você pode explorar agora. Não há nenhuma grande companhia envolvida aqui, nenhum time de desenvolvedores e nenhum orçamento de milhões para cobrir tudo isso: apenas eu, consertando coisas que se quebram.
+O ASF foi criado em outubro de 2015 por **[Archi](https://github.com/JustArchi)**. Caso você se pergunte, eu sou um **[usuário do Steam](https://steamcommunity.com/profiles/76561198006963719)** assim como você. Além de jogar eu também amo colocar em uso minhas habilidades e determinação que você pode explorar agora. Não há nenhuma grande empresa envolvida aqui, nenhum time de desenvolvedores e nenhum orçamento de milhões para cobrir tudo isso: apenas eu, consertando coisas que se quebram.
 
 No entanto, o ASF é um projeto de código aberto e é preciso informar que eu não sou o único atrás de tudo o que você vê aqui. Nós temos alguns **[outros](https://github.com/JustArchiNET?q=ASF-)** projetos do ASF que estão sendo desenvolvidos quase exclusivamente por outros desenvolvedores. Até mesmo o núcleo do ASF tem muitos **[contribuidores](https://github.com/JustArchiNET/ArchiSteamFarm/graphs/contributors)** que me ajudaram a tornar isso possível. Além disso, há vários serviços de terceiros que apoiam o desenvolvimento do ASF, especialmente o **[GitHub](https://github.com)**, **[JetBrains](https://www.jetbrains.com)** e o **[Crowdin](https://crowdin.com)**. Também não podemos esquecer das incríveis bibliotecas e ferramentas que tornaram o ASF possível, tais como o **[Rider](https://www.jetbrains.com/rider)** que usamos como IDE (adoramos as adições do **[ReSharper](https://www.jetbrains.com/resharper)**) e especialmente o **[SteamKit2](https://github.com/SteamRE/SteamKit)** sem o qual não haveria a menor chance do ASF existir. O ASF também não estaria aqui hoje sem meus **[patrocinadores](https://github.com/sponsors/JustArchi)** que me dão suporte em tudo o que faço aqui.
 
@@ -48,7 +48,7 @@ No momento não existem falhas de segurança conhecidas e sem correção no ASF,
 
 ### Como faço para verificar se os arquivos baixados são genuínos?
 
-Como parte de nossas versões no GitHub, utilizamos um processo de verificação muito semelhante ao usado pelo **[Debian](https://www.debian.org/CD/verify)**. In every official release, in addition to `zip` build assets, you can find `SHA512SUMS` and `SHA512SUMS.sign` files. Faça o download deles para fins de verificação, junto com os arquivos `zip` que escolher.
+Como parte de nossas versões no GitHub, utilizamos um processo de verificação muito semelhante ao usado pelo **[Debian](https://www.debian.org/CD/verify)**. Em cada lançamento oficial, além de `zip` construir ativos, você pode encontrar os arquivos `SHA512SUMS` e `SHA512SUMS.sign`. Faça o download deles para fins de verificação, junto com os arquivos `zip` que escolher.
 
 Primeiro, você deve usar o arquivo `SHA512SUMS` para verificar se a soma de verificação `SHA-512` dos arquivos `zip` selecionados corresponde ao arquivo que nós mesmos calculamos. No Linux, você pode usar `sha512sum` para esse fim.
 

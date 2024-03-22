@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,14 +23,16 @@
 
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class NewDiscoveryQueueResponse {
-	[JsonProperty("queue", Required = Required.Always)]
-	internal readonly ImmutableHashSet<uint> Queue = ImmutableHashSet<uint>.Empty;
+	[JsonInclude]
+	[JsonPropertyName("queue")]
+	[JsonRequired]
+	internal ImmutableHashSet<uint> Queue { get; private init; } = [];
 
 	[JsonConstructor]
 	private NewDiscoveryQueueResponse() { }

@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +43,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 
 internal static class Backend {
-	internal static async Task<ObjectResponse<GenericResponse<BackgroundTaskResponse>>?> AnnounceDiffForListing(WebBrowser webBrowser, ulong steamID, IReadOnlyCollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, uint totalInventoryCount, bool matchEverything, string tradeToken, IReadOnlyCollection<AssetForListing> inventoryRemoved, string? previousInventoryChecksum, string? nickname = null, string? avatarHash = null) {
+	internal static async Task<ObjectResponse<GenericResponse<BackgroundTaskResponse>>?> AnnounceDiffForListing(WebBrowser webBrowser, ulong steamID, IReadOnlyCollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<EAssetType> acceptedMatchableTypes, uint totalInventoryCount, bool matchEverything, string tradeToken, IReadOnlyCollection<AssetForListing> inventoryRemoved, string? previousInventoryChecksum, string? nickname = null, string? avatarHash = null) {
 		ArgumentNullException.ThrowIfNull(webBrowser);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
@@ -72,7 +74,7 @@ internal static class Backend {
 		return await webBrowser.UrlPostToJsonObject<GenericResponse<BackgroundTaskResponse>, AnnouncementDiffRequest>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnRedirections | WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors | WebBrowser.ERequestOptions.CompressRequest).ConfigureAwait(false);
 	}
 
-	internal static async Task<ObjectResponse<GenericResponse<BackgroundTaskResponse>>?> AnnounceForListing(WebBrowser webBrowser, ulong steamID, IReadOnlyCollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, uint totalInventoryCount, bool matchEverything, string tradeToken, string? nickname = null, string? avatarHash = null) {
+	internal static async Task<ObjectResponse<GenericResponse<BackgroundTaskResponse>>?> AnnounceForListing(WebBrowser webBrowser, ulong steamID, IReadOnlyCollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<EAssetType> acceptedMatchableTypes, uint totalInventoryCount, bool matchEverything, string tradeToken, string? nickname = null, string? avatarHash = null) {
 		ArgumentNullException.ThrowIfNull(webBrowser);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
@@ -114,7 +116,22 @@ internal static class Backend {
 		return Utilities.GenerateChecksumFor(bytes);
 	}
 
-	internal static async Task<(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)?> GetListedUsersForMatching(Guid licenseID, Bot bot, WebBrowser webBrowser, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes) {
+	internal static async Task<HttpStatusCode?> GetLicenseStatus(Guid licenseID, WebBrowser webBrowser) {
+		ArgumentOutOfRangeException.ThrowIfEqual(licenseID, Guid.Empty);
+		ArgumentNullException.ThrowIfNull(webBrowser);
+
+		Uri request = new(ArchiNet.URL, "/Api/Licenses/Status");
+
+		Dictionary<string, string> headers = new(1, StringComparer.Ordinal) {
+			{ "X-License-Key", licenseID.ToString("N") }
+		};
+
+		ObjectResponse<GenericResponse>? response = await webBrowser.UrlGetToJsonObject<GenericResponse>(request, headers, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.AllowInvalidBodyOnErrors).ConfigureAwait(false);
+
+		return response?.StatusCode;
+	}
+
+	internal static async Task<(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)?> GetListedUsersForMatching(Guid licenseID, Bot bot, WebBrowser webBrowser, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<EAssetType> acceptedMatchableTypes) {
 		ArgumentOutOfRangeException.ThrowIfEqual(licenseID, Guid.Empty);
 		ArgumentNullException.ThrowIfNull(bot);
 		ArgumentNullException.ThrowIfNull(webBrowser);
@@ -141,10 +158,10 @@ internal static class Backend {
 			return null;
 		}
 
-		return (response.StatusCode, response.Content?.Result ?? ImmutableHashSet<ListedUser>.Empty);
+		return (response.StatusCode, response.Content?.Result ?? []);
 	}
 
-	internal static async Task<ObjectResponse<GenericResponse<ImmutableHashSet<SetPart>>>?> GetSetParts(WebBrowser webBrowser, ulong steamID, IReadOnlyCollection<Asset.EType> matchableTypes, IReadOnlyCollection<uint> realAppIDs, CancellationToken cancellationToken = default) {
+	internal static async Task<ObjectResponse<GenericResponse<ImmutableHashSet<SetPart>>>?> GetSetParts(WebBrowser webBrowser, ulong steamID, IReadOnlyCollection<EAssetType> matchableTypes, IReadOnlyCollection<uint> realAppIDs, CancellationToken cancellationToken = default) {
 		ArgumentNullException.ThrowIfNull(webBrowser);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {

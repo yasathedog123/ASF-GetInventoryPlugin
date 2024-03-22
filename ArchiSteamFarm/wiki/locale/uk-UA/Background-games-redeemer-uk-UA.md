@@ -1,18 +1,18 @@
 # Активація ігор у фоновому режимі
 
-Активація у фоновому режимі - це спеціальна вбудована функція ASF, яка дозволяє імпортувати певний набір ключів Steam (разом з їх іменами) для активації у фоновому режимі. This is especially useful if you have a lot of keys to redeem and you're guaranteed to hit `RateLimited` **[status](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/FAQ#what-is-the-meaning-of-status-when-redeeming-a-key)** before you're done with your entire batch.
+Активація у фоновому режимі - це спеціальна вбудована функція ASF, яка дозволяє імпортувати певний набір ключів Steam (разом з їх іменами) для активації у фоновому режимі. Це особливо корисно, якщо у вас є багато ключів для викупу і ви гарантовано досягнете `RateLimited` **[status](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/FAQ#what-is-the-meaning-of-status-when-redeeming-a-key)** до того, як закінчите викуповувати всю партію.
 
-Background games redeemer is made to have a single bot scope, which means that it does not make use of `RedeemingPreferences`. This feature can be used together with (or instead of) `redeem` **[command](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands)**, if needed.
+Активатор фонових ігор має єдину область видимості бота, що означає, що він не використовує `RedeemingPreferences`. Цю функцію можна використовувати разом з (або замість) `redeem` **[command](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands)**, якщо це необхідно.
 
 ---
 
 ## Імпорт
 
-The import process can be done through two ways - either by using a file, or IPC.
+Процес імпорту можна виконати двома способами - або за допомогою файлу, або за допомогою IPC.
 
 ### Файл
 
-ASF will recognize in its `config` directory a file named `BotName.keys` where `BotName` is the name of your bot. That file has expected and fixed structure of name of the game with cd-key, separated from each other by a tab character and ending with a newline to indicate the next entry. If multiple tabs are used, then first entry is considered game's name, last entry is considered a cd-key, and everything in-between is ignored. Наприклад:
+ASF розпізнає у своєму каталозі `config` файл з назвою `BotName.keys`, де `BotName` - ім'я вашого бота. Цей файл має очікувану і фіксовану структуру назви гри з cd-ключем, відокремлені один від одного символом табуляції і закінчуються новим рядком для позначення наступного запису. Якщо використовується декілька вкладок, то перший запис вважається назвою гри, останній - cd-ключем, а все, що між ними, ігнорується. Наприклад:
 
 ```text
 POSTAL 2    ABCDE-EFGHJ-IJKLM
@@ -21,7 +21,7 @@ A Week of Circus Terror POIUY-KJHGD-QWERT
 Terraria    ThisIsIgnored   ThisIsIgnoredToo    ZXCVB-ASDFG-QWERT
 ```
 
-Alternatively, you're also able to use keys only format (still with a newline between each entry). ASF in this case will use Steam's response (if possible) to fill the right name. For any kind of keys tagging, we recommend that you name your keys yourself, as packages being redeemed on Steam do not have to follow logic of games that they're activating, so depending on what the developer has put, you may see correct game names, custom package names (e.g. Humble Indie Bundle 18) or outright wrong and potentially even malicious ones (e.g. Half-Life 4).
+Крім того, ви також можете використовувати формат "тільки ключі" (але з переходом на новий рядок між кожним записом). ASF у цьому випадку використає відповідь Steam (якщо це можливо), щоб заповнити правильне ім'я. Для будь-якого типу тегування ключів ми рекомендуємо вам називати ключі самостійно, оскільки пакунки, які викуповуються в Steam, не повинні слідувати логіці ігор, які вони активують, тому, залежно від того, що написав розробник, ви можете побачити правильні назви ігор, нестандартні назви пакунків (наприклад, Humble Indie Bundle 18) або зовсім неправильні і потенційно навіть шкідливі (наприклад, Half-Life 4).
 
 ```text
 ABCDE-EFGHJ-IJKLM
@@ -30,40 +30,40 @@ POIUY-KJHGD-QWERT
 ZXCVB-ASDFG-QWERT
 ```
 
-Regardless which format you've decided to stick with, ASF will import your `keys` file, either on bot startup, or later during execution. After successful parse of your file and eventual omit of invalid entries, all properly detected games will be added to the background queue, and the `BotName.keys` file itself will be removed from `config` directory.
+Незалежно від того, якого формату ви вирішили дотримуватися, ASF імпортує ваш файл `keys` або під час запуску бота, або пізніше під час виконання. Після успішного розбору вашого файлу і можливого вилучення невірних записів, усі правильно виявлені ігри буде додано до фонової черги, а сам файл `BotName.keys` буде вилучено з каталогу `config`.
 
 ### IPC
 
-In addition to using keys file mentioned above, ASF also exposes `GamesToRedeemInBackground` **[ASF API endpoint](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC#asf-api)** which can be executed by any IPC tool, including our ASF-ui. Using IPC could be more powerful, as you can do appropriate parsing yourself, such as using a custom delimiter instead of being forced to a tab character, or even introducing your entirely own customized keys structure.
+На додаток до використання вищезгаданого файлу ключів, ASF також відкриває `GamesToRedeemInBackground` **[кінцеву точку API ASF](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC#asf-api)**, яка може бути виконана будь-яким IPC-інструментом, включаючи наш ASF-ui. Використання IPC може бути більш ефективним, оскільки ви можете самостійно виконувати відповідний синтаксичний аналіз, наприклад, використовувати власний роздільник замість примусового символу табуляції, або навіть вводити власну структуру клавіш, що налаштовується.
 
 ---
 
-## Queue
+## Черга
 
-Once games are successfully imported, they're added to the queue. ASF automatically goes through its background queue as long as bot is connected to Steam network, and the queue is not empty. A key that was attempted to be redeemed and did not result in `RateLimited` is removed from the queue, with its status properly written to a file in `config` directory - either `BotName.keys.used` if the key was used in the process (e.g. `NoDetail`, `BadActivationCode`, `DuplicateActivationCode`), or `BotName.keys.unused` otherwise. ASF intentionally uses your provided game's name since key is not guaranteed to have a meaningful name returned by Steam network - this way you can tag your keys using even custom names if needed/wanted.
+Після успішного імпорту гри додаються до черги. ASF автоматично проходить через свою фонову чергу, поки бот підключений до мережі Steam, і черга не порожня. Ключ, який намагалися викупити, але це не призвело до `RateLimited`, вилучається з черги, а його статус належним чином записується у файл у каталозі `config` - або `BotName. keys.used`, якщо ключ було використано у процесі (наприклад, `NoDetail`, `BadActivationCode`, `DuplicateActivationCode`), або `BotName.keys.unused` в іншому випадку. ASF навмисно використовує надану вами назву гри, оскільки мережа Steam не гарантує, що ключ матиме осмислене ім'я, повернуте мережею - таким чином, ви можете тегувати свої ключі, використовуючи навіть власні імена, якщо це необхідно/бажано.
 
-If during the process our account hits `RateLimited` status, the queue is temporarily suspended for a full hour in order to wait for cooldown to disappear. Afterwards, the process continues where it left, until the entire queue is empty or another `RateLimited` occurs.
+Якщо в процесі обробки наш акаунт отримує статус `RateLimited`, черга тимчасово призупиняється на цілу годину для того, щоб дочекатися, поки зникне холодний період. Після цього процес продовжується з того місця, де він зупинився, доки вся черга не стане порожньою або не виникне інше `RateLimited`.
 
 ---
 
 ## Приклад
 
-Let's assume that you have a list of 100 keys. Firstly you should create a new `BotName.keys.new` file in ASF `config` directory. We appended `.new` extension in order to let ASF know that it shouldn't pick up this file immediately the moment it's created (as it's new empty file, not ready for import yet).
+Припустимо, у вас є список зі 100 ключів. По-перше, ви повинні створити новий файл `BotName.keys.new` у каталозі ASF `config`. Ми додали розширення `.new`, щоб повідомити ASF, що він не повинен підхоплювати цей файл одразу після його створення (оскільки це новий порожній файл, ще не готовий до імпорту).
 
-Now you can open our new file and copy-paste list of our 100 keys there, fixing the format if needed. After fixes our `BotName.keys.new` file will have exactly 100 (or 101, with last newline) lines, each line having a structure of `GameName\tcd-key\n`, where `\t` is tab character and `\n` is newline.
+Тепер ви можете відкрити наш новий файл і скопіювати туди список наших 100 ключів, виправивши формат, якщо потрібно. Після виправлення наш файл `BotName.keys.new` матиме рівно 100 (або 101, з останнім переходом на новий рядок) рядків, кожен з яких має структуру `GameName\tcd-key\n`, де `\t` - символ табуляції, а `\n` - переведення рядка.
 
-You're now ready to rename this file from `BotName.keys.new` to `BotName.keys` in order to let ASF know that it's ready to be picked up. The moment you do this, ASF will automatically import the file (without a need of restart) and delete it afterwards, confirming that all our games were parsed and added to the queue.
+Тепер ви можете перейменувати цей файл з `BotName.keys.new` на `BotName.keys`, щоб повідомити ASF, що він готовий до завантаження. Як тільки ви це зробите, ASF автоматично імпортує файл (без необхідності перезапуску), а потім видалить його, підтвердивши, що всі наші ігри було проаналізовано і додано до черги.
 
-Instead of using `BotName.keys` file, you could also use IPC API endpoint, or even combining both if you want to.
+Замість використання файлу `BotName.keys`, ви також можете використовувати кінцеву точку IPC API, або навіть комбінувати обидва варіанти, якщо хочете.
 
-After some time, `BotName.keys.used` and `BotName.keys.unused` files will be generated. Those files contain results of our redeeming process. For example, you could rename `BotName.keys.unused` into `BotName2.keys` file and therefore submit our unused keys for some other bot, since previous bot didn't make use of those keys himself. Or you could simply copy-paste unused keys to some other file and keep it for later, your call. Keep in mind that as ASF goes through the queue, new entries will be added to our output `used` and `unused` files, therefore it's recommended to wait for the queue to be fully emptied before making use of them. If you absolutely must access those files before queue is fully emptied, you should firstly **move** output file you want to access to some other directory, **then** parse it. This is because ASF can append some new results while you're doing your thing, and that could potentially lead to loss of some keys if you read a file having e.g. 3 keys inside, then delete it, totally missing the fact that ASF added 4 other keys to your removed file in the meantime. If you want to access those files, ensure to move them away from ASF `config` directory before reading them, for example by rename.
+Через деякий час буде згенеровано файли `BotName.keys.used` та `BotName.keys.unused`. Ці файли містять результати нашого процесу викупу. Наприклад, ви можете перейменувати файл `BotName.keys.unused` у `BotName2.keys` і таким чином передати наші невикористані ключі для іншого бота, оскільки попередній бот не використовував ці ключі сам. Або ви можете просто скопіювати і вставити невикористані ключі в інший файл і зберегти його на потім, на ваш розсуд. Майте на увазі, що коли ASF проходить через чергу, до наших вихідних файлів `used` і `unused` будуть додаватися нові записи, тому рекомендується дочекатися повного очищення черги, перш ніж використовувати їх. Якщо вам вкрай необхідно отримати доступ до цих файлів до того, як черга буде повністю очищена, вам слід спочатку **перемістити** вихідний файл, до якого ви хочете отримати доступ, до іншого каталогу, **а потім** проаналізувати його. Це пов'язано з тим, що ASF може додавати нові результати, поки ви робите свою роботу, і це може призвести до втрати деяких ключів, якщо ви прочитаєте файл, що містить, наприклад, 3 ключі, а потім видалите його, не помітивши, що за цей час ASF додав ще 4 ключі до видаленого вами файлу. Якщо ви хочете отримати доступ до цих файлів, перед читанням переконайтеся, що вилучили їх з каталогу ASF `config`, наприклад, перейменувавши.
 
-It's also possible to add extra games to import while having some games already in our queue, by repeating all above steps. ASF will properly add our extra entries to already-ongoing queue and deal with it eventually.
+Також можна додати додаткові ігри для імпорту, коли деякі ігри вже стоять у черзі, повторивши всі вищеописані кроки. ASF належним чином додасть наші додаткові заявки до вже існуючої черги і врешті-решт розбереться з цим.
 
 ---
 
 ## Зауваження
 
-Background keys redeemer uses `OrderedDictionary` under the hood, which means that your cd-keys will have preserved order as they were specified in the file (or IPC API call). This means that you can (and should) provide a list where given cd-key can only have direct dependencies on cd-keys listed above, but not below. For example, this means that if you have DLC `D` that requires game `G` to be activated firstly, then cd-key for game `G` should **always** be included before cd-key for DLC `D`. Likewise, if DLC `D` would have dependencies on `A`, `B` and `C`, then all 3 should be included before (in any order, unless they have dependencies on their own).
+Викуповувач фонових ключів використовує `OrderedDictionary`, що означає, що ваші cd-ключі будуть збережені в тому порядку, в якому вони були вказані у файлі (або виклику IPC API). Це означає, що ви можете (і повинні) надати список, у якому даний cd-ключ може мати пряму залежність лише від cd-ключів, перелічених вище, але не нижче. Наприклад, це означає, що якщо у вас є DLC `D`, який вимагає попередньої активації гри `G`, то cd-ключ для гри `G` повинен **завжди** бути включений перед cd-ключем для DLC `D`. Аналогічно, якщо DLC `D` матиме залежності від `A`, `B` і `C`, то всі 3 повинні бути включені раніше (у будь-якому порядку, якщо тільки вони не мають власних залежностей).
 
-Not following the scheme above will result in your DLC not being activated with `DoesNotOwnRequiredApp`, even if your account would be eligible for activating it after going through its entire queue. If you want to avoid that then you must make sure that your DLC is always included after the base game in your queue.
+Невиконання наведеної вище схеми призведе до того, що ваш DLC не буде активовано з `DoesNotOwnRequiredApp`, навіть якщо ваш акаунт має право на його активацію після проходження всієї черги. Якщо ви хочете уникнути цього, ви повинні переконатися, що ваш DLC завжди стоїть у черзі після базової гри.

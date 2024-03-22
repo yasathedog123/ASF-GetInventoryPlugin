@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,12 +23,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC;
 
@@ -55,27 +52,5 @@ internal static class WebUtilities {
 		}
 
 		return Type.GetType($"{typeText},{typeText[..index]}");
-	}
-
-	internal static async Task WriteJsonAsync<TValue>(this HttpResponse response, TValue? value, JsonSerializerSettings? jsonSerializerSettings = null) {
-		ArgumentNullException.ThrowIfNull(response);
-
-		JsonSerializer serializer = JsonSerializer.CreateDefault(jsonSerializerSettings);
-
-		response.ContentType = "application/json; charset=utf-8";
-
-		StreamWriter streamWriter = new(response.Body, Encoding.UTF8);
-
-		await using (streamWriter.ConfigureAwait(false)) {
-#pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-			JsonTextWriter jsonWriter = new(streamWriter) {
-				CloseOutput = false
-			};
-#pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-
-			await using (jsonWriter.ConfigureAwait(false)) {
-				serializer.Serialize(jsonWriter, value);
-			}
-		}
 	}
 }

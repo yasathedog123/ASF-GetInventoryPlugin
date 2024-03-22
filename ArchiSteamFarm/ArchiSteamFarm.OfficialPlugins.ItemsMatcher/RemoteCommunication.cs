@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +22,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
@@ -27,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -42,7 +46,6 @@ using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
-using Newtonsoft.Json.Linq;
 using SteamKit2;
 using SteamKit2.Internal;
 
@@ -51,6 +54,7 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private const string MatchActivelyTradeOfferIDsStorageKey = $"{nameof(ItemsMatcher)}-{nameof(MatchActively)}-TradeOfferIDs";
 	private const byte MaxAnnouncementTTL = 60; // Maximum amount of minutes we can wait if the next announcement doesn't happen naturally
+	private const byte MaxInactivityDays = 14; // How long the server is willing to keep information about us for
 	private const uint MaxItemsCount = 500000; // Server is unwilling to accept more items than this
 	private const byte MaxTradeOffersActive = 5; // The actual upper limit is 30, but we should use lower amount to allow some bots to react before we hit the maximum allowed
 	private const byte MinAnnouncementTTL = 5; // Minimum amount of minutes we must wait before the next Announcement
@@ -59,12 +63,12 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 	private const byte MinimumSteamGuardEnabledDays = 15; // As imposed by Steam limits
 	private const byte MinPersonaStateTTL = 5; // Minimum amount of minutes we must wait before requesting persona state update
 
-	private static readonly ImmutableHashSet<Asset.EType> AcceptedMatchableTypes = ImmutableHashSet.Create(
-		Asset.EType.Emoticon,
-		Asset.EType.FoilTradingCard,
-		Asset.EType.ProfileBackground,
-		Asset.EType.TradingCard
-	);
+	private static readonly FrozenSet<EAssetType> AcceptedMatchableTypes = new HashSet<EAssetType>(4) {
+		EAssetType.Emoticon,
+		EAssetType.FoilTradingCard,
+		EAssetType.ProfileBackground,
+		EAssetType.TradingCard
+	}.ToFrozenSet();
 
 	private readonly Bot Bot;
 	private readonly Timer? HeartBeatTimer;
@@ -227,7 +231,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			HashSet<Asset.EType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(AcceptedMatchableTypes.Contains).ToHashSet();
+			HashSet<EAssetType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(AcceptedMatchableTypes.Contains).ToHashSet();
 
 			if (acceptedMatchableTypes.Count == 0) {
 				throw new InvalidOperationException(nameof(acceptedMatchableTypes));
@@ -248,7 +252,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			List<Asset> inventory;
 
 			try {
-				inventory = await Bot.ArchiWebHandler.GetInventoryAsync().ToListAsync().ConfigureAwait(false);
+				inventory = await Bot.ArchiHandler.GetMyInventoryAsync().ToListAsync().ConfigureAwait(false);
 			} catch (HttpRequestException e) {
 				// This is actually a network failure, so we'll stop sending heartbeats but not record it as valid check
 				ShouldSendHeartBeats = false;
@@ -280,10 +284,10 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			List<AssetForListing> assetsForListing = [];
 
-			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), bool> tradableSets = new();
+			Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), bool> tradableSets = new();
 
 			foreach (Asset item in inventory) {
-				if (item is { AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown, IsSteamPointsShopItem: false } && acceptedMatchableTypes.Contains(item.Type)) {
+				if (item is { AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0, Type: > EAssetType.Unknown, Rarity: > EAssetRarity.Unknown, IsSteamPointsShopItem: false } && acceptedMatchableTypes.Contains(item.Type)) {
 					// Only tradable assets matter for MatchEverything bots
 					if (!matchEverything || item.Tradable) {
 						assetsForListing.Add(new AssetForListing(item, index, previousAssetID));
@@ -291,7 +295,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 					// But even for Fair bots, we should track and skip sets where we don't have any item to trade with
 					if (!matchEverything) {
-						(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
+						(uint RealAppID, EAssetType Type, EAssetRarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
 
 						if (tradableSets.TryGetValue(key, out bool tradable)) {
 							if (!tradable && item.Tradable) {
@@ -332,7 +336,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 			string inventoryChecksumBeforeDeduplication = Backend.GenerateChecksumFor(assetsForListing);
 
-			if ((tradeToken == BotCache.LastAnnouncedTradeToken) && !string.IsNullOrEmpty(BotCache.LastInventoryChecksumBeforeDeduplication)) {
+			if (BotCache.LastRequestAt.HasValue && (DateTime.UtcNow.Subtract(BotCache.LastRequestAt.Value).TotalDays < MaxInactivityDays) && (tradeToken == BotCache.LastAnnouncedTradeToken) && !string.IsNullOrEmpty(BotCache.LastInventoryChecksumBeforeDeduplication)) {
 				if (inventoryChecksumBeforeDeduplication == BotCache.LastInventoryChecksumBeforeDeduplication) {
 					// We've determined our state to be the same, we can skip announce entirely and start sending heartbeats exclusively
 					bool triggerImmediately = !ShouldSendHeartBeats;
@@ -373,15 +377,15 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			if (!matchEverything) {
 				// We should deduplicate our sets before sending them to the server, for doing that we'll use ASFB set parts data
 				HashSet<uint> realAppIDs = [];
-				Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> state = new();
+				Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> state = new();
 
 				foreach (AssetForListing asset in assetsForListing) {
 					realAppIDs.Add(asset.RealAppID);
 
-					(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (asset.RealAppID, asset.Type, asset.Rarity);
+					(uint RealAppID, EAssetType Type, EAssetRarity Rarity) key = (asset.RealAppID, asset.Type, asset.Rarity);
 
 					if (state.TryGetValue(key, out Dictionary<ulong, uint>? set)) {
-						set[asset.ClassID] = set.TryGetValue(asset.ClassID, out uint amount) ? amount + asset.Amount : asset.Amount;
+						set[asset.ClassID] = set.GetValueOrDefault(asset.ClassID) + asset.Amount;
 					} else {
 						state[key] = new Dictionary<ulong, uint> { { asset.ClassID, asset.Amount } };
 					}
@@ -444,11 +448,11 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					return;
 				}
 
-				Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), HashSet<ulong>> databaseSets = setPartsResponse.Content.Result.GroupBy(static setPart => (setPart.RealAppID, setPart.Type, setPart.Rarity)).ToDictionary(static group => group.Key, static group => group.Select(static setPart => setPart.ClassID).ToHashSet());
+				Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), HashSet<ulong>> databaseSets = setPartsResponse.Content.Result.GroupBy(static setPart => (setPart.RealAppID, setPart.Type, setPart.Rarity)).ToDictionary(static group => group.Key, static group => group.Select(static setPart => setPart.ClassID).ToHashSet());
 
-				HashSet<(ulong ClassID, uint Amount)> setCopy = [];
+				Dictionary<ulong, uint> setCopy = [];
 
-				foreach (((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key, Dictionary<ulong, uint> set) in state) {
+				foreach (((uint RealAppID, EAssetType Type, EAssetRarity Rarity) key, Dictionary<ulong, uint> set) in state) {
 					if (!databaseSets.TryGetValue(key, out HashSet<ulong>? databaseSet)) {
 						// We have no clue about this set, we can't do any optimization
 						continue;
@@ -469,7 +473,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 							minimumAmount = amount;
 						}
 
-						setCopy.Add((classID, amount));
+						setCopy[classID] = amount;
 					}
 
 					foreach ((ulong classID, uint amount) in setCopy) {
@@ -486,7 +490,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				HashSet<AssetForListing> assetsForListingFiltered = [];
 
 				foreach (AssetForListing asset in assetsForListing.Where(asset => state.TryGetValue((asset.RealAppID, asset.Type, asset.Rarity), out Dictionary<ulong, uint>? setState) && setState.TryGetValue(asset.ClassID, out uint targetAmount) && (targetAmount > 0)).OrderByDescending(static asset => asset.Tradable).ThenByDescending(static asset => asset.Index)) {
-					(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (asset.RealAppID, asset.Type, asset.Rarity);
+					(uint RealAppID, EAssetType Type, EAssetRarity Rarity) key = (asset.RealAppID, asset.Type, asset.Rarity);
 
 					if (!state.TryGetValue(key, out Dictionary<ulong, uint>? setState) || !setState.TryGetValue(asset.ClassID, out uint targetAmount) || (targetAmount == 0)) {
 						// We're not interested in this combination
@@ -536,7 +540,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			string checksum = Backend.GenerateChecksumFor(assetsForListing);
 			string? previousChecksum = BotCache.LastAnnouncedAssetsForListing.Count > 0 ? Backend.GenerateChecksumFor(BotCache.LastAnnouncedAssetsForListing) : null;
 
-			if ((tradeToken == BotCache.LastAnnouncedTradeToken) && (checksum == previousChecksum)) {
+			if (BotCache.LastRequestAt.HasValue && (DateTime.UtcNow.Subtract(BotCache.LastRequestAt.Value).TotalDays < MaxInactivityDays) && (tradeToken == BotCache.LastAnnouncedTradeToken) && (checksum == previousChecksum)) {
 				// We've determined our state to be the same, we can skip announce entirely and start sending heartbeats exclusively
 				bool triggerImmediately = !ShouldSendHeartBeats;
 
@@ -654,9 +658,11 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					LastAnnouncement = LastHeartBeat = DateTime.UtcNow;
 					ShouldSendAnnouncementEarlier = false;
 					ShouldSendHeartBeats = true;
+
 					BotCache.LastAnnouncedAssetsForListing.ReplaceWith(assetsForListing);
 					BotCache.LastAnnouncedTradeToken = tradeToken;
 					BotCache.LastInventoryChecksumBeforeDeduplication = inventoryChecksumBeforeDeduplication;
+					BotCache.LastRequestAt = LastHeartBeat;
 
 					return;
 				}
@@ -757,9 +763,11 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				LastAnnouncement = LastHeartBeat = DateTime.UtcNow;
 				ShouldSendAnnouncementEarlier = false;
 				ShouldSendHeartBeats = true;
+
 				BotCache.LastAnnouncedAssetsForListing.ReplaceWith(assetsForListing);
 				BotCache.LastAnnouncedTradeToken = tradeToken;
 				BotCache.LastInventoryChecksumBeforeDeduplication = inventoryChecksumBeforeDeduplication;
+				BotCache.LastRequestAt = LastHeartBeat;
 
 				return;
 			}
@@ -773,12 +781,12 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 
 	internal void TriggerMatchActivelyEarlier() {
 		if (MatchActivelyTimer == null) {
-			throw new InvalidOperationException(nameof(MatchActivelyTimer));
-		}
-
-		// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
-		lock (MatchActivelySemaphore) {
-			MatchActivelyTimer.Change(TimeSpan.Zero, TimeSpan.FromHours(6));
+			Utilities.InBackground(() => MatchActively());
+		} else {
+			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+			lock (MatchActivelySemaphore) {
+				MatchActivelyTimer.Change(TimeSpan.Zero, TimeSpan.FromHours(6));
+			}
 		}
 	}
 
@@ -881,7 +889,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			throw new InvalidOperationException(nameof(ASF.GlobalConfig.LicenseID));
 		}
 
-		if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively)) {
+		if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything)) {
 			Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
 
 			return;
@@ -895,7 +903,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 			return;
 		}
 
-		HashSet<Asset.EType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(AcceptedMatchableTypes.Contains).ToHashSet();
+		HashSet<EAssetType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(AcceptedMatchableTypes.Contains).ToHashSet();
 
 		if (acceptedMatchableTypes.Count == 0) {
 			Bot.ArchiLogger.LogNullError(acceptedMatchableTypes);
@@ -914,50 +922,215 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		try {
 			Bot.ArchiLogger.LogGenericInfo(Strings.Starting);
 
-			Dictionary<ulong, Asset> ourInventory;
+			HttpStatusCode? licenseStatus = await Backend.GetLicenseStatus(ASF.GlobalConfig.LicenseID.Value, WebBrowser).ConfigureAwait(false);
 
-			try {
-				ourInventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => item is { AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0, Type: > Asset.EType.Unknown, Rarity: > Asset.ERarity.Unknown, IsSteamPointsShopItem: false } && acceptedMatchableTypes.Contains(item.Type) && !Bot.BotDatabase.MatchActivelyBlacklistAppIDs.Contains(item.RealAppID)).ToDictionaryAsync(static item => item.AssetID).ConfigureAwait(false);
-			} catch (HttpRequestException e) {
-				Bot.ArchiLogger.LogGenericWarningException(e);
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ourInventory)));
-
-				return;
-			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericException(e);
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ourInventory)));
+			if (licenseStatus == null) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(licenseStatus)));
 
 				return;
 			}
 
-			if (ourInventory.Count == 0) {
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(ourInventory)));
+			if (!licenseStatus.Value.IsSuccessCode()) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, licenseStatus.Value));
+
+				return;
+			}
+
+			HashSet<Asset> assetsForMatching;
+
+			try {
+				assetsForMatching = await Bot.ArchiHandler.GetMyInventoryAsync().Where(item => item is { AssetID: > 0, Amount: > 0, ClassID: > 0, RealAppID: > 0, Type: > EAssetType.Unknown, Rarity: > EAssetRarity.Unknown, IsSteamPointsShopItem: false } && acceptedMatchableTypes.Contains(item.Type) && !Bot.BotDatabase.MatchActivelyBlacklistAppIDs.Contains(item.RealAppID)).ToHashSetAsync().ConfigureAwait(false);
+			} catch (HttpRequestException e) {
+				Bot.ArchiLogger.LogGenericWarningException(e);
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(assetsForMatching)));
+
+				return;
+			} catch (Exception e) {
+				Bot.ArchiLogger.LogGenericException(e);
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(assetsForMatching)));
+
+				return;
+			}
+
+			if (assetsForMatching.Count == 0) {
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(assetsForMatching)));
 
 				return;
 			}
 
 			// Remove from our inventory items that can't be possibly matched due to no dupes to offer available
-			HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> setsToKeep = Trading.GetInventorySets(ourInventory.Values).Where(static set => set.Value.Any(static amount => amount > 1)).Select(static set => set.Key).ToHashSet();
+			HashSet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> setsToKeep = Trading.GetInventorySets(assetsForMatching).Where(static set => set.Value.Any(static amount => amount > 1)).Select(static set => set.Key).ToHashSet();
 
-			HashSet<ulong> assetIDsToRemove = ourInventory.Where(item => !setsToKeep.Contains((item.Value.RealAppID, item.Value.Type, item.Value.Rarity))).Select(static item => item.Key).ToHashSet();
+			if (assetsForMatching.RemoveWhere(item => !setsToKeep.Contains((item.RealAppID, item.Type, item.Rarity))) > 0) {
+				if (assetsForMatching.Count == 0) {
+					Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(assetsForMatching)));
 
-			foreach (ulong assetIDToRemove in assetIDsToRemove) {
-				ourInventory.Remove(assetIDToRemove);
+					return;
+				}
 			}
 
-			if (ourInventory.Count == 0) {
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(ourInventory)));
+			// We should deduplicate our sets before sending them to the server, for doing that we'll use ASFB set parts data
+			HashSet<uint> realAppIDs = [];
+			Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> setsState = new();
+
+			foreach (Asset asset in assetsForMatching) {
+				realAppIDs.Add(asset.RealAppID);
+
+				(uint RealAppID, EAssetType Type, EAssetRarity Rarity) key = (asset.RealAppID, asset.Type, asset.Rarity);
+
+				if (setsState.TryGetValue(key, out Dictionary<ulong, uint>? set)) {
+					set[asset.ClassID] = set.GetValueOrDefault(asset.ClassID) + asset.Amount;
+				} else {
+					setsState[key] = new Dictionary<ulong, uint> { { asset.ClassID, asset.Amount } };
+				}
+			}
+
+			if (!SignedInWithSteam) {
+				HttpStatusCode? signInWithSteam = await ArchiNet.SignInWithSteam(Bot, WebBrowser).ConfigureAwait(false);
+
+				if ((signInWithSteam == null) || !signInWithSteam.Value.IsSuccessCode()) {
+					// This is actually a network failure
+					return;
+				}
+
+				SignedInWithSteam = true;
+			}
+
+			ObjectResponse<GenericResponse<ImmutableHashSet<SetPart>>>? setPartsResponse = await Backend.GetSetParts(WebBrowser, Bot.SteamID, acceptedMatchableTypes, realAppIDs).ConfigureAwait(false);
+
+			if (setPartsResponse == null) {
+				// This is actually a network failure
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(setPartsResponse)));
 
 				return;
 			}
 
-			if (ourInventory.Count > MaxItemsCount) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(ourInventory)} > {MaxItemsCount}"));
+			if (setPartsResponse.StatusCode.IsRedirectionCode()) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, setPartsResponse.StatusCode));
+
+				if (setPartsResponse.FinalUri.Host != ArchiWebHandler.SteamCommunityURL.Host) {
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(setPartsResponse.FinalUri), setPartsResponse.FinalUri));
+
+					return;
+				}
+
+				// We've expected the result, not the redirection to the sign in, we need to authenticate again
+				SignedInWithSteam = false;
 
 				return;
 			}
 
-			(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)? response = await Backend.GetListedUsersForMatching(ASF.GlobalConfig.LicenseID.Value, Bot, WebBrowser, ourInventory.Values, acceptedMatchableTypes).ConfigureAwait(false);
+			if (!setPartsResponse.StatusCode.IsSuccessCode()) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, setPartsResponse.StatusCode));
+
+				return;
+			}
+
+			if (setPartsResponse.Content?.Result == null) {
+				// This should never happen if we got the correct response
+				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(setPartsResponse), setPartsResponse.Content?.Result));
+
+				return;
+			}
+
+			Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), HashSet<ulong>> databaseSets = setPartsResponse.Content.Result.GroupBy(static setPart => (setPart.RealAppID, setPart.Type, setPart.Rarity)).ToDictionary(static group => group.Key, static group => group.Select(static setPart => setPart.ClassID).ToHashSet());
+
+			Dictionary<ulong, uint> setCopy = [];
+
+			foreach (((uint RealAppID, EAssetType Type, EAssetRarity Rarity) key, Dictionary<ulong, uint> set) in setsState) {
+				uint minimumAmount = uint.MaxValue;
+				uint maximumAmount = uint.MinValue;
+
+				foreach (uint amount in set.Values) {
+					if (amount < minimumAmount) {
+						minimumAmount = amount;
+					}
+
+					if (amount > maximumAmount) {
+						maximumAmount = amount;
+					}
+				}
+
+				if (maximumAmount < 2) {
+					// We don't have anything to swap with, remove all entries from this set
+					set.Clear();
+
+					continue;
+				}
+
+				if (!databaseSets.TryGetValue(key, out HashSet<ulong>? databaseSet)) {
+					// We have no clue about this set, we can't do any optimization
+					continue;
+				}
+
+				if ((databaseSet.Count != set.Count) || !databaseSet.SetEquals(set.Keys)) {
+					// User either has more or less classIDs than we know about, we can't optimize this
+					continue;
+				}
+
+				if (maximumAmount - minimumAmount < 2) {
+					// We don't have anything to swap with, remove all entries from this set
+					set.Clear();
+
+					continue;
+				}
+
+				// User has all classIDs we know about, we can deduplicate his items based on lowest count
+				setCopy.Clear();
+
+				foreach ((ulong classID, uint amount) in set) {
+					setCopy[classID] = amount;
+				}
+
+				foreach ((ulong classID, uint amount) in setCopy) {
+					if (minimumAmount >= amount) {
+						set.Remove(classID);
+
+						continue;
+					}
+
+					set[classID] = amount - minimumAmount;
+				}
+			}
+
+			HashSet<Asset> assetsForMatchingFiltered = [];
+
+			foreach (Asset asset in assetsForMatching.Where(asset => setsState.TryGetValue((asset.RealAppID, asset.Type, asset.Rarity), out Dictionary<ulong, uint>? setState) && setState.TryGetValue(asset.ClassID, out uint targetAmount) && (targetAmount > 0)).OrderByDescending(static asset => asset.Tradable)) {
+				(uint RealAppID, EAssetType Type, EAssetRarity Rarity) key = (asset.RealAppID, asset.Type, asset.Rarity);
+
+				if (!setsState.TryGetValue(key, out Dictionary<ulong, uint>? setState) || !setState.TryGetValue(asset.ClassID, out uint targetAmount) || (targetAmount == 0)) {
+					// We're not interested in this combination
+					continue;
+				}
+
+				if (asset.Amount >= targetAmount) {
+					asset.Amount = targetAmount;
+
+					if (setState.Remove(asset.ClassID) && (setState.Count == 0)) {
+						setsState.Remove(key);
+					}
+				} else {
+					setState[asset.ClassID] = targetAmount - asset.Amount;
+				}
+
+				assetsForMatchingFiltered.Add(asset);
+			}
+
+			assetsForMatching = assetsForMatchingFiltered;
+
+			if (assetsForMatching.Count == 0) {
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(assetsForMatching)));
+
+				return;
+			}
+
+			if (assetsForMatching.Count > MaxItemsCount) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(assetsForMatching)} > {MaxItemsCount}"));
+
+				return;
+			}
+
+			(HttpStatusCode StatusCode, ImmutableHashSet<ListedUser> Users)? response = await Backend.GetListedUsersForMatching(ASF.GlobalConfig.LicenseID.Value, Bot, WebBrowser, assetsForMatching, acceptedMatchableTypes).ConfigureAwait(false);
 
 			if (response == null) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(response)));
@@ -980,9 +1153,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 #pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
 			using (await Bot.Actions.GetTradingLock().ConfigureAwait(false)) {
 #pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-				Bot.ArchiLogger.LogGenericInfo(Strings.Starting);
-
-				tradesSent = await MatchActively(response.Value.Users, ourInventory, acceptedMatchableTypes).ConfigureAwait(false);
+				tradesSent = await MatchActively(response.Value.Users, assetsForMatching, acceptedMatchableTypes).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.Done);
@@ -996,20 +1167,20 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		}
 	}
 
-	private async Task<bool> MatchActively(IReadOnlyCollection<ListedUser> listedUsers, Dictionary<ulong, Asset> ourInventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes) {
+	private async Task<bool> MatchActively(IReadOnlyCollection<ListedUser> listedUsers, IReadOnlyCollection<Asset> ourAssets, IReadOnlyCollection<EAssetType> acceptedMatchableTypes) {
 		if ((listedUsers == null) || (listedUsers.Count == 0)) {
 			throw new ArgumentNullException(nameof(listedUsers));
 		}
 
-		if ((ourInventory == null) || (ourInventory.Count == 0)) {
-			throw new ArgumentNullException(nameof(ourInventory));
+		if ((ourAssets == null) || (ourAssets.Count == 0)) {
+			throw new ArgumentNullException(nameof(ourAssets));
 		}
 
 		if ((acceptedMatchableTypes == null) || (acceptedMatchableTypes.Count == 0)) {
 			throw new ArgumentNullException(nameof(acceptedMatchableTypes));
 		}
 
-		(Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> ourFullState, Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> ourTradableState) = Trading.GetDividedInventoryState(ourInventory.Values);
+		(Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> ourFullState, Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> ourTradableState) = Trading.GetDividedInventoryState(ourAssets);
 
 		if (Trading.IsEmptyForMatching(ourFullState, ourTradableState)) {
 			// User doesn't have any more dupes in the inventory
@@ -1021,11 +1192,19 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		// Cancel previous trade offers sent and deprioritize SteamIDs that didn't answer us in this round
 		HashSet<ulong>? matchActivelyTradeOfferIDs = null;
 
-		JToken? matchActivelyTradeOfferIDsToken = Bot.BotDatabase.LoadFromJsonStorage(MatchActivelyTradeOfferIDsStorageKey);
+		JsonElement matchActivelyTradeOfferIDsToken = Bot.BotDatabase.LoadFromJsonStorage(MatchActivelyTradeOfferIDsStorageKey);
 
-		if (matchActivelyTradeOfferIDsToken != null) {
+		if (matchActivelyTradeOfferIDsToken.ValueKind == JsonValueKind.Array) {
 			try {
-				matchActivelyTradeOfferIDs = matchActivelyTradeOfferIDsToken.ToObject<HashSet<ulong>>();
+				matchActivelyTradeOfferIDs = new HashSet<ulong>(matchActivelyTradeOfferIDsToken.GetArrayLength());
+
+				foreach (JsonElement tradeIDElement in matchActivelyTradeOfferIDsToken.EnumerateArray()) {
+					if (!tradeIDElement.TryGetUInt64(out ulong tradeID)) {
+						continue;
+					}
+
+					matchActivelyTradeOfferIDs.Add(tradeID);
+				}
 			} catch (Exception e) {
 				Bot.ArchiLogger.LogGenericWarningException(e);
 			}
@@ -1054,13 +1233,15 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					matchActivelyTradeOfferIDs = activeTradeOfferIDs;
 
 					if (matchActivelyTradeOfferIDs.Count > 0) {
-						Bot.BotDatabase.SaveToJsonStorage(MatchActivelyTradeOfferIDsStorageKey, JToken.FromObject(matchActivelyTradeOfferIDs));
+						Bot.BotDatabase.SaveToJsonStorage(MatchActivelyTradeOfferIDsStorageKey, matchActivelyTradeOfferIDs);
 					} else {
 						Bot.BotDatabase.DeleteFromJsonStorage(MatchActivelyTradeOfferIDsStorageKey);
 					}
 				}
 			}
 		}
+
+		Dictionary<ulong, Asset> ourInventory = ourAssets.ToDictionary(static asset => asset.AssetID);
 
 		HashSet<ulong> pendingMobileTradeOfferIDs = [];
 
@@ -1069,7 +1250,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 		byte failuresInRow = 0;
 		uint matchedSets = 0;
 
-		foreach (ListedUser listedUser in listedUsers.Where(listedUser => (listedUser.SteamID != Bot.SteamID) && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderBy(listedUser => deprioritizedSteamIDs.Contains(listedUser.SteamID)).ThenByDescending(static listedUser => listedUser.MatchEverything).ThenBy(static listedUser => listedUser.TotalInventoryCount)) {
+		foreach (ListedUser listedUser in listedUsers.Where(listedUser => (listedUser.SteamID != Bot.SteamID) && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderByDescending(listedUser => !deprioritizedSteamIDs.Contains(listedUser.SteamID)).ThenByDescending(static listedUser => listedUser.TotalGamesCount > 1).ThenByDescending(static listedUser => listedUser.MatchEverything).ThenBy(static listedUser => listedUser.TotalInventoryCount)) {
 			if (failuresInRow >= WebBrowser.MaxTries) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(failuresInRow)} >= {WebBrowser.MaxTries}"));
 
@@ -1082,7 +1263,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				break;
 			}
 
-			HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> wantedSets = ourTradableState.Keys.Where(set => listedUser.MatchableTypes.Contains(set.Type)).ToHashSet();
+			HashSet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> wantedSets = ourTradableState.Keys.Where(set => listedUser.MatchableTypes.Contains(set.Type)).ToHashSet();
 
 			if (wantedSets.Count == 0) {
 				continue;
@@ -1103,26 +1284,26 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 					continue;
 			}
 
-			HashSet<Asset> theirInventory = listedUser.Assets.Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity)) && ((tradeHoldDuration.Value == 0) || !(item.Type is Asset.EType.FoilTradingCard or Asset.EType.TradingCard && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)))).Select(static asset => asset.ToAsset()).ToHashSet();
+			HashSet<Asset> theirInventory = listedUser.Assets.Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity)) && ((tradeHoldDuration.Value == 0) || !(item.Type is EAssetType.FoilTradingCard or EAssetType.TradingCard && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)))).Select(static asset => asset.ToAsset()).ToHashSet();
 
 			if (theirInventory.Count == 0) {
 				continue;
 			}
 
-			HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> skippedSetsThisUser = [];
+			HashSet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> skippedSetsThisUser = [];
 
-			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> theirTradableState = Trading.GetTradableInventoryState(theirInventory);
+			Dictionary<(uint RealAppID, EAssetType Type, EAssetRarity Rarity), Dictionary<ulong, uint>> theirTradableState = Trading.GetTradableInventoryState(theirInventory);
 
 			for (byte i = 0; i < Trading.MaxTradesPerAccount; i++) {
 				byte itemsInTrade = 0;
-				HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> skippedSetsThisTrade = [];
+				HashSet<(uint RealAppID, EAssetType Type, EAssetRarity Rarity)> skippedSetsThisTrade = [];
 
 				Dictionary<ulong, uint> classIDsToGive = new();
 				Dictionary<ulong, uint> classIDsToReceive = new();
 				Dictionary<ulong, uint> fairClassIDsToGive = new();
 				Dictionary<ulong, uint> fairClassIDsToReceive = new();
 
-				foreach (((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) set, Dictionary<ulong, uint> ourFullItems) in ourFullState.Where(set => !skippedSetsThisUser.Contains(set.Key) && listedUser.MatchableTypes.Contains(set.Key.Type) && set.Value.Values.Any(static count => count > 1))) {
+				foreach (((uint RealAppID, EAssetType Type, EAssetRarity Rarity) set, Dictionary<ulong, uint> ourFullItems) in ourFullState.Where(set => !skippedSetsThisUser.Contains(set.Key) && listedUser.MatchableTypes.Contains(set.Key.Type) && set.Value.Values.Any(static count => count > 1))) {
 					if (!ourTradableState.TryGetValue(set, out Dictionary<ulong, uint>? ourTradableItems) || (ourTradableItems.Count == 0)) {
 						// We may have no more tradable items from this set
 						continue;
@@ -1152,15 +1333,16 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 								continue;
 							}
 
-							foreach ((ulong theirItem, uint theirTradableAmount) in theirTradableItems.OrderBy(item => ourFullSet.TryGetValue(item.Key, out uint ourAmountOfTheirItem) ? ourAmountOfTheirItem : 0)) {
+							foreach ((ulong theirItem, uint theirTradableAmount) in theirTradableItems.OrderBy(item => ourFullSet.GetValueOrDefault(item.Key))) {
 								if (ourFullSet.TryGetValue(theirItem, out uint ourAmountOfTheirItem) && (ourFullAmount <= ourAmountOfTheirItem + 1)) {
 									continue;
 								}
 
 								if (!listedUser.MatchEverything) {
 									// We have a potential match, let's check fairness for them
-									fairClassIDsToGive.TryGetValue(ourItem, out uint fairGivenAmount);
-									fairClassIDsToReceive.TryGetValue(theirItem, out uint fairReceivedAmount);
+									uint fairGivenAmount = fairClassIDsToGive.GetValueOrDefault(ourItem);
+									uint fairReceivedAmount = fairClassIDsToReceive.GetValueOrDefault(theirItem);
+
 									fairClassIDsToGive[ourItem] = ++fairGivenAmount;
 									fairClassIDsToReceive[theirItem] = ++fairReceivedAmount;
 
@@ -1194,11 +1376,11 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 								skippedSetsThisTrade.Add(set);
 
 								// Update our state based on given items
-								classIDsToGive[ourItem] = classIDsToGive.TryGetValue(ourItem, out uint ourGivenAmount) ? ourGivenAmount + 1 : 1;
+								classIDsToGive[ourItem] = classIDsToGive.GetValueOrDefault(ourItem) + 1;
 								ourFullSet[ourItem] = ourFullAmount - 1; // We don't need to remove anything here because we can guarantee that ourItem.Value is at least 2
 
 								// Update our state based on received items
-								classIDsToReceive[theirItem] = classIDsToReceive.TryGetValue(theirItem, out uint ourReceivedAmount) ? ourReceivedAmount + 1 : 1;
+								classIDsToReceive[theirItem] = classIDsToReceive.GetValueOrDefault(theirItem) + 1;
 								ourFullSet[theirItem] = ourAmountOfTheirItem + 1;
 
 								if (ourTradableAmount > 1) {
@@ -1256,7 +1438,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				if (tradeOfferIDs?.Count > 0) {
 					matchActivelyTradeOfferIDs.UnionWith(tradeOfferIDs);
 
-					Bot.BotDatabase.SaveToJsonStorage(MatchActivelyTradeOfferIDsStorageKey, JToken.FromObject(matchActivelyTradeOfferIDs));
+					Bot.BotDatabase.SaveToJsonStorage(MatchActivelyTradeOfferIDsStorageKey, matchActivelyTradeOfferIDs);
 				}
 
 				if (mobileTradeOfferIDs?.Count > 0) {
@@ -1324,10 +1506,14 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				// However, since this is only an assumption, we must mark newly acquired items as untradable so we're sure that they're not considered for trading, only for matching
 				foreach (Asset itemToReceive in itemsToReceive) {
 					if (ourInventory.TryGetValue(itemToReceive.AssetID, out Asset? item)) {
-						item.Tradable = false;
+						item.Description ??= new InventoryDescription(itemToReceive.AppID, itemToReceive.ClassID, itemToReceive.InstanceID, realAppID: itemToReceive.RealAppID, type: itemToReceive.Type, rarity: itemToReceive.Rarity);
+
+						item.Description.Body.tradable = false;
 						item.Amount += itemToReceive.Amount;
 					} else {
-						itemToReceive.Tradable = false;
+						itemToReceive.Description ??= new InventoryDescription(itemToReceive.AppID, itemToReceive.ClassID, itemToReceive.InstanceID, realAppID: itemToReceive.RealAppID, type: itemToReceive.Type, rarity: itemToReceive.Rarity);
+
+						itemToReceive.Description.Body.tradable = false;
 						ourInventory[itemToReceive.AssetID] = itemToReceive;
 					}
 
@@ -1336,11 +1522,7 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 						throw new InvalidOperationException(nameof(fullAmounts));
 					}
 
-					if (!fullAmounts.TryGetValue(itemToReceive.ClassID, out uint fullAmount)) {
-						fullAmount = 0;
-					}
-
-					fullAmounts[itemToReceive.ClassID] = itemToReceive.Amount + fullAmount;
+					fullAmounts[itemToReceive.ClassID] = fullAmounts.GetValueOrDefault(itemToReceive.ClassID) + itemToReceive.Amount;
 				}
 
 				skippedSetsThisUser.UnionWith(skippedSetsThisTrade);
@@ -1436,15 +1618,42 @@ internal sealed class RemoteCommunication : IAsyncDisposable, IDisposable {
 				return;
 			}
 
-			if (response.StatusCode.IsClientErrorCode()) {
+			BotCache ??= await BotCache.CreateOrLoad(BotCacheFilePath).ConfigureAwait(false);
+
+			if (!response.StatusCode.IsSuccessCode()) {
 				ShouldSendHeartBeats = false;
 
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
 
-				return;
+				switch (response.StatusCode) {
+					case HttpStatusCode.Conflict:
+						// ArchiNet told us to that we need to announce again
+						LastAnnouncement = DateTime.MinValue;
+
+						BotCache.LastAnnouncedAssetsForListing.Clear();
+						BotCache.LastInventoryChecksumBeforeDeduplication = BotCache.LastAnnouncedTradeToken = null;
+						BotCache.LastRequestAt = null;
+
+						return;
+					case HttpStatusCode.Forbidden:
+						// ArchiNet told us to stop submitting data for now
+						LastAnnouncement = DateTime.UtcNow.AddYears(1);
+
+						return;
+					case HttpStatusCode.TooManyRequests:
+						// ArchiNet told us to try again later
+						LastAnnouncement = DateTime.UtcNow.AddDays(1);
+
+						return;
+					default:
+						// There is something wrong with our payload or the server, we shouldn't retry for at least several hours
+						LastAnnouncement = DateTime.UtcNow.AddHours(6);
+
+						return;
+				}
 			}
 
-			LastHeartBeat = DateTime.UtcNow;
+			BotCache.LastRequestAt = LastHeartBeat = DateTime.UtcNow;
 		} finally {
 			RequestsSemaphore.Release();
 		}

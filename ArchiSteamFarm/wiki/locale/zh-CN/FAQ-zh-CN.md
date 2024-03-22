@@ -89,7 +89,7 @@ ASF 是一个 C# 程序，需要安装正常工作的 .NET 环境实现。 自 .
 
 ### 我可以选择挂哪些游戏吗？
 
-**是的**，有几种方式可以做到。 如果您想调整挂卡队列的默认顺序，可以调整 `FarmingOrders` **[机器人配置属性](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-CN#机器人配置)**。 如果您希望手动禁用一些游戏的自动挂卡，可以使用 `fb` **[命令](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-zh-CN)**&#8203;管理挂卡黑名单。 如果挂所有游戏对您来说没问题，但是需要优先挂一部分，可以使用 `fq` **[命令](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-zh-CN)**&#8203;管理优先挂卡队列。 最后，如果只需要挂您指定的游戏，可以设定 `FarmPriorityQueueOnly` **[机器人配置属性](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-CN#机器人配置)**，并且将指定的游戏加入优先挂卡队列。
+**是的**，有几种方式可以做到。 如果您想调整挂卡队列的默认顺序，可以调整 `FarmingOrders` **[机器人配置属性](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-CN#机器人配置)**。 如果您希望手动禁用一些游戏的自动挂卡，可以使用 `fb` **[命令](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-zh-CN)**&#8203;管理挂卡黑名单。 如果挂所有游戏对您来说没问题，但是需要优先挂一部分，可以使用 `fq` **[命令](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-zh-CN)**&#8203;管理优先挂卡队列。 最后，如果只需要挂您指定的游戏，可以在机器人的 **[`FarmingPreferences`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-CN#farmingpreferences)** 配置中设定 `FarmPriorityQueueOnly`，并且将指定的游戏加入优先挂卡队列来实现。
 
 除了管理上述的自动挂卡模块之外，您也可以使用 ASF 手动模式，即 `play` **[命令](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-zh-CN)**，或者使用一些杂项设置，例如 `GamesPlayedWhileIdle` **[机器人配置属性](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-CN#机器人配置)**。
 
@@ -99,7 +99,7 @@ ASF 是一个 C# 程序，需要安装正常工作的 .NET 环境实现。 自 .
 
 是的，ASF 有几种方式可以为您做到这一点。
 
-最佳方式是设置 **[`GamesPlayedWhileIdle`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-CN#gamesplayedwhileidle)** 配置属性，ASF 就会在无卡可挂时挂您选择的 appID。 如果您希望即使仍有游戏未挂完卡，也始终挂这些游戏，那么您可以进一步设置 **[`FarmPriorityQueueOnly`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-CN#farmpriorityqueueonly)** 属性，这样 ASF 就仅会为您明确指定的游戏挂卡，或者设置 **[`Paused`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-CN#paused)** 属性，使挂卡模块完全暂停工作，直到您手动恢复。
+最佳方式是设置 **[`GamesPlayedWhileIdle`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-CN#gamesplayedwhileidle)** 配置属性，ASF 就会在无卡可挂时挂您选择的 appID。 如果您希望即使仍有游戏未挂完卡，也始终挂这些游戏，那么您可以进一步设置 **[`FarmPriorityQueueOnly`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-CN#farmingpreferences)**，这样 ASF 就仅会为您明确指定的游戏挂卡，或者设置 **[`FarmingPausedByDefault`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-CN#farmingpreferences)**，使挂卡模块完全暂停工作，直到您手动恢复。
 
 另外一种方式是使用 **[`play`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-zh-CN#命令-1)** 命令，使 ASF 开始挂您选择的游戏。 然而，请注意 `play` 命令仅应该在您需要临时挂游戏的时候使用，因为它的状态不会长久保持，ASF 如果遇到从 Steam 断开连接等情况，就会恢复到它默认的状态。 因此，我们建议您使用 `GamesPlayedWhileIdle`，除非您确实只需要短时间运行所选游戏，然后恢复到正常的挂卡流程。
 
@@ -147,11 +147,13 @@ ASF 的逻辑还能够正确处理**系列**视频。 Steam 上有许多视频�
 
 - **您可以离线挂卡**（`OnlineStatus` 中的 `Offline` 设置）。 离线挂卡使您可以完全隐藏 Steam 的“游戏中”状态，在 Steam 显示您“在线”的同时，ASF 仍可以继续挂卡，您的朋友不会发现 ASF 正在代替您玩游戏。 这是一个超赞的功能，您可以保持 Steam 客户端为在线状态，不再有经常变化的游戏提醒来烦扰您的朋友，或者使您的朋友误认为您正在玩游戏。 如果您尊重您的朋友，仅凭这一点，就应该使用 ASF，但这仅仅是个开始。 值得注意的是，这个特性与您的 Steam 隐私设置无关——如果您自己运行游戏，仍然会向您的朋友展示正确的游戏状态，只有 ASF 部分是隐藏的，不会影响您的帐户。
 
-- **您可以跳过仍可退款的游戏**（`SkipRefundableGames` 功能）。 ASF 的内部逻辑能够正确处理可退款的游戏，您可以设置 ASF 不自动开始挂仍可以退款的游戏。 这样您就可以自己检查从 Steam 商店购买的游戏是否值得您花的钱，而不是让 ASF 尽快挂完游戏的卡牌。 如果您玩了 2 小时以上，或者已经购买超过 2 周，那么 ASF 将继续挂此游戏，因为此时它不再可以无条件退款。 在此之前，您对此游戏有完全的控制权，如果您不喜欢，可以直接退款，整个过程都不需要您将该游戏加入挂卡黑名单，也不需要避免在此期间打开 ASF。
+- **您可以跳过仍可退款的游戏**（机器人配置 `FarmingPreferences` 中的 `SkipRefundableGames` 功能）。 ASF 的内部逻辑能够正确处理可退款的游戏，您可以设置 ASF 不自动开始挂仍可以退款的游戏。 这样您就可以自己检查从 Steam 商店购买的游戏是否值得您花的钱，而不是让 ASF 尽快挂完游戏的卡牌。 如果您玩了 2 小时以上，或者已经购买超过 2 周，那么 ASF 将继续挂此游戏，因为此时它不再可以无条件退款。 在此之前，您对此游戏有完全的控制权，如果您不喜欢，可以直接退款，整个过程都不需要您将该游戏加入挂卡黑名单，也不需要避免在此期间打开 ASF。
+
+- **您可以跳过尚未游玩的游戏**（机器人配置 `FarmingPreferences` 中的 `SkipUnplayedGames` 功能）。 ASF 的内部逻辑能够正确处理游戏时长，您可以设置 ASF 不自动开始挂尚未游玩过的游戏。 这使您可以自己控制要游玩和挂卡的游戏，而不必手动将所有游戏加入黑名单或完全不使用 ASF。
 
 - **您可以自动将新物品通知标记为已读**（设置 `BotBehaviour` 为 `DismissInventoryNotifications`）。 用 ASF 挂卡会使您的帐户收到新的卡牌掉落。 既然您已经知道会发生这种情况，就可以让 ASF 为您清除这些无用的通知，确保您只需要注意重要的通知。 当然，这取决于您自己。
 
-- **您可以在 Steam 特卖期间自动获得卡牌**（`AutoSteamSaleEvent`）。 如果您愿意，可以使用 ASF 在 Steam 特卖期间自动浏览探索队列。 这可以在特卖期间为您节省大量的时间，并且确保您永远不会错过每日获得卡牌的机会。
+- **您可以在 Steam 特卖期间自动获得卡牌**（机器人配置 `FarmingPreferences` 中的 `AutoSteamSaleEvent` 功能）。 如果您愿意，可以使用 ASF 在 Steam 特卖期间自动浏览探索队列。 这可以在特卖期间为您节省大量的时间，并且确保您永远不会错过每日获得卡牌的机会。
 
 - **您可以使用丰富的选项自定义挂卡顺序**（`FarmingOrders`）。 也许您希望先挂新买的游戏？ 或者最早购买的？ 按照游戏掉卡数量的顺序？ 您已合成的徽章等级顺序？ 游戏时间顺序？ 字母顺序？ AppID 顺序？ 或者完全随机？ 这完全取决于您自己。
 
@@ -339,7 +341,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 是的，如果您希望 ASF 在启动时暂停挂卡模块，可以将机器人的 `Paused` 配置属性设置为 `true` 来实现这一点。 您可以在运行时执行 `resume` 命令来恢复挂卡。
 
-如果您希望完全禁用挂卡模块，并确保它永远不会在您没有明确指定时运行，那么，我们建议您设置 `FarmPriorityQueueOnly` 为 `true`，而不是仅仅暂停模块，这将会完全禁用自动挂卡，直到您自己向挂卡优先队列内添加游戏。
+如果您希望完全禁用挂卡模块，并确保它永远不会在您没有明确指定时运行，那么，我们建议您在机器人的 `FarmingPreferences` 中设置 `FarmPriorityQueueOnly`，而不是仅仅暂停模块，这将会完全禁用自动挂卡，直到您自己向挂卡优先队列内添加游戏。
 
 通过暂停/禁用挂卡模块，您可以仅使用 ASF 的额外功能，例如 `GamesPlayedWhileIdle`。
 
@@ -460,7 +462,7 @@ ASF 基于宽松的 Apache 2.0 许可证授权，允许其他开发者合法地�
 
 第二个原因不是很明显，有时您的徽章页面确实说明该游戏可以掉落卡牌，但是 ASF 没有马上为它挂卡。 除非您遇到了其他漏洞，例如 ASF 无法检查徽章页面（如下所述），否则这只是一种缓存效果，即 ASF 访问的 Steam 徽章页面是过时的版本。 等缓存过期后，此问题很快就会自行解决。 我们也没有办法解决这个问题。
 
-当然，上述说明都假设您以默认的配置运行 ASF，因为您可以通过配置来调整 ASF 的挂卡行为，包括将游戏加入挂卡黑名单，或设置 `FarmPriorityQueueOnly` 与 `SkipRefundableGames` 等等。
+当然，上述说明都假设您以默认的配置运行 ASF，因为您可以通过配置来调整 ASF 的挂卡行为，包括将游戏加入挂卡黑名单、使用特定的 `FarmingPreferences` 选项例如 `FarmPriorityQueueOnly` 或 `SkipRefundableGames` 等等。
 
 ---
 

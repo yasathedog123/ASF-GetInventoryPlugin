@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,35 +25,51 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Core;
-using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Data;
 
 internal sealed class SubmitRequest {
-	[JsonProperty("guid", Required = Required.Always)]
-	private static string Guid => ASF.GlobalDatabase?.Identifier.ToString("N") ?? throw new InvalidOperationException(nameof(ASF.GlobalDatabase.Identifier));
-
-	[JsonProperty("token", Required = Required.Always)]
-	private static string Token => SharedInfo.Token;
-
-	[JsonProperty("v", Required = Required.Always)]
-	private static byte Version => SharedInfo.ApiVersion;
-
-	[JsonProperty("apps", Required = Required.Always)]
-	private readonly ImmutableDictionary<string, string> Apps;
-
-	[JsonProperty("depots", Required = Required.Always)]
-	private readonly ImmutableDictionary<string, string> Depots;
-
 	private readonly ulong SteamID;
 
-	[JsonProperty("subs", Required = Required.Always)]
-	private readonly ImmutableDictionary<string, string> Subs;
+#pragma warning disable CA1822 // We can't make it static, STJ doesn't serialize it otherwise
+	[JsonInclude]
+	[JsonPropertyName("guid")]
+	private string Guid => ASF.GlobalDatabase?.Identifier.ToString("N") ?? throw new InvalidOperationException(nameof(ASF.GlobalDatabase.Identifier));
+#pragma warning restore CA1822 // We can't make it static, STJ doesn't serialize it otherwise
 
-	[JsonProperty("steamid", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("steamid")]
 	private string SteamIDText => new SteamID(SteamID).Render();
+
+#pragma warning disable CA1822 // We can't make it static, STJ doesn't serialize it otherwise
+	[JsonInclude]
+	[JsonPropertyName("token")]
+	private string Token => SharedInfo.Token;
+#pragma warning restore CA1822 // We can't make it static, STJ doesn't serialize it otherwise
+
+#pragma warning disable CA1822 // We can't make it static, STJ doesn't serialize it otherwise
+	[JsonInclude]
+	[JsonPropertyName("v")]
+	private byte Version => SharedInfo.ApiVersion;
+#pragma warning restore CA1822 // We can't make it static, STJ doesn't serialize it otherwise
+
+	[JsonInclude]
+	[JsonPropertyName("apps")]
+	[JsonRequired]
+	private ImmutableDictionary<string, string> Apps { get; init; }
+
+	[JsonInclude]
+	[JsonPropertyName("depots")]
+	[JsonRequired]
+	private ImmutableDictionary<string, string> Depots { get; init; }
+
+	[JsonInclude]
+	[JsonPropertyName("subs")]
+	[JsonRequired]
+	private ImmutableDictionary<string, string> Subs { get; init; }
 
 	internal SubmitRequest(ulong steamID, IReadOnlyCollection<KeyValuePair<uint, ulong>> apps, IReadOnlyCollection<KeyValuePair<uint, ulong>> accessTokens, IReadOnlyCollection<KeyValuePair<uint, string>> depots) {
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {

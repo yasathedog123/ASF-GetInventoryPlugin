@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,22 +24,23 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
+using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web.Responses;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Web;
 
@@ -176,22 +179,24 @@ public sealed class WebBrowser : IDisposable {
 						while (response.Content.CanRead) {
 							int read = await response.Content.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken).ConfigureAwait(false);
 
-							if (read == 0) {
+							if (read <= 0) {
 								break;
 							}
 
+							// Report progress in-between downloading only if file is big enough to justify it
+							// Current logic below will report progress if file is bigger than ~800 KB
+							if (batchIncreaseSize >= buffer.Length) {
+								readThisBatch += read;
+
+								for (; (readThisBatch >= batchIncreaseSize) && (batch < 99); readThisBatch -= batchIncreaseSize) {
+									// We need a copy of variable being passed when in for loops, as loop will proceed before our event is launched
+									byte progress = ++batch;
+
+									progressReporter?.Report(progress);
+								}
+							}
+
 							await ms.WriteAsync(buffer.AsMemory(0, read), cancellationToken).ConfigureAwait(false);
-
-							if ((progressReporter == null) || (batchIncreaseSize == 0) || (batch >= 99)) {
-								continue;
-							}
-
-							readThisBatch += read;
-
-							while ((readThisBatch >= batchIncreaseSize) && (batch < 99)) {
-								readThisBatch -= batchIncreaseSize;
-								progressReporter.Report(++batch);
-							}
 						}
 					} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 						throw;
@@ -323,17 +328,7 @@ public sealed class WebBrowser : IDisposable {
 				T? obj;
 
 				try {
-					using StreamReader streamReader = new(response.Content);
-
-#pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-					JsonTextReader jsonReader = new(streamReader);
-#pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-
-					await using (jsonReader.ConfigureAwait(false)) {
-						JsonSerializer serializer = new();
-
-						obj = serializer.Deserialize<T>(jsonReader);
-					}
+					obj = await response.Content.ToJsonObject<T>(cancellationToken).ConfigureAwait(false);
 				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
@@ -606,17 +601,7 @@ public sealed class WebBrowser : IDisposable {
 				TResult? obj;
 
 				try {
-					using StreamReader streamReader = new(response.Content);
-
-#pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-					JsonTextReader jsonReader = new(streamReader);
-#pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
-
-					await using (jsonReader.ConfigureAwait(false)) {
-						JsonSerializer serializer = new();
-
-						obj = serializer.Deserialize<TResult>(jsonReader);
-					}
+					obj = await response.Content.ToJsonObject<TResult>(cancellationToken).ConfigureAwait(false);
 				} catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) {
 					throw;
 				} catch (Exception e) {
@@ -727,6 +712,7 @@ public sealed class WebBrowser : IDisposable {
 		return await InternalRequest(request, HttpMethod.Post, headers, data, referer, requestOptions, httpCompletionOption, cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	private async Task<HttpResponseMessage?> InternalRequest<T>(Uri request, HttpMethod httpMethod, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries, CancellationToken cancellationToken = default) where T : class {
 		ArgumentNullException.ThrowIfNull(request);
 		ArgumentNullException.ThrowIfNull(httpMethod);
@@ -762,7 +748,7 @@ public sealed class WebBrowser : IDisposable {
 
 							break;
 						default:
-							requestMessage.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+							requestMessage.Content = JsonContent.Create(data, options: JsonUtilities.DefaultJsonSerialierOptions);
 
 							break;
 					}

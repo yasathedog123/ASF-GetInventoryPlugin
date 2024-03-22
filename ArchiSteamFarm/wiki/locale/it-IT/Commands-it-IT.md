@@ -27,9 +27,9 @@ Puoi eseguire il comando al bot dato di ASF tramite la chat di Steam. Ovviamente
 
 ![Screenshot](https://i.imgur.com/IvFRJ5S.png)
 
-In modo simile, puoi anche usare la chat di gruppo o il gruppo dato di Steam. Tieni a mente che quest'opzione richiede la proprietà `SteamMasterClanID` propriamente impostata, nel qual caso il bot ascolterà i comandi anche sulla chat del gruppo (e unisciti se necessario). Questo è anche utilizzabile per "parlare da soli" poiché non richiede un profilo del bot dedicato, al contrario della chat privata. You can simply set `SteamMasterClanID` property to your newly-created group, then give yourself access either through `SteamOwnerID` or `SteamUserPermissions` of your own bot. This way ASF bot (you) will join group and chat of your selected group, and listen to commands from your own account. You can join the same group chatroom in order to issue commands to yourself (as you'll be sending command to chatroom, and ASF instance sitting on the same chatroom will receive them, even if it shows only as your account being there).
+In modo simile, puoi anche usare la chat di gruppo o il gruppo dato di Steam. Tieni a mente che quest'opzione richiede la proprietà `SteamMasterClanID` propriamente impostata, nel qual caso il bot ascolterà i comandi anche sulla chat del gruppo (e unisciti se necessario). Questo è anche utilizzabile per "parlare da soli" poiché non richiede un profilo del bot dedicato, al contrario della chat privata. Puoi semplicemente impostare la proprietà `SteamMasterClanID` al tuo gruppo appena creato, per poi concederti l'accesso al tuo bot tramite `SteamOwnerID` o `SteamUserPermissions`. In questo modo il bot ASF (tu) si unirà al gruppo e alla chat del gruppo selezionato, e ascolterà i comandi provenienti dal tuo account. Puoi unirti alla stessa chat di gruppo per inviare comandi a te stesso (in quanto invierai un comando alla chat del gruppo, e l'istanza di ASF presente nella stessa li riceverà, anche se ti sembra che solo il tuo account sia presente).
 
-Please note that sending a command to the group chat acts like a relay. If you're saying `redeem X` to 3 of your bots sitting together with you on the group chat, it'll result in the same as you'd say `redeem X` to every single one of them privately. In most cases **this is not what you want**, and instead you should use `given bot` command that is being sent to **a single bot in private window**. ASF supports group chat, as in many cases it can be useful source for communication with your only bot, but you should almost never execute any command on the group chat if there are 2 or more ASF bots sitting there, unless you fully understand ASF behaviour written here and you in fact want to relay the same command to every single bot that is listening to you.
+Considera che l'invio di un comando alla chat di gruppo agisce come un relè. Se stai scrivendo `redeem X` a 3 bot presenti assieme a te nella chat di gruppo, risulterà lo stesso che scrivere `redeem X` a ognuno di loro privatamente. In most cases **this is not what you want**, and instead you should use `given bot` command that is being sent to **a single bot in private window**. ASF supports group chat, as in many cases it can be useful source for communication with your only bot, but you should almost never execute any command on the group chat if there are 2 or more ASF bots sitting there, unless you fully understand ASF behaviour written here and you in fact want to relay the same command to every single bot that is listening to you.
 
 *And even in this case you should use private chat with `[Bots]` syntax instead.*
 
@@ -131,13 +131,14 @@ As you've read above, a space character is being used as a delimiter for a comma
 
 Some commands are also available with their aliases, mostly to save you on typing or account for different dialects:
 
-| Command      | Alias        |
-| ------------ | ------------ |
-| `addlicense` | `addlicence` |
-| `owns ASF`   | `oa`         |
-| `status ASF` | `sa`         |
-| `redeem`     | `r`          |
-| `redeem^`    | `r^`         |
+| Command          | Alias              |
+| ---------------- | ------------------ |
+| `addlicense`     | `al`, `addlicence` |
+| `addlicense ASF` | `ala`              |
+| `owns ASF`       | `oa`               |
+| `status ASF`     | `sa`               |
+| `redeem`         | `r`                |
+| `redeem^`        | `r^`               |
 
 ---
 

@@ -117,9 +117,9 @@ dotnet publish YourPluginName -c "Release" -o "out"
 
 默认情况下，您的插件需要至少两个依赖项，`ArchiSteamFarm` 用于引用内部 API，以及 `System.Composition.AttributedModel` 的 `PackageReference`，这是使项目被识别为 ASF 插件所必需的。 除此之外，根据您插件的功能，您可能还需要添加更多依赖项（例如，如果您的插件需要集成 Discord，就需要 `Discord.Net` 库）。
 
-构建过程的输出包括您的核心 `YourPluginName.dll` 库和所有您引用的依赖项。 因为您正在为已经正常工作的程序开发插件，您不需要也**不应该**打包 ASF 已包含的依赖项，例如 `ArchiSteamFarm`、`SteamKit2` 或 `Newtonsoft.Json`。 在构建中削减与 ASF 共享的依赖项并不是使插件运行所强制要求的，但这样做将极大地减少内存占用和插件本身的大小，同时提高性能，因为 ASF 会与您的插件共享自己的依赖项，并且只会加载它未知的库。
+构建过程的输出包括您的核心 `YourPluginName.dll` 库和所有您引用的依赖项。 因为您正在为已经正常工作的程序开发插件，您不需要也**不应该**打包 ASF 已包含的依赖项，例如 `ArchiSteamFarm`、`SteamKit2` 或 `AngleSharp`。 在构建中削减与 ASF 共享的依赖项并不是使插件运行所强制要求的，但这样做将极大地减少内存占用和插件本身的大小，同时提高性能，因为 ASF 会与您的插件共享自己的依赖项，并且只会加载它未知的库。
 
-通常，建议的做法是，只打包 ASF 不包含的或者与 ASF 包含版本不同/不兼容的库。 相应的例子显然有 `YourPluginName.dll`，但如果您决定集成 Discord，而 ASF 并未包含 `Discord.Net.dll`，则您也需要打包此项。 如果您希望确保 API 兼容性，打包与 ASF 共享的库仍然是有意义的（例如，确保您在插件中使用的 `Newtonsoft.Json` 始终锁死在版本 `X`，而不是 ASF 提供的版本），但显然这样做的成本是增大了内存开销和插件的大小，并且导致性能下降，因此需要仔细评估。
+通常，建议的做法是，只打包 ASF 不包含的或者与 ASF 包含版本不同/不兼容的库。 相应的例子显然有 `YourPluginName.dll`，但如果您决定集成 Discord，而 ASF 并未包含 `Discord.Net.dll`，则您也需要打包此项。 如果您希望确保 API 兼容性，打包与 ASF 共享的库仍然是有意义的（例如，确保您在插件中使用的 `AngleSharp` 始终锁死在版本 `X`，而不是 ASF 提供的版本），但显然这样做的成本是增大了内存开销和插件的大小，并且导致性能下降，因此需要仔细评估。
 
 如果您确定您需要的依赖项已经包含在 ASF 中，就可以将它标记为 `IncludeAssets="compile"`，如上 `csproj` 示例所示。 这会告诉编译器不发布被引用的库，因为 ASF 已经包含该库。 同样地，注意我们使用 `ExcludeAssets="all" Private="false"` 来引用 ASF 项目，这与之前的做法很相似——告诉编译器不要生成任何 ASF 文件（因为用户已经有这些文件了）。 这仅仅适用于引用 ASF 项目的情况，如果您引用的是 `dll` 库，则您的插件不会生成 ASF 文件。
 

@@ -46,4 +46,4 @@ Stufe 1 fand in der Version V3.1.2.2 statt, wo wir der Verwendung von `--server`
 
 ### Stufe 2
 
-Stufe 2 fand in der Version V3.1.3.0 statt, direkt nach der stabilen V3.1.2.9 mit Stufe 1, wie oben erläutert. Stufe 2 hatte zur Folge, dass ASF das Argument `--server` überhaupt nicht mehr anerkannte und es wie jedes andere ungültig übergebene Argument, welches keine Auswirkungen auf das Programm mehr hat, behandelte. Für diejenige, die immer noch nicht `--server` in `IPC: true` geändert haben, führte dies dazu, dass IPC ganz und gar nicht mehr funktionierte, da ASF keine entsprechende Zuordnung mehr durchführte.
+Stufe 2 fand in der Version V3.1.3.0 statt, direkt nach der stabilen V3.1.2.9 mit Stufe 1, wie oben erläutert. Stufe 2 hatte zur Folge, dass ASF das Argument `--server` überhaupt nicht mehr anerkannte und es wie jedes andere ungültig übergebene Argument, welches keine Auswirkungen auf das Programm mehr hat, behandelte. Für diejenige, die immer bislang nicht `--server` in `IPC: true` geändert haben, führte dies dazu, dass IPC ganz und gar nicht mehr funktionierte, da ASF keine entsprechende Zuordnung mehr durchführte.

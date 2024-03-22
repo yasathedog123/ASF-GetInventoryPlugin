@@ -30,7 +30,7 @@ O pacote para Sistema Operacional específico, além do código gerenciado inclu
 
 ASF está atualmente disponível nas seguintes variantes específicas de Sistema Operacional:
 
-- `linux-arm` works on 32-bit ARM-based (ARMv7+) GNU/Linux OSes with glibc 2.23/musl 1.2.2 and newer. Esta variante cobre plataformas como o Raspberry Pi 2 (e mais novos), ela **não** funcionará com arquiteturas ARM antigas, como ARMv6 do Raspberry Pi 0 & 1, e também é incompatível com sistemas que não implementem o ambiente GNU/Linux exigido (como o sistema Android).
+- `linux-arm64` é compatível com sistemas operacionais GNU/Linux 32-bit baseados em ARM (ARMv7 +) com glibc 2.23/musl 1.2.2 e posteriores. Esta variante cobre plataformas como o Raspberry Pi 2 (e mais novos), ela **não** funcionará com arquiteturas ARM antigas, como ARMv6 do Raspberry Pi 0 & 1, e também é incompatível com sistemas que não implementem o ambiente GNU/Linux exigido (como o sistema Android).
 - `linux-arm64` compatível com sistemas operacionais GNU/Linux 64-bit baseados em ARM (ARMv8 +) com glibc 2.23/musl 1.2.2 e posteriores. Esta variante cobre plataformas como o Raspberry Pi 3 (e mais novos), ela **não** funcionará com sistemas de 32 bits que não tenham as bibliotecas de 64 bits exigidas (como o Raspberry Pi OS 32-bit), e não funcionará com sistemas que não implementem o ambiente GNU/Linux exigido (como o sistema Android).
 - `linux-x64` compatível com Sistemas Operacionais GNU/Linux 64-bit com glibc 2.23/musl 1.2.2 e posteriores.
 - `osx-arm64` compatível com o OS X de 64 bits baseados em ARM (Apple silicon) na versão 11 e posteriores.
@@ -50,6 +50,6 @@ Se você estiver usando um pacote para Sistema Operacional específico você nã
 
 No entanto, se você está tentando executar o pacote **genérico** do ASF, você deve garantir o que o seu tempo de execução .NET ofereça suporte a plataforma requerida pelo ASF.
 
-ASF as a program is targeting **.NET 8.0** (`net8.0`) right now, but it may target newer platform in the future. `net8.0` is supported since 8.0.100 SDK (8.0.0 runtime), although ASF might prefer **latest runtime at the moment of compilation**, so you should ensure that you have **[latest SDK](https://dotnet.microsoft.com/download)** (or at least runtime) available for your machine. A variante genéria do ASF pode se recusar a iniciar se o seu tempo de execução for mais antigo que o mínimo especificado durante a compilação.
+O ASF é direcionado à **.NET 8.0** (`net8.0`) hoje, mas pode seguir para plataformas mais novas no futuro. O `net8.0` é suportado desde o SDK 8.0.100 (tempo de execução 8.0.0), porém o ASF deverá buscar o **tempo de execução mais recente na hora da compilação**, então você deve garantir que você tem a **[SDK mais recente](https://dotnet.microsoft.com/download)** (ou ao menos o tempo de execução) disponível para o seu computador. A variante genéria do ASF pode se recusar a iniciar se o seu tempo de execução for mais antigo que o mínimo especificado durante a compilação.
 
 Em caso de dúvida, verifique o que nossa **[integração contínua usa](https://github.com/JustArchiNET/ArchiSteamFarm/actions/workflows/publish.yml?query=branch%3Amain)** para compilar e implantar as versões do ASF liberadas no GitHub. Você pode encontrar a saída `dotnet --info` em cada compilação como parte do passo de verificação do .NET.

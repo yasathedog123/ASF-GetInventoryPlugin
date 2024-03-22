@@ -6,9 +6,9 @@ O ASF permite que você configure seu próprio módulo de registro que será usa
 
 ## Registro padrão
 
-Por padrão o ASF salva os logs no `ColoredConsole` (saída padrão) e em `File` (arquivo). O registro em `file` inclui o arquivo `log.txt` na pasta do programa, e a pasta `logs` para fins de arquivamento.
+Por padrão, o ASF salva os logs no `ColoredConsole` (saída padrão) e em `File` (arquivo). O registro em `File` inclui o arquivo `log.txt` no diretório do programa e a pasta `logs` para fins de arquivamento.
 
-Uasr uma configuração NLog substitui a configuração padrão do ASF, nesse caso sua configuração substitui **completamente** os registros padrões do ASF, o que significa que se você quiser manter, por exemplo, o destino `ColoredConsole`, você deve defini-lo **você mesmo**. Isso te permite não só adicionar destinos de registro **extras**, mas também a desabilitar ou modificar os **padrões**.
+Usar uma configuração personalizada do NLog desabilita automaticamente a configuração padrão do ASF. Sua configuração substitui **completamente** o registro padrão do ASF, o que significa que se você deseja manter, por exemplo, nosso alvo `ColoredConsole`, então você deve defini-lo **você mesmo**. Isso te permite não só adicionar destinos de registro **extras**, mas também a desabilitar ou modificar os **padrões**.
 
 Se você quiser usar o registro padrão do ASF sem quaisquer modificações, você não precisa fazer nada; você também não precisa defini-lo em um `NLog.config` personalizado. Não use um `NLog.config` personalizado se você não quiser modificar o registro padrão do ASF. Para referência, o equivalente ao registro padrão do ASF codificado seria:
 
@@ -19,30 +19,30 @@ Se você quiser usar o registro padrão do ASF sem quaisquer modificações, voc
     <target xsi:type="ColoredConsole" name="ColoredConsole" layout="${date:format=yyyy-MM-dd HH\:mm\:ss}|${processname}-${processid}|${level:uppercase=true}|${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}" />
     <target xsi:type="File" name="File" archiveFileName="${currentdir}/logs/log.{#}.txt" archiveNumbering="Rolling" archiveOldFileOnStartup="true" cleanupFileName="false" concurrentWrites="false" deleteOldFileOnStartup="true" fileName="${currentdir}/log.txt" layout="${date:format=yyyy-MM-dd HH\:mm\:ss}|${processname}-${processid}|${level:uppercase=true}|${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}" maxArchiveFiles="10" />
 
-    <!-- A seguir se torna ativo quando a interface IPC do ASF é iniciada -->
+    <!-- O abaixo se torna ativo quando a interface IPC do ASF estiver ativa -->
     <target type="History" name="History" layout="${date:format=yyyy-MM-dd HH\:mm\:ss}|${processname}-${processid}|${level:uppercase=true}|${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}" maxCount="20" />
   </targets>
 
   <rules>
-    <!-- As entradas a seguir especificam o registro ASP.NET (IPC), as declaramos para que nosso último ponto de verificação (catch-all) de Debug não inclua logs ASP.NET por padrão -->
-    <logger name="Microsoft*" finalMinLevel="Warn" writeTo="ColoredConsole" />
-    <logger name="Microsoft.Hosting.Lifetime*" finalMinLevel="Info" writeTo="ColoredConsole" />
-    <logger name="System*" finalMinLevel="Warn" writeTo="ColoredConsole" />
+    <!-- Os seguintes registros especificam o logging do ASP.NET (IPC), declaramos isso para que nosso último Debug catch-all não inclua os logs do ASP.NET por padrão. -->
+    <logger name="Microsoft.*" finalMinLevel="Warn" writeTo="ColoredConsole" />
+    <logger name="Microsoft.Hosting.Lifetime" finalMinLevel="Info" writeTo="ColoredConsole" />
+    <logger name="System.*" finalMinLevel="Warn" writeTo="ColoredConsole" />
 
     <logger name="*" minlevel="Debug" writeTo="ColoredConsole" />
 
-    <!-- As entradas a seguir especificam o registro ASP.NET (IPC), as declaramos para que nosso último ponto de verificação (catch-all) de Debug não inclua logs ASP.NET por padrão -->
-    <logger name="Microsoft*" finalMinLevel="Warn" writeTo="File" />
-    <logger name="Microsoft.Hosting.Lifetime*" finalMinLevel="Info" writeTo="File" />
-    <logger name="System*" finalMinLevel="Warn" writeTo="File" />
+    <!-- Os seguintes registros especificam o logging do ASP.NET (IPC), declaramos isso para que nosso último Debug catch-all não inclua os logs do ASP.NET por padrão. -->
+    <logger name="Microsoft.*" finalMinLevel="Warn" writeTo="File" />
+    <logger name="Microsoft.Hosting.Lifetime" finalMinLevel="Info" writeTo="File" />
+    <logger name="System.*" finalMinLevel="Warn" writeTo="File" />
 
     <logger name="*" minlevel="Debug" writeTo="File" />
 
-    <!-- A seguir se torna ativo quando a interface IPC do ASF é habilitada -->
-    <!-- As entradas a seguir especificam o registro ASP.NET (IPC), as declaramos para que nosso último ponto de verificação (catch-all) de Debug não inclua logs ASP.NET por padrão -->
-    <logger name="Microsoft*" finalMinLevel="Warn" writeTo="History" />
-    <logger name="Microsoft.Hosting.Lifetime*" finalMinLevel="Info" writeTo="History" />
-    <logger name="System*" finalMinLevel="Warn" writeTo="History" />
+    <!-- O abaixo se torna ativo quando a interface IPC do ASF estiver ativa -->
+    <!-- Os seguintes registros especificam o logging do ASP.NET (IPC), declaramos isso para que nosso último Debug catch-all não inclua os logs do ASP.NET por padrão. -->
+    <logger name="Microsoft.*" finalMinLevel="Warn" writeTo="History" />
+    <logger name="Microsoft.Hosting.Lifetime" finalMinLevel="Info" writeTo="History" />
+    <logger name="System.*" finalMinLevel="Warn" writeTo="History" />
 
     <logger name="*" minlevel="Debug" writeTo="History" />
   </rules>
@@ -107,7 +107,7 @@ Agora vamos dizer que não gostamos do formato padrão `${longdate}|${level:uppe
 
 Se você abrir o ASF agora, você perceberá que a data, o nível e o nome do agente de registro desapareceram, deixando apenas as mensagens do ASF no formato: `Function() Message`.
 
-Também podemos modificar a configuração de log para mais de um alvo. Vamos registrar no `ColoredConsole` e no **[arquivo](https://github.com/nlog/nlog/wiki/File-target)** ao mesmo tempo:
+Também podemos modificar a configuração de log para mais de um alvo. Vamos registrar no `ColoredConsole` e no **[`File`](https://github.com/nlog/nlog/wiki/File-target)** ao mesmo tempo.
 
 ```xml
 <?xml version="1.0" encoding="utf-8" ?>

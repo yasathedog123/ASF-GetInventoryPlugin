@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +23,7 @@
 
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.IPC.Responses;
 
@@ -32,8 +34,8 @@ public sealed class TypeProperties {
 	/// <remarks>
 	///     This can be used for determining how the body of the response should be interpreted.
 	/// </remarks>
-	[JsonProperty]
-	public string? BaseType { get; private set; }
+	[JsonInclude]
+	public string? BaseType { get; private init; }
 
 	/// <summary>
 	///     Custom attributes of given type, if available.
@@ -41,8 +43,8 @@ public sealed class TypeProperties {
 	/// <remarks>
 	///     This can be used for determining main enum type if <see cref="BaseType" /> is <see cref="Enum" />.
 	/// </remarks>
-	[JsonProperty]
-	public HashSet<string>? CustomAttributes { get; private set; }
+	[JsonInclude]
+	public HashSet<string>? CustomAttributes { get; private init; }
 
 	/// <summary>
 	///     Underlying type of given type, if available.
@@ -50,8 +52,8 @@ public sealed class TypeProperties {
 	/// <remarks>
 	///     This can be used for determining underlying enum type if <see cref="BaseType" /> is <see cref="Enum" />.
 	/// </remarks>
-	[JsonProperty]
-	public string? UnderlyingType { get; private set; }
+	[JsonInclude]
+	public string? UnderlyingType { get; private init; }
 
 	internal TypeProperties(string? baseType = null, HashSet<string>? customAttributes = null, string? underlyingType = null) {
 		BaseType = baseType;

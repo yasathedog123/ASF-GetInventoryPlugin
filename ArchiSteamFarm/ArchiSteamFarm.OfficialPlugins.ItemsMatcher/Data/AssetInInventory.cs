@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,14 +22,16 @@
 // limitations under the License.
 
 using System;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Steam.Data;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal class AssetInInventory : AssetForMatching {
-	[JsonProperty("d", Required = Required.Always)]
-	internal readonly ulong AssetID;
+	[JsonInclude]
+	[JsonPropertyName("d")]
+	[JsonRequired]
+	internal ulong AssetID { get; private init; }
 
 	[JsonConstructor]
 	protected AssetInInventory() { }
@@ -38,5 +42,5 @@ internal class AssetInInventory : AssetForMatching {
 		AssetID = asset.AssetID;
 	}
 
-	internal Asset ToAsset() => new(Asset.SteamAppID, Asset.SteamCommunityContextID, ClassID, Amount, tradable: Tradable, assetID: AssetID, realAppID: RealAppID, type: Type, rarity: Rarity);
+	internal Asset ToAsset() => new(Asset.SteamAppID, Asset.SteamCommunityContextID, ClassID, Amount, new InventoryDescription(Asset.SteamAppID, ClassID, tradable: false, realAppID: RealAppID, type: Type, rarity: Rarity), AssetID);
 }

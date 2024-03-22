@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,10 +24,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
+using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Integration.Callbacks;
 using ArchiSteamFarm.Steam.Integration.CMsgs;
 using JetBrains.Annotations;
@@ -149,6 +154,102 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		}
 
 		return response.Result == EResult.OK ? response.GetDeserializedResponse<CCredentials_LastCredentialChangeTime_Response>() : null;
+	}
+
+	[PublicAPI]
+	public async IAsyncEnumerable<Asset> GetMyInventoryAsync(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, bool tradableOnly = false, bool marketableOnly = false, ushort itemsCountPerRequest = 40000) {
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+		ArgumentOutOfRangeException.ThrowIfZero(contextID);
+		ArgumentOutOfRangeException.ThrowIfZero(itemsCountPerRequest);
+
+		if (Client.SteamID == null) {
+			throw new InvalidOperationException(nameof(Client.SteamID));
+		}
+
+		ulong steamID = Client.SteamID;
+
+		ulong startAssetID = 0;
+
+		// We need to store asset IDs to make sure we won't get duplicate items
+		HashSet<ulong>? assetIDs = null;
+
+		while (true) {
+			ulong currentStartAssetID = startAssetID;
+
+			CEcon_GetInventoryItemsWithDescriptions_Request request = new() {
+				appid = appID,
+				contextid = contextID,
+
+				filters = new CEcon_GetInventoryItemsWithDescriptions_Request.FilterOptions {
+					tradable_only = tradableOnly,
+					marketable_only = marketableOnly
+				},
+
+				get_descriptions = true,
+				steamid = steamID,
+				start_assetid = currentStartAssetID,
+				count = itemsCountPerRequest
+			};
+
+			SteamUnifiedMessages.ServiceMethodResponse genericResponse = await UnifiedEconService.SendMessage(x => x.GetInventoryItemsWithDescriptions(request)).ToLongRunningTask().ConfigureAwait(false);
+
+			CEcon_GetInventoryItemsWithDescriptions_Response response = genericResponse.GetDeserializedResponse<CEcon_GetInventoryItemsWithDescriptions_Response>();
+
+			if ((response.total_inventory_count == 0) || (response.assets.Count == 0)) {
+				// Empty inventory
+				yield break;
+			}
+
+			if (response.descriptions.Count == 0) {
+				throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(response.descriptions)));
+			}
+
+			if (response.total_inventory_count > Array.MaxLength) {
+				throw new InvalidOperationException(nameof(response.total_inventory_count));
+			}
+
+			assetIDs ??= new HashSet<ulong>((int) response.total_inventory_count);
+
+			if ((response.assets.Count == 0) || (response.descriptions.Count == 0)) {
+				throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, $"{nameof(response.assets)} || {nameof(response.descriptions)}"));
+			}
+
+			Dictionary<(ulong ClassID, ulong InstanceID), InventoryDescription> descriptions = new();
+
+			foreach (CEconItem_Description? description in response.descriptions) {
+				if (description.classid == 0) {
+					throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(description.classid)));
+				}
+
+				(ulong ClassID, ulong InstanceID) key = (description.classid, description.instanceid);
+
+				if (descriptions.ContainsKey(key)) {
+					continue;
+				}
+
+				descriptions.Add(key, new InventoryDescription(description));
+			}
+
+			foreach (CEcon_Asset? asset in response.assets) {
+				if (!descriptions.TryGetValue((asset.classid, asset.instanceid), out InventoryDescription? description) || !assetIDs.Add(asset.assetid)) {
+					continue;
+				}
+
+				Asset convertedAsset = new(asset.appid, asset.contextid, asset.classid, (uint) asset.amount, description, asset.assetid, asset.instanceid);
+
+				yield return convertedAsset;
+			}
+
+			if (!response.more_items) {
+				yield break;
+			}
+
+			if (response.last_assetid == 0) {
+				throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response.last_assetid)));
+			}
+
+			startAssetID = response.last_assetid;
+		}
 	}
 
 	[PublicAPI]

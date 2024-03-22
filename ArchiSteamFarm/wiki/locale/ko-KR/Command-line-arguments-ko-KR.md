@@ -60,7 +60,7 @@ Due to the nature of this property, it's also possible to set cryptkey file by d
 
 ---
 
-`--ignore-unsupported-environment` - will cause ASF to ignore problems related to running in unsupported environment, which normally is signalized with an error and a forced exit. Unsupported environment includes for example running `win-x64` OS-specific build on `linux-x64`. While this flag will allow ASF to attempt running in such scenarios, be advised that we do not support those officially and you're forcing ASF to do it entirely **at your own risk**. As of today, **all** of the unsupported environment scenarios can be corrected. We strongly recommend to fix the outstanding problems instead of declaring this argument.
+`--ignore-unsupported-environment` - will cause ASF to ignore problems related to running in unsupported environment, which normally is signalized with an error and a forced exit. Unsupported environment includes for example running `win-x64` OS-specific build on `linux-x64`. While this flag will allow ASF to attempt running in such scenarios, be advised that we do not support those officially and you're forcing ASF to do it entirely **at your own risk**. It's important to point out that **all** of the unsupported environment scenarios **can be corrected**. We strongly recommend to fix the outstanding problems instead of declaring this argument.
 
 ---
 
@@ -78,7 +78,7 @@ Due to the nature of this property, it's also possible to set the value by decla
 
 ---
 
-`--no-config-migrate` - by default ASF will automatically migrate your config files to latest syntax. Migration includes conversion of deprecated properties into latest ones, removing properties with default values (as they have no effect), as well as cleaning up the file in general (correcting indentation and likewise). This is almost always a good idea, but you might have a particular situation where you'd prefer ASF to never overwrite the config files automatically. For example, you might want to `chmod 400` your config files (read permission for the owner only) or put `chattr +i` over them, in result denying write access for everyone, e.g. as a security measure. Usually we recommend to keep the config migration enabled, but if you have a particular reason for disabling it and would instead prefer ASF to not do that, you can use this switch for achieving that purpose.
+`--no-config-migrate` - by default ASF will automatically migrate your config files to latest syntax. Migration includes conversion of deprecated properties into latest ones, removing properties with default values (as they have no effect), as well as cleaning up the file in general (correcting indentation and likewise). This is almost always a good idea, but you might have a particular situation where you'd prefer ASF to never overwrite the config files automatically. For example, you might want to `chmod 400` your config files (read permission for the owner only) or put `chattr +i` over them, in result denying write access for everyone, e.g. as a security measure. Usually we recommend to keep the config migration enabled, but if you have a particular reason for disabling it and would instead prefer ASF to not do that, you can use this switch for achieving that purpose. Keep in mind however, that providing correct settings to ASF will become from now on your new responsibility, especially in regards to deprecations and refactors of properties in future ASF versions.
 
 ---
 
@@ -94,7 +94,7 @@ Due to the nature of this property, it's also possible to set the value by decla
 
 ---
 
-`--path <path>` 혹은 `--path=<path>` - ASF는 설치시에 자체 디렉토리를 탐색합니다. 이 인자를 지정하면 ASF는 설치 후에 주어진 디렉토리를 탐색하고, 바이너리를 동일한 장소에 복제할 필요 없이 `config`, `plugins` 및 `www` 디렉토리와 `NLog.config`파일을 포함하는 다양한 어플리케이션 부분의 사용자 지정경로로 사용할 수 있습니다. 리눅스형태의 패키징에서 그런 것 처럼 바이너리와 실제 환경설정을 분리하고자 할때 특히 유용합니다. 이 방식으로 여러 다른 설치본을 하나의 (최신) 바이너리만으로 사용할 수 있습니다. 경로는 ASF 바이너리의 현재 위치에서 상대경로 또는 절대경로로 지정할 수 있습니다. Keep in mind that this command points to new "ASF home" - the directory that has the same structure as original ASF, with `config` directory inside, see below example for explanation.
+`--path <path>` 혹은 `--path=<path>` - ASF는 설치시에 자체 디렉토리를 탐색합니다. By specifying this argument, ASF will navigate to given directory after initialization, which allows you to use custom path for various application parts (including `config`, `logs`, `plugins` and `www` directories, as well as `NLog.config` file), without a need of duplicating binary in the same place. 리눅스형태의 패키징에서 그런 것 처럼 바이너리와 실제 환경설정을 분리하고자 할때 특히 유용합니다. 이 방식으로 여러 다른 설치본을 하나의 (최신) 바이너리만으로 사용할 수 있습니다. 경로는 ASF 바이너리의 현재 위치에서 상대경로 또는 절대경로로 지정할 수 있습니다. Keep in mind that this command points to new "ASF home" - the directory that has the same structure as original ASF, with `config` directory inside, see below example for explanation.
 
 이 속성값의 특성때문에 `ASF_PATH` 환경 변수를 선언하여 예상 경로를 설정하는 것도 가능합니다. 프로세스 인자 중 민감한 정보를 피하고 싶은 사람들에게 더 적절합니다.
 
@@ -137,4 +137,4 @@ IPC를 실행할 생각이 없다면 그다지 쓸모 없습니다. 필요할때
 
 `--system-required` - ASF가 전체 생애주기동안 시스템이 살아있어야 한다는 신호를 운영체제에 보내도록 합니다. 현재 이 스위치는 윈도 기기에서만 유효하며 프로세스가 실행되는 한 대기모드로 들어가는 것을 방지합니다. This can be proven especially useful when farming on your PC or laptop during night, as ASF will be able to keep your system awake while it's farming, then, once ASF is done, it'll shutdown itself like usual, making your system allowed to enter into sleep mode again, therefore saving power immediately once farming is finished.
 
-정확한 자동 종료를 위해 다른 ASF 설정도 필요함을 명심하십시오. 특히 `--process-required`를 피하고 모든 봇이 `ShutdownOnFarmingFinished` 설정을 따르는지를 확인하십시오. 물론 자동종료는 이 기능의 오직 한 가능성이고 필요조건은 아닙니다. 예를들어 이 옵션을 `--process-required`와 같이 사용한다면 ASF를 실행한 이후 시스템이 영원히 깨어있도록 할 수 있습니다.
+Keep in mind that for proper auto-shutdown of ASF you need other settings - especially avoiding `--process-required` and ensuring that all your bots are following `ShutdownOnFarmingFinished` in their `FarmingPreferences`. 물론 자동종료는 이 기능의 오직 한 가능성이고 필요조건은 아닙니다. 예를들어 이 옵션을 `--process-required`와 같이 사용한다면 ASF를 실행한 이후 시스템이 영원히 깨어있도록 할 수 있습니다.

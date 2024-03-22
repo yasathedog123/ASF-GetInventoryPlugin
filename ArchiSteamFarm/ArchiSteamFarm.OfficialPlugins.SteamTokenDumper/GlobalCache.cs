@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,49 +23,57 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Frozen;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization;
 using ArchiSteamFarm.Web.Responses;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
 internal sealed class GlobalCache : SerializableFile {
-	internal static readonly ArchiCacheable<ImmutableHashSet<uint>> KnownDepotIDs = new(ResolveKnownDepotIDs, TimeSpan.FromDays(7));
+	internal static readonly ArchiCacheable<FrozenSet<uint>> KnownDepotIDs = new(ResolveKnownDepotIDs, TimeSpan.FromDays(7));
 
 	private static string SharedFilePath => Path.Combine(ArchiSteamFarm.SharedInfo.ConfigDirectory, $"{nameof(SteamTokenDumper)}.cache");
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	private readonly ConcurrentDictionary<uint, uint> AppChangeNumbers = new();
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	private readonly ConcurrentDictionary<uint, ulong> AppTokens = new();
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	private readonly ConcurrentDictionary<uint, string> DepotKeys = new();
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	private readonly ConcurrentDictionary<uint, ulong> SubmittedApps = new();
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	private readonly ConcurrentDictionary<uint, string> SubmittedDepots = new();
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	private readonly ConcurrentDictionary<uint, ulong> SubmittedPackages = new();
-
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	internal uint LastChangeNumber { get; private set; }
 
+	[JsonDisallowNull]
+	[JsonInclude]
+	private ConcurrentDictionary<uint, uint> AppChangeNumbers { get; init; } = new();
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	private ConcurrentDictionary<uint, ulong> AppTokens { get; init; } = new();
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	private ConcurrentDictionary<uint, string> DepotKeys { get; init; } = new();
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	private ConcurrentDictionary<uint, ulong> SubmittedApps { get; init; } = new();
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	private ConcurrentDictionary<uint, string> SubmittedDepots { get; init; } = new();
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	private ConcurrentDictionary<uint, ulong> SubmittedPackages { get; init; } = new();
+
+	[JsonConstructor]
 	internal GlobalCache() => FilePath = SharedFilePath;
 
 	[UsedImplicitly]
@@ -86,6 +96,8 @@ internal sealed class GlobalCache : SerializableFile {
 
 	[UsedImplicitly]
 	public bool ShouldSerializeSubmittedPackages() => !SubmittedPackages.IsEmpty;
+
+	protected override Task Save() => Save(this);
 
 	internal ulong GetAppToken(uint appID) => AppTokens[appID];
 
@@ -118,7 +130,7 @@ internal sealed class GlobalCache : SerializableFile {
 				return null;
 			}
 
-			globalCache = JsonConvert.DeserializeObject<GlobalCache>(json);
+			globalCache = json.ToJsonObject<GlobalCache>();
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -306,7 +318,7 @@ internal sealed class GlobalCache : SerializableFile {
 		return (depotKey.Length == 64) && Utilities.IsValidHexadecimalText(depotKey);
 	}
 
-	private static async Task<(bool Success, ImmutableHashSet<uint>? Result)> ResolveKnownDepotIDs(CancellationToken cancellationToken = default) {
+	private static async Task<(bool Success, FrozenSet<uint>? Result)> ResolveKnownDepotIDs(CancellationToken cancellationToken = default) {
 		if (ASF.WebBrowser == null) {
 			throw new InvalidOperationException(nameof(ASF.WebBrowser));
 		}
@@ -343,7 +355,7 @@ internal sealed class GlobalCache : SerializableFile {
 					result.Add(depotID);
 				}
 
-				return (result.Count > 0, result.ToImmutableHashSet());
+				return (result.Count > 0, result.ToFrozenSet());
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericWarningException(e);
 

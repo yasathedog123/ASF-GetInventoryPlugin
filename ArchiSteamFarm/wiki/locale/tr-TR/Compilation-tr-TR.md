@@ -8,21 +8,21 @@ ASF, bütün gerekli araçlara sahip olduğunuz sürece şu anda desteklenen her
 
 ## .NET SDK
 
-Regardless of platform, you need full .NET SDK (not just runtime) in order to compile ASF. Installation instructions can be found on **[.NET download page](https://dotnet.microsoft.com/download)**. You need to install appropriate .NET SDK version for your OS. After successful installation, `dotnet` command should be working and operative. You can verify if it works with `dotnet --info`. Also ensure that your .NET SDK matches ASF **[runtime requirements](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compatibility#runtime-requirements)**.
+Platformdan bağımsız olarak, ASF'yi derlemek için tam .NET SDK'ya (not just runtime) ihtiyacınız vardır. Kurulum talimatları **[[.NET indirme sayfası]](https://dotnet.microsoft.com/download)** üzerinden adresinde bulunabilir. İşletim sisteminiz için uygun .NET SDK sürümünü yüklemeniz gerekir. Başarılı bir kurulumdan sonra, `dotnet` komutu çalışır ve etkin olmalıdır. Çalışıp çalışmadığını `dotnet --info` ile doğrulayabilirsiniz. Ayrıca .NET SDK'nızın ASF **[çalışma zamanı gereksinimleri](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compatibility#runtime-requirements)** ile eşleştiğinden emin olun.
 
 ---
 
 ## Derleme
 
-Assuming you have .NET SDK operative and in appropriate version, simply navigate to source ASF directory (cloned or downloaded and unpacked ASF repo) and execute:
+NET SDK'nın çalışır durumda ve uygun sürümde olduğunu varsayarak, kaynak ASF dizinine gidin (klonlanmış veya indirilmiş ve paketinden çıkarılmış ASF deposu) ve çalıştırın:
 
 ```shell
 dotnet publish ArchiSteamFarm -c "Release" -o "out/generic"
 ```
 
-If you're using Linux/macOS, you can instead use `cc.sh` script which will do the same, in a bit more complex manner.
+Linux/macOS kullanıyorsanız, bunun yerine biraz daha karmaşık bir şekilde aynı işlemi yapacak olan `cc.sh` betiğini kullanabilirsiniz.
 
-If compilation ended successfully, you can find your ASF in `source` flavour in `out/generic` directory. This is the same as official `generic` ASF build, but it has forced `UpdateChannel` and `UpdatePeriod` of `0`, which is appropriate for self-builds.
+Derleme başarılı bir şekilde sona erdiyse, ASF'nizi `out/generic` dizinindeki `source` flavour içinde bulabilirsiniz. Bu, resmi `generic` ASF derlemesiyle aynıdır, ancak kendi kendine derlemeler için uygun olan `UpdateChannel` ve `UpdatePeriod` değerlerini `0` olarak zorlar.
 
 ### OS-specific
 

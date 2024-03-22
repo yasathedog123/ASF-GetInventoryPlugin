@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,23 +22,28 @@
 // limitations under the License.
 
 using System;
-using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.Steam.Cards;
 
 public sealed class Game : IEquatable<Game> {
-	[JsonProperty]
+	[JsonInclude]
+	[Required]
 	public uint AppID { get; }
 
-	[JsonProperty]
+	[JsonInclude]
+	[Required]
 	public string GameName { get; }
 
 	internal readonly byte BadgeLevel;
 
-	[JsonProperty]
+	[JsonInclude]
+	[Required]
 	public ushort CardsRemaining { get; internal set; }
 
-	[JsonProperty]
+	[JsonInclude]
+	[Required]
 	public float HoursPlayed { get; internal set; }
 
 	internal uint PlayableAppID { get; set; }

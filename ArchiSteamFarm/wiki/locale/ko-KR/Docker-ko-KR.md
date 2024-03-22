@@ -1,6 +1,6 @@
 # 도커
 
-ASF is available as **[docker container](https://www.docker.com/what-container)**. Our docker packages are currently available on **[ghcr.io](https://github.com/orgs/JustArchiNET/packages/container/archisteamfarm/versions)** as well as **[Docker Hub](https://hub.docker.com/r/justarchi/archisteamfarm)**.
+ASF is available as **[docker container](https://www.docker.com/what-container)**. Our docker packages are currently available on **[ghcr.io](https://github.com/JustArchiNET/ArchiSteamFarm/pkgs/container/archisteamfarm)** as well as **[Docker Hub](https://hub.docker.com/r/justarchi/archisteamfarm)**.
 
 It's important to note that running ASF in Docker container is considered **advanced setup**, which is **not needed** for vast majority of users, and typically gives **no advantages** over container-less setup. If you're considering Docker as a solution for running ASF as a service, for example making it start automatically with your OS, then you should consider reading **[management](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Management#systemd-service-for-linux)** section instead and set up a proper `systemd` service which will be **almost always** a better idea than running ASF in a Docker container.
 
@@ -65,7 +65,7 @@ docker run -it --name asf --pull always --rm justarchi/archisteamfarm
 
 `docker run` 으로 당신의 새로운 ASF 도커 컨테이너를 생성하고 전경에서 실행되도록 합니다(`-it`). `--pull always` ensures that up-to-date image will be pulled first, and `--rm` ensures that our container will be purged once stopped, since we're just testing if everything works fine for now.
 
-모든것이 성공적으로 끝나면, 모든 레이어를 당기고 컨테이너를 시작한 뒤 ASF가 정상적으로 시작해서 정의된 봇이 없다고 알리고 있음을 알게 됩니다. ASF가 도커에서 정상적으로 작동하고 있습니다. `CTRL+P`와 `CTRL+Q`를 순서대로 눌러서 전경 도커 컨테이너에서 빠져나옵니다. 그리고 `docker stop asf`를 입력해 ASF를 중지합니다.
+모든것이 성공적으로 끝나면, 모든 레이어를 당기고 컨테이너를 시작한 뒤 ASF가 정상적으로 시작해서 정의된 봇이 없다고 알리고 있음을 알게 됩니다. ASF가 도커에서 정상적으로 작동하고 있습니다. Hit `CTRL+C` to terminate the ASF process and therefore also the container.
 
 명령어를 자세히 봤다면 태그를 선언하지 않았음을 알게 되었을 겁니다. 태그는 자동으로 기본값인 `latest` 가 됩니다. If you want to use other tag than `latest`, for example `released`, then you should declare it explicitly:
 
@@ -85,7 +85,7 @@ ASF를 도커 컨테이너에서 사용하고 있다면 프로그램 자체를 �
 docker run -it -v /home/archi/ASF/config:/app/config --name asf --pull always justarchi/archisteamfarm
 ```
 
-그러면 끝입니다. 이제 ASF 도커 컨테이너는 로컬 기기에 있는 공유 디렉토리를 읽기-쓰기 모드로 사용하고, 이는 ASF를 설정하는데 필요한 전부입니다. In similar way you can mount other volumes that you'd like to share with ASF, such as `/app/logs` or `/app/plugins/MyCustomPluginDirectory` (you don't want to override `/app/plugins` itself, since this way you'll remove plugins that ship with ASF by default).
+그러면 끝입니다. 이제 ASF 도커 컨테이너는 로컬 기기에 있는 공유 디렉토리를 읽기-쓰기 모드로 사용하고, 이는 ASF를 설정하는데 필요한 전부입니다. In similar, way you can mount other volumes that you'd like to share with ASF, such as `/app/logs` or `/app/plugins`.
 
 물론, 이는 우리가 원하는 바를 달성하기 위한 하나의 방법일뿐이고, 자신만의 `Dockerfile`을 만들어서 환경설정 파일을 ASF 도커 컨테이너 안의 `/app/config` 디렉토리로 복사하는 등 당신이 하려는 것을 막을수 있는 것은 없습니다. 이 가이드에서는 기본적인 것만을 다룹니다.
 
@@ -93,19 +93,27 @@ docker run -it -v /home/archi/ASF/config:/app/config --name asf --pull always ju
 
 ASF container by default is initialized with default `root` user, which allows it to handle the internal permissions stuff and then eventually switch to `asf` (UID `1000`) user for the remaining part of the main process. While this should be satisfying for the vast majority of users, it does affect the shared volume as newly-generated files will be normally owned by `asf` user, which may not be desired situation if you'd like some other user for your shared volume.
 
-도커는 `docker run` 명령어에 `--user` **[플래그](https://docs.docker.com/engine/reference/run/#user)** 를 전달하여 ASF를 실행할 기본 사용자를 정의할 수 있습니다. 예를 들어 `id` 명령어를 통해 `uid`와 `gid`를 확인하고 이를 명령어의 일부로 줄 수 있습니다. 예를 들어, 해당 사용자의 `uid`와 `gid`가 1001 인 경우,
+There are two ways you can change the user ASF is running under. The first one, recommended, is to declare `ASF_USER` environment variable with target UID you want to run under. Second, alternative one, is to pass `--user` **[flag](https://docs.docker.com/engine/reference/run/#user)**, which is directly supported by docker.
+
+You can check your `uid` for example with `id -u` command, then declare it as specified above. For example, if your target user has `uid` of 1001:
 
 ```shell
-docker run -it -u 1001:1001 -v /home/archi/ASF/config:/app/config --name asf --pull always justarchi/archisteamfarm
+docker run -it -e ASF_USER=1001 -v /home/archi/ASF/config:/app/config --name asf --pull always justarchi/archisteamfarm
+
+# Alternatively, if you understand the limitations below
+docker run -it -u 1001 -v /home/archi/ASF/config:/app/config --name asf --pull always justarchi/archisteamfarm
 ```
 
-Remember that by default `/app` directory used by ASF is still owned by `asf`. ASF를 다른 사용자로 실행하면 ASF 프로세스는 파일에 쓰기 권한을 갖지 못합니다. 쓰기 권한은 작업에 필수적인 것은 아니지만 자동 업데이트 기능 등에서는 치명적입니다. In order to fix this, it's enough to change ownership of all ASF files from default `asf` to your new custom user.
+The difference between `ASF_USER` and `--user` flag is subtle, but important. `ASF_USER` is custom mechanism supported by ASF, in this scenario docker container still starts as `root`, and then ASF startup script starts main binary under `ASF_USER`. When using `--user` flag, you're starting whole process, including ASF startup script as given user. First option allows ASF startup script to handle permissions and other stuff automatically for you, resolving some common issues that you might've caused, for example it ensures that your `/app` and `/asf` directories are actually owned by `ASF_USER`. In second scenario, since we're not running as `root`, we can't do that, and you're expected to handle all of that yourself in advance.
+
+If you've decided to use `--user` flag, you need to change ownership of all ASF files from default `asf` to your new custom user. You can do so by executing command below:
 
 ```shell
-docker exec -u root asf chown -hR 1001:1001 /app
+# Execute only if you're not using ASF_USER
+docker exec -u root asf chown -hR 1001 /app /asf
 ```
 
-ASF 프로세스에 일반 사용자를 사용하기로 정한 경우에만, 컨테이너를 `docker run`으로 생성한 후 한번만 하면 됩니다. 위의 `1001:1001` 인자를 ASF가 실행될 실제 `uid`와 `gid`로 변경하는 것을 잊지 마십시오.
+This has to be done only once after you created your container with `docker run`, and only if you decided to use custom user through `--user` docker flag. Also don't forget to change `1001` argument in command above to the `UID` you actually want to run ASF under.
 
 ### Volume with SELinux
 
@@ -189,7 +197,7 @@ docker run -it -p 127.0.0.1:1242:1242 -p [::1]:1242:1242 --name asf --pull alway
 위의 지식을 모두 합치면 완전한 설치 예시는 다음과 같습니다.
 
 ```shell
-docker run -p 127.0.0.1:1242:1242 -p [::1]:1242:1242 -v /home/archi/ASF/config:/app/config -v /home/archi/ASF/plugins:/app/plugins/custom --name asf --pull always justarchi/archisteamfarm
+docker run -p 127.0.0.1:1242:1242 -p [::1]:1242:1242 -v /home/archi/ASF/config:/app/config -v /home/archi/ASF/plugins:/app/plugins --name asf --pull always justarchi/archisteamfarm
 ```
 
 This assumes that you'll use a single ASF container, with all ASF config files in `/home/archi/ASF/config`. You should modify the config path to the one that matches your machine. It's also possible to provide custom plugins for ASF, which you can put in `/home/archi/ASF/plugins`. 다음과 같은 `IPC.config` 를 환경설정 디렉토리에 넣기로 결정했다면 추가로 IPC 사용도 가능합니다.

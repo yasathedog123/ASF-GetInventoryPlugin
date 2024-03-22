@@ -54,7 +54,7 @@ Lembre-se de garantir que o arquivo contendo a senha não possa ser lido por usu
 
 ---
 
-## Recomendação
+## Recomendações de criptografia
 
 Se compatibilidade não é um problema para você, e você se sente tranquilo com a forma que o método `ProtectedDataForCurrentUser` funciona, é esse o método **recomendado** para salvar suas senhas no ASF, já que ele fornece a melhor segurança. O método `AES` é uma boa escolha para as pessoas que querem usar suas configurações em mais de um computador, enquanto `PlainText` é a forma mais simples de salvar a senha, se você não se importar que qualquer um pode pegá-la no arquivo JSON.
 
@@ -110,6 +110,6 @@ O ASF permite que você especifique o sal para esse método através da **[argum
 
 ---
 
-## Recomendação
+## Hashing recommendations
 
 Se você quiser usar um método de hashing para armazenar alguns segredos, como `IPCPassword`, recomendamos usar `SCrypt` com sal personalizado, já que fornece uma segurança decente contra tentativas de quebra pela força bruta. `Pbkdf2` é oferecido apenas por motivos de compatibilidade, principalmente porque já temos uma implementação ativa (e necessária) dele para outros casos de uso em toda a plataforma Steam (por exemplo o código do modo familia). Ele ainda é considerado seguro, mas fraco em comparação com outras alternativas (por exemplo, `SCrypt`).

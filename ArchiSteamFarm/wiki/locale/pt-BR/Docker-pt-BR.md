@@ -1,6 +1,6 @@
 # Docker
 
-ASF is available as **[docker container](https://www.docker.com/what-container)**. Nossos pacotes docker estão disponíveis atualmente no **[ghcr.io](https://github.com/orgs/JustArchiNET/packages/container/archisteamfarm/versions)** e no **[Docker Hub](https://hub.docker.com/r/justarchi/archisteamfarm)**.
+ASF está disponível como **[contêiner docker](https://www.docker.com/what-container)**. Nossos pacotes docker estão atualmente disponíveis no **[ghcr.io](https://github.com/JustArchiNET/ArchiSteamFarm/pkgs/container/archisteamfarm)** bem como em **[Docker Hub](https://hub.docker.com/r/justarchi/archisteamfarm)**.
 
 É importante notar que executar o ASF em um contêiner Docker é considerado uma **configuração avançada**, o que **não é necessário** para a grande maioria dos usuários, e normalmente não dá **nenhuma vantagem** sobre a configuração sem contêiner. Se você está considerando o Docker como uma solução para executar o ASF como serviço, por exemplo, fazendo com que ele inicie automaticamente junto com seu sistema operacional, então você deve considerar ler a seção de **[gerenciamento](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Management-pt-BR#systemd-service-for-linux)** e configurar um serviço `systemd` adequado, o que será **quase sempre** uma ideia melhor que rodar o ASF em um contêiner Docker.
 
@@ -25,9 +25,9 @@ Muito semelhante ao anterior, esse marcador sempre aponta para a **[versão](htt
 
 ### `latest`
 
-Esta tag é a única que inclui o recurso de atualizações automáticas e aponta para a última versão **[estável](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)** do ASF. O objetivo dessa tag é fornecer um contêiner Docker padrão que é capaz de executar a atualização automática do ASF na versão específica de OS. Por conta disso, a imagem não precisa ser atualizada tão frequentemente, já que a versão inclusa do ASF será capaz de se atualizar automaticamente sempre que preciso. Claro, `UpdatePeriod` pode ser desabilitado sem problemas (definido para `0`), mas neste caso é melhor usar a versão congelada `A.B.C.D`. Da mesma forma, você pode modificar o `UpdateChannel` padrão para o canal de atualização automática `released`.
+Este marcador é a único que inclui o recurso de atualizações automáticas e aponta para a última versão **[estável](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)** do ASF. O seu objetivo é fornecer um contêiner Docker padrão que é capaz de executar a atualização automática do ASF na versão específica de OS. Por conta disso, a imagem não precisa ser atualizada tão frequentemente, já que a versão inclusa do ASF será capaz de se atualizar automaticamente sempre que preciso. Claro, `UpdatePeriod` pode ser desabilitado sem problemas (definido para `0`), mas neste caso é melhor usar a versão congelada `A.B.C.D`. Da mesma forma, você pode modificar o `UpdateChannel` padrão para o canal de atualização automática `released`.
 
-Devido ao fato de que a imagem `latest` vem com a capacidade de atualização automática, ela inclui um Sistema Operacional básico com a versão `linux` especifica do ASF, ao contrário das outras tags que incluem a SO com tempo de execução .NET Core principal e versão a `generic` do ASF. Isso acontece porque a versão mais recente do ASF (atualizada) também pode exigir um tempo de execução mais recente do que aquele com que a imagem possivelmente pode ter sido compilada, o que exigiria que a imagem fosse reconstruída do zero, anulando o tipo de uso planejado.
+Devido ao fato de que a imagem `latest` vem com a capacidade de atualização automática, ela inclui um Sistema Operacional básico com a versão `linux` especifica do ASF, ao contrário dos outros marcadores que incluem a SO com tempo de execução .NET Core principal e versão a `generic` do ASF. Isso acontece porque a versão mais recente do ASF (atualizada) também pode exigir um tempo de execução mais recente do que aquele com que a imagem possivelmente pode ter sido compilada, o que exigiria que a imagem fosse reconstruída do zero, anulando o tipo de uso planejado.
 
 ### `A.B.C.D`
 
@@ -47,7 +47,7 @@ Nós geralmente desencorajamos o uso de compilações `main`, já que essas comp
 
 A imagem docker do ASF é compilada atualmente na plataforma `linux`, disponível em 3 arquiteturas: `x64`, `arm` e `arm64`. Você pode ler mais sobre elas em **[estatísticas](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compatibility-pt-BR)**.
 
-Our tags are using multi-platform manifest, which means that Docker installed on your machine will automatically select the proper image for your platform when pulling the image. Se por acaso você quiser baixar a imagem de alguma plataforma específica que não corresponde à que você está executando atualmente, você pode usar o switch `--platform` nos comandos docker apropriados, tal como `docker run`. Veja a documentação docker em **[image manifest](https://docs.docker.com/registry/spec/manifest-v2-2)** para mais informações.
+Nossos marcadores estão usando manifesto multi-plataforma, o que significa que o Docker instalado na sua máquina irá selecionar automaticamente a imagem adequada para a sua plataforma ao puxar a imagem. Se por acaso você quiser baixar a imagem de alguma plataforma específica que não corresponde à que você está executando atualmente, você pode usar o switch `--platform` nos comandos docker apropriados, tal como `docker run`. Veja a documentação docker em **[image manifest](https://docs.docker.com/registry/spec/manifest-v2-2)** para mais informações.
 
 ---
 
@@ -65,7 +65,7 @@ docker run -it --name asf --pull always --rm justarchi/archisteamfarm
 
 `docker run` cria um novo contêiner docker do ASF para você e o executa em primeiro plano (`-it`). `--pull always` garante que a imagem atualizada seja tirada primeiro, e `--rm` garante que nosso contêiner seja excluído assim que parado, já que por enquanto estamos apenas testando se está tudo certo.
 
-Se tudo correu bem, após receber todas as camadas e iniciar o contêiner, você deverá notar que o ASF foi iniciado e nos informou que não há bots definidos, o que é bom; nós acabamos de verificar que o ASF funcionou corretamente no docker. Aperte `CTRL+P` e então `CTRL+Q` para sair do contêiner docker em primeiro plano, então pare o contêiner ASF com o comando `docker stop asf`.
+Se tudo correu bem, após receber todas as camadas e iniciar o contêiner, você deverá notar que o ASF foi iniciado e nos informou que não há bots definidos, o que é bom; nós acabamos de verificar que o ASF funcionou corretamente no docker. Pressione `CTRL+C` para finalizar o processo do ASF e, portanto, também o contêiner.
 
 Se você olhar para o comando você vai notar que nós não declaramos nenhum marcador, que automaticamente usa o padrão `latest`. Se você quiser usar uma tag que não seja a `latest`, a tag `released` por exemplo, então você deve declarar explicitamente:
 
@@ -85,7 +85,7 @@ Por exemplo, assumiremos que sua pasta config do ASF está no diretório `/home/
 docker run -it -v /home/archi/ASF/config:/app/config --name asf --pull always justarchi/archisteamfarm
 ```
 
-É isso, agora nosso contêiner docker do ASF usará a pasta compartilhada com nosso computador local em modo de leitura e gravação, isso é tudo o que você precisa para configurar o ASF. In similar way you can mount other volumes that you'd like to share with ASF, such as `/app/logs` or `/app/plugins/MyCustomPluginDirectory` (you don't want to override `/app/plugins` itself, since this way you'll remove plugins that ship with ASF by default).
+É isso, agora nosso contêiner docker do ASF usará a pasta compartilhada com nosso computador local em modo de leitura e gravação, isso é tudo o que você precisa para configurar o ASF. Da mesma forma, você pode montar outros volumes que você gostaria de compartilhar com o ASF, tais como `/app/logs` ou `/app/plugins`.
 
 Claro, essa é apenas uma forma específica de alcançar o resultado que queremos, nada te impede de, por exemplo, criar seu próprio `Dockerfile` que copie seus arquivos de configuração para a pasta `/app/config` dentro do contêiner docker do ASF. Estamos cobrindo apenas o uso básico nesse guia.
 
@@ -93,19 +93,27 @@ Claro, essa é apenas uma forma específica de alcançar o resultado que queremo
 
 O conteiner do ASF por padrão é inicializado como usuário `root`, que te permite a lidar com as permissões internas e, eventualmente, trocar para o usuário `asf` (UID `1000`) para a parte restante do processo principal. Embora isso deva ser satisfatório para a grande maioria dos usuários, isso afeta o volume compartilhado, já que os arquivos recém-gerados normalmente pertencerão ao usuário `asf`, que pode não ser a situação desejada se você quiser outro usuário para seu volume compartilhado.
 
-O Docker te permite adicionar uma **[flag](https://docs.docker.com/engine/reference/run/#user)** `--user` no comando `docker run` para definir sob qual usuário padrão o ASF deve ser executado. Você pode verificar, por exemplo, seu `uid` e `gid` com o comando `id` e, em seguida, passar ao resto do comando. Por exemplo, se seu usuário alvo tem o valor 1001 de `uid` e `gid`:
+Há duas maneiras de alterar o usuário em que o ASF está sendo executado. A primeira, e recomendada, é declarar a variável de ambiente `ASF_USER` com a UID do destino que você deseja executar abaixo. A segunda alternativa é passar o **[parâmetro](https://docs.docker.com/engine/reference/run/#user)**  `--user`, suportado diretamente pelo docker.
+
+Você pode checar sua `uid` com o comando `id -u`, e então declara-lo como especificado acima. Por exemplo, se o usuário alvo tem `uid` de 1001:
 
 ```shell
-docker run -it -u 1001:1001 -v /home/archi/ASF/config:/app/config --name asf --pull always justarchi/archisteamfarm
+docker run -it -e ASF_USER=1001 -v /home/archi/ASF/config:/app/config --name asf --pull always justarchi/archisteamfarm
+
+# Alternativamente, se você entender as limitações abaixo
+docker run -it -u 1001 -v /home/archi/ASF/config:/app/config --name asf --pull always justarchi/archisteamfarm
 ```
 
-Não se esqueça que, por padrão, o diretório `/app` usado pelo ASF ainda pertence ao `asf`. Se você executar ASF sob um usuário personalizado, então seu processo ASF não terá acesso de gravação aos seus próprios arquivos. Este acesso não é obrigatório para a operação, mas é crucial, por exemplo, para o recurso de atualizações automáticas. Para corrigir isso, basta alterar a posse de todos os arquivos do ASF do `asf` padrão para o seu novo usuário personalizado.
+A diferença entre os parâmetros `ASF_USER` e `--user` é sutil, mas importante. `ASF_USER` é um mecanismo personalizado suportado pelo ASF, neste cenário o contêiner docker começa como `root`, e então o script de inicialização do ASF inicia o binário principal sob `ASF_USER`. Ao usar o parâmetro `--user`, você está iniciando todo o processo, incluindo o script de inicialização do ASF como determinado usuário. A primeira opção permite que o script de inicialização do ASF lide automaticamente com permissões e outras coisas para você, resolvendo alguns problemas comuns que você pode ter causado, por exemplo, garante que os diretórios do seu `/app` e `/asf` sejam realmente propriedade de `ASF_USER`. No segundo cenário, já que não estamos rodando como `root`, nós não podemos fazer isso e você deve lidar com isso você mesmo com antecedência.
+
+Se você decidiu usar o parâmetro `--user`, você precisa alterar a propriedade de todos os arquivos ASF do padrão `asf` para o novo usuário personalizado. Você pode fazê-lo executando o comando abaixo:
 
 ```shell
-docker exec -u root asf chown -hR 1001:1001 /app
+# Executar apenas se você não estiver usando ASF_USER
+docker exec -u root asf chown -hR 1001 /app /asf
 ```
 
-Isso só tem que ser feito uma vez depois que você criou seu contêiner com `docker run`, e somente se você decidiu usar um usuário personalizada para o processo do ASF. Também não se esqueça de alterar o argumento `1001:1001` em ambos os comandos acima para o `uid` e `gid` sob o qual você deseja executar o ASF.
+Isso tem que ser feito apenas uma vez depois de criar o seu contêiner com `docker run`, e somente se você decidir usar um usuário personalizado através do parâmetro Docker `--user`. Também não se esqueça de alterar o argumento `1001` no comando acima para o `UID` no qual você realmente deseja executar o ASF.
 
 ### Volume com SELinux
 
@@ -148,7 +156,7 @@ O ASF te permite passar **[argumentos de linha de comando](https://github.com/Ju
 docker run -it -e "ASF_CRYPTKEY=MinhaSenha" -e "ASF_ARGS=--no-config-migrate" --name asf --pull always justarchi/archisteamfarm
 ```
 
-Esse comando passará seu argumento `--cryptkey` para o processo do ASF sendo executado dentro do contêiner docker, assim como outros argumentos. Of course, if you're advanced user, then you can also modify `ENTRYPOINT` or add `CMD` and pass your custom arguments yourself.
+Esse comando passará seu argumento `--cryptkey` para o processo do ASF sendo executado dentro do contêiner docker, assim como outros argumentos. Claro, se você for um usuário avançado, então você também pode modificar `ENTRYPOINT` ou adicionar `CMD` e passar você mesmo seus argumentos personalizados.
 
 A menos que você deseje fornecer chaves de criptografia personalizadas ou outras opções avançadas, geralmente você não precisa incluir variáveis de ambiente especiais, pois nossos contêineres docker já estão configurados para serem executados usando as opções padrões `--no-restart` `--process-required` `--system-required`, portanto esses argumentos não precisam ser especificados explicitamente em `ASF_ARGS`.
 
@@ -189,10 +197,10 @@ Se você definiu tudo corretamente, o comando `docker run` acima fará com que a
 Combinando todo conhecimento acima, um exemplo de uma configuração completa ficaria assim:
 
 ```shell
-docker run -p 127.0.0.1:1242:1242 -p [::1]:1242:1242 -v /home/archi/ASF/config:/app/config -v /home/archi/ASF/plugins:/app/plugins/custom --name asf --pull always justarchi/archisteamfarm
+docker run -p 127.0.0.1:1242:1242 -p [::1]:1242:1242 -v /home/archi/ASF/config:/app/config -v /home/archi/ASF/plugins:/app/plugins --name asf --pull always justarchi/archisteamfarm
 ```
 
-Isso pressupõe que você usará um único contêiner ASF, com todos os arquivos de configuração em `/home/archi/ASF/config`. Você deve modificar o caminho de configuração para aquele que corresponde à sua máquina. It's also possible to provide custom plugins for ASF, which you can put in `/home/archi/ASF/plugins`. Essa configuração também está pronta para o uso opcional do IPC se você decidiu incluir o arquivo `IPC.config` na sua pasta config com o conteúdo abaixo:
+Isso pressupõe que você usará um único contêiner ASF, com todos os arquivos de configuração em `/home/archi/ASF/config`. Você deve modificar o caminho de configuração para aquele que corresponde à sua máquina. Também é possível fornecer plugins personalizados para o ASF, que você pode colocar em `/home/archi/ASF/plugins`. Essa configuração também está pronta para o uso opcional do IPC se você decidiu incluir o arquivo `IPC.config` na sua pasta config com o conteúdo abaixo:
 
 ```json
 {
@@ -210,8 +218,8 @@ Isso pressupõe que você usará um único contêiner ASF, com todos os arquivos
 
 ## Dicas profissionais
 
-Quando você já tem o contêiner docker do ASF pronto, você não precisa usar o comando `docker run` toda vez. Você pode parar/iniciar o contêiner docker do ASF facilmente com `docker stop asf` e `docker start asf`. Tenha em mente que se você não estiver usando o marcador `latest` então você precisará usar os comandos `docker stop`, `docker rm` e `docker run` novamente para atualizar o ASF. Isso porque você deve recompilar seu contêiner à partir de uma imagem nova do ASF toda vez que você quiser usar a versão do ASF inclusa naquela imagem. Na tag `latest` do ASF, foi incluída a capacidade de se auto-atualizar, portanto, não é necessário reconstruir a imagem para usar o ASF atualizado (mas ainda é uma boa ideia fazê-lo de tempos em tempos para utilizar as dependências .NET runtime mais recentes e o Sistema Operacional subjacente, o que pode ser necessário ao atualizar para as principais versões do ASF).
+Quando você já tem o contêiner docker do ASF pronto, você não precisa usar o comando `docker run` toda vez. Você pode parar/iniciar o contêiner docker do ASF facilmente com `docker stop asf` e `docker start asf`. Tenha em mente que se você não estiver usando o marcador `latest` então você precisará usar os comandos `docker stop`, `docker rm` e `docker run` novamente para atualizar o ASF. Isso porque você deve recompilar seu contêiner à partir de uma imagem nova do ASF toda vez que você quiser usar a versão do ASF inclusa naquela imagem. No marcador `latest` do ASF, foi incluída a capacidade de se auto-atualizar, portanto, não é necessário reconstruir a imagem para usar o ASF atualizado (mas ainda é uma boa ideia fazê-lo de tempos em tempos para utilizar as dependências .NET runtime mais recentes e o Sistema Operacional subjacente, o que pode ser necessário ao atualizar para as principais versões do ASF).
 
-Como dito acima, em qualquer outra tag que não seja a `latest`, o ASF não vai se atualizar automaticamente, o que significa que **você** é o responsável por usar uma versão atualizada do repositório `justarchi/archisteamfarm`. Isso traz muitas vantagens já que normalmente o aplicativo não precisa mudar seu código durante a operação, mas nós entendemos a conveniência de não precisar se preocupar com a versão do ASF em seu contêiner docker. Se você se importa com boas práticas e o uso correto do contêiner docker, sugerimos o marcador `released` ao invés de `latest`, mas se você não quer se preocupar com isso e só quer fazer o ASF tanto funcionar quanto se atualizar automaticamente, então `latest` serve.
+Como dito acima, em qualquer outro marcador que não seja o  `latest`, o ASF não vai se atualizar automaticamente, o que significa que **você** é o responsável por usar uma versão atualizada do repositório `justarchi/archisteamfarm`. Isso traz muitas vantagens já que normalmente o aplicativo não precisa mudar seu código durante a operação, mas nós entendemos a conveniência de não precisar se preocupar com a versão do ASF em seu contêiner docker. Se você se importa com boas práticas e o uso correto do contêiner docker, sugerimos o marcador `released` ao invés de `latest`, mas se você não quer se preocupar com isso e só quer fazer o ASF tanto funcionar quanto se atualizar automaticamente, então `latest` serve.
 
 Você normalmente deve rodar o ASF no contêiner docker com a configuração global `Headless: true`. Isso indicará explicitamente ao ASF que você não poderá inserir os dados ausentes e que ele não deverá solicitá-los. Claro, para a configuração inicial você deve deixar essa opção como `false` então você poderá configurar tudo facilmente, mas no longo prazo você normalmente não estará ligado diretamente ao console do ASF, portanto faz sentido informar o ASF sobre isso e usar o **[comando](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-pt-BR)** `input` caso seja necessário. Dessa forma o ASF não vai esperar infinitamente por um comando do usuário que não será inserido (e gastar recursos enquanto isso). Isso também permitirá que o ASF rode em modo não-interativo dentro do contêiner, o que é crucial, por exemplo, no que diz respeito a sinais de encaminhamento, tornando possível que o ASF feche com o comando `docker stop asf`.

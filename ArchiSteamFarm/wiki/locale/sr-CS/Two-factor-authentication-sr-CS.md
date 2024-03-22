@@ -81,7 +81,7 @@ ASF automatically imports your authenticator once the procedure is done, and the
 
 ## Unos
 
-Import process requires already linked and operational authenticator that is supported by ASF. ASF currently supports a few different official and unofficial sources of 2FA - Android, iOS, SteamDesktopAuthenticator and WinAuth, on top of manual method which allows you to provide required credentials yourself. If you don't have any authenticator yet, you need to choose one of available apps and set it up firstly. Ako ne znate koji da izaberete, predlažmo vam WinAuth, ali bilo koji od ovih će raditi dobro ako pratite instrukcije.
+Import process requires already linked and operational authenticator that is supported by ASF. ASF currently supports a few different official and unofficial sources of 2FA - Android, SteamDesktopAuthenticator and WinAuth, on top of manual method which allows you to provide required credentials yourself. If you don't have any authenticator yet, you need to choose one of available apps and set it up firstly. Ako ne znate koji da izaberete, predlažmo vam WinAuth, ali bilo koji od ovih će raditi dobro ako pratite instrukcije.
 
 Sva naredna uputstva zahtijevaju da već imate **radni i operativni** autentikator koji možete koristi sa aplikacijom. ASF 2FA neće raditi propisno ako unesete nepravilne podatke, pa zbog toga budite sigurni da vaš autentikator radi prije nego što pokušate da ga unesete. To podrazumijeva testiranje i verifikaciju pravilnog rada sledećih funkcija:
 - možete generisati tokene koje prihvata Steam network,
@@ -94,40 +94,35 @@ Potvrdite da vaš autentikator radi provjeravajući da li postupci gore navedeni
 
 ### Android telefoni
 
-**The below instructions apply to Steam app in version `2.X`, there are currently limited **[resources](https://github.com/JustArchiNET/ArchiSteamFarm/discussions/2786)** on extracting required details from version `3.0` onwards. We'll update this section once generally-available method is found. As of today, a workaround would be to intentionally install older version of Steam app, register 2FA and extract the required details first, after which it's possible to update the application to latest version - existing authenticator will continue to work.**
+Generalno, za ubacanje autentikatora sa vašeg Android telefona morate imati **[root](https://en.wikipedia.org/wiki/Rooting_(Android_OS))** privilegije. The below instructions require from you fairly decent knowledge in Android modding world, we're definitely not going to explain every step here, visit **[XDA](https://xdaforums.com)** and other resources for additional information/help with below.
 
-Generalno, za ubacanje autentikatora sa vašeg Android telefona morate imati **[root](https://en.wikipedia.org/wiki/Rooting_(Android_OS))** privilegije. Root je različit od telefona do telefona, pa vam ne mogu reći kako da rootujete vaš uređaj. Posjetite **[XDA forum](https://www.xda-developers.com/root)** radi odličnih uputstava o načinu kako to da uradite, kao i o uobičajenim informacijama o rootovanju. Ako ne možete da pronađete vaš uređaj ili uputstvo koje vam treba, pokušajte da tražite na Google-u.
+Prerequisites:
+- Install official **[Steam app](https://play.google.com/store/apps/details?id=com.valvesoftware.android.steam.community)** from store, if you haven't yet.
+- Assign authenticator to your account and ensure it works - generates valid tokens and can accept confirmations.
 
-Oficijalno, nije moguće da pristupite zaštićenim Steam fajlovima bez root-a. Jedini oficijalni bez-rootni način da dođete to Steam fajlova jeste da kreirate nezaštićenu `/data` kopiju na neki način i da ručno tražite potrebne fajlove u njoj na PC-u, ali pošto ta funkcija zavisi o vašeg proizvođaća uređaja i **nije** standardno na Android-u, nećemo o tome govoriti. Ako se zadesi da imate tu funkcijonalnost, možete je koristiti, ali najčešće korisnici to nemaju.
+Extraction (requires rooting your device):
+- Install **[Magisk](https://topjohnwu.github.io/Magisk/install.html)** and enable Zygisk in the settings.
+- Install **[LSPosed](https://github.com/LSPosed/LSPosed?tab=readme-ov-file#install)** (for Zygisk) and ensure it works.
+- Install **[SteamGuardExtractor](https://github.com/hax0r31337/SteamGuardExtractor?tab=readme-ov-file#usage)** LSPosed module and enable it in LSPosed settings.
+- Force kill Steam app, then open it, a **[window with extracted details](https://github.com/JustArchiNET/ArchiSteamFarm/assets/1069029/ab5ab71e-d664-4e49-9eb4-9f4d9ba32aa2)** should pop up, click copy.
 
-Unofficially, it is possible to extract the needed files without root access, by installing or downgrading your Steam app to version `2.1` (or earlier), setting up mobile authenticator and then creating a snapshot of the app (together with the `data` files that we need) through `adb backup`. Ali pošto je ove ozbiljan sigurnosni problem i skroz nepodržan način da se izvuku fajlovi, ne možemo govoriti dalje o tome, Valve je onemogućijo ovo s razlogom, a mi ga pominjemo jedino kao mogućnosti. Still, it might be possible to do a clean install of that version, link new authenticator, extract the required files, and then upgrade the app, which should be just enough, but you're on your own with this method anyway.
+Now that you've successfully extracted required details, disable the module to prevent the window from showing each time, then copy value of `shared_secret` and `identity_secret` of the account that you intend to add to ASF 2FA, into a new text file with below structure:
 
-Pretpostavljajući da ste već uspješno root-ovali vaš uređaj, trebate nakon toga preuzeti root pretraživač koji je dosupan Play prodavnici, kao što je **[ovaj](https://play.google.com/store/apps/details?id=com.jrummy.root.browserfree)** (ili bilo koji drugi u zavisnosti od vašeg izbora). Takođe možete doći to zaštićenih fajlova pomoću ADB (Android Debug Bridge) ili drugog vama dostupnog metoda, mi ćemo objasniti pomoću pretraživača, pošto je to najdostupniji način za koristike.
+```json
+{
+  "shared_secret": "STRING",
+  "identity_secret": "STRING"
+}
+```
 
-Kad otvorite root pretraživač, idite u folder `/data/data`. Još jednom napominjemo da je direktorijum `/data/data` zaštićen i da mu ne možete pristupiti bez root privilegija. Kada ste u ovom direktorijumu, pronađite folder `com.valvesoftware.android.steam.community` i kopirajte ga na vašu `/sdcard`, koja je na vašoj internoj memoriji. Nakon toga, imate mogućnost da konektujete uređaj na vaš PC i kopirate folder za vaše interne memorije kao i obično. Ako je nekim slučajom folder nevidljiv i pored toga što ste ga kopirali na pravo mjesto, pokušajte restartovati uređaj prvo.
-
-Sada možete odlučiti da li želite da ubacite vaš autentikator prvo u WinAuth, pa u ASF, ili direktno u ASF. Prvo opcija je lakša i omogućava vam da duplirate autentikator na vašem PC, što vam omogućava da prihvatate potvrde i generišete tokene sa tri različita mjesta - vašeg telefona, PC-a i ASF-a. Ako želite da to uradite, otvorite WinAuth, dodajte novi Steam autentikator i izaberite opciju "importing from Android(unesite sa Android-a)", zatim pratite instrukcije i izaberite fajlove koje ste preuzeli ranije. Kada završite, možete da dodate ovaj autentikator iz WinAuth-a u ASF, a ovo je objašnjeno ispod u WinAuth odjeljku.
-
-If you don't want to or don't need to go through WinAuth, then simply copy `files/Steamguard-<SteamID>` file from our protected directory, where `SteamID` is your 64-bit Steam identificator of the account that you want to add (if more than one, because if you have only one account then this will be the only file). Treba da premjestite ovaj fajl in ASF-ov `config` direktorijum. Kada to uradite, promijenite ime fajla sa `BotName.maFile`, gdje je `BotName` isto kao ime kojim ste nazvali bota tokom konfiguracije i kojem dodajete ASF 2FA. Nakon ovog koraka, pokrenite ASF - on će zapaziti `.maFile` i iskoristiti ga.
+Replace each `STRING` value with appropriate private key from extracted details. Once you do that, rename the file to `BotName.maFile`, where `BotName` is the name of your bot you're adding ASF 2FA to, and put it in ASF's `config` directory if you haven't yet. Afterwards, launch ASF - it should notice the `.maFile` and import it.
 
 ```text
 [*] INFO: PreuzimanjeAutentikatora() <1> Mijenjanje .maFile-a u ASF format...
-[*] INFO: PreuzimanjeAutentikatora() <1> Uspješno završeno preuzimanje mobilnog autentikatora!
+[*] INFO: ImportAuthenticator() <1> Uspješno završeno unošenje mobilnog autentikatora!
 ```
 
 To je sve, pretpostavljajući da se izabrali tačan važeći fajl, sve bi trebalo da bude u redu, a to možete provjeriti koristeći `2fa` komande. Ako nešto pogriješite, uvijek možete izbrisati `Bot.db` i početi ponovo ako je potrebno.
-
----
-
-### iOS
-
-Na iOS-u možete koristiti **[ios-steamguard-extractor](https://github.com/CaitSith2/ios-steamguard-extractor)**. Ovo je moguće zahvaljujući činjenici da možete praviti nešifrovanu rezervnu kopiju, prebaciti je na PC i koristiti alaktu da bi ekstraktovali Steam podatke koje bi inače bilo nemoguće dobiti (ako vaš uređaj nije jailbreak-ovan, zato što je iOS enkriptovan).
-
-Otiđite na **[poslednje izdanje](https://github.com/CaitSith2/ios-steamguard-extractor/releases/latest)** da bi preuzeli program. Kada ekstrakujete podatke možete ih dodati u WinAuth, onda iz WinAuth-a u ASF (ali možete i jednostavno kopirati napravljeni json od `{` do `}` u `BotName.ma` fajl i nastaviti uobičajeno). If you ask me, I strongly recommend to import to WinAuth first, then making sure that both generating tokens as well as accepting confirmations work properly, so you can be sure that everything is alright. If your credentials are invalid, ASF 2FA will not work properly, so it's much better to make ASF import step your last one.
-
-Za pitanja/probleme posjetite **[issues](https://github.com/CaitSith2/ios-steamguard-extractor/issues)**.
-
-*Keep in mind that above tool is unofficial, you're using it at your own risk. We do not offer technical support if it doesn't work properly - we got a few signals that it's exporting invalid 2FA credentials - verify that confirmations work in authenticator like WinAuth prior to importing that data to ASF!*
 
 ---
 
@@ -141,7 +136,7 @@ Ako ste sve pravilno napravili, pokrenite ASF, i trebali bi onda da primijetite:
 
 ```text
 [*] INFO: PreuzimanjeAutentikatora() <1> Mijenjanje .maFile-a u ASF format...
-[*] INFO: ImportAuthenticator() <1> Uspješno završeno unošenje mobilnog autentikatora!
+[*] INFO: PreuzimanjeAutentikatora() <1> Uspješno završeno preuzimanje mobilnog autentikatora!
 ```
 
 Od sada bi vaš ASF 2FA trebao da bude u upotrebi na vašem nalogu.
@@ -158,7 +153,7 @@ Ako ste sve pravilno napravili, pokrenite ASF, i trebali bi onda da primijetite:
 
 ```text
 [*] INFO: PreuzimanjeAutentikatora() <1> Mijenjanje .maFile-a u ASF format...
-[*] INFO: PreuzimanjeAutentikatora() <1> Uspješno završeno preuzimanje mobilnog autentikatora!
+[*] INFO: ImportAuthenticator() <1> Uspješno završeno unošenje mobilnog autentikatora!
 ```
 
 Od sada bi vaš ASF 2FA trebao da bude u upotrebi na vašem nalogu.
@@ -167,7 +162,7 @@ Od sada bi vaš ASF 2FA trebao da bude u upotrebi na vašem nalogu.
 
 ## Gotovo
 
-From this moment, all `2fa` commands will work as they'd be called on your classic 2FA device. You can use both ASF 2FA and your authenticator of choice (Android, iOS, SDA or WinAuth) to generate tokens and accept confirmations.
+From this moment, all `2fa` commands will work as they'd be called on your classic 2FA device. You can use both ASF 2FA and your authenticator of choice (Android, SDA or WinAuth) to generate tokens and accept confirmations.
 
 If you have authenticator on your phone, you can optionally remove SteamDesktopAuthenticator and/or WinAuth, as we won't need it anymore. However, I suggest to keep it just in case, not to mention that it's more handy than normal steam authenticator. Just keep in mind that ASF 2FA is **NOT** a general purpose authenticator, it doesn't include all data that authenticator should have, but limited subset of original `maFile`. It's not possible to convert ASF 2FA back to original authenticator, therefore always make sure that you have general-purpose authenticator or `maFile` in other place, such as in WinAuth/SDA, or on your phone.
 
@@ -183,7 +178,7 @@ If ASF 2FA is available, ASF will use it for automatic confirmation of trades th
 
 ### Šta ako mi je potreban 2FA token?
 
-You will need 2FA token to access 2FA-protected account, that includes every account with ASF 2FA as well. You should generate tokens in authenticator that you used for import, but you can also generate temporary tokens through `2fa` command sent via the chat to given bot. You can also use `2fa <BotNames>` command to generate temporary token for given bot instances. This should be enough for you to access bot accounts through e.g. browser, but as noted above - you should use your friendly authenticator (Android, iOS, SDA or WinAuth) instead.
+You will need 2FA token to access 2FA-protected account, that includes every account with ASF 2FA as well. You should generate tokens in authenticator that you used for import, but you can also generate temporary tokens through `2fa` command sent via the chat to given bot. You can also use `2fa <BotNames>` command to generate temporary token for given bot instances. This should be enough for you to access bot accounts through e.g. browser, but as noted above - you should use your friendly authenticator (Android, SDA or WinAuth) instead.
 
 ---
 
@@ -201,13 +196,13 @@ ASF mobilni autentikator je sačuvan u `BotName.db` fajlu u config direktorijumu
 
 ### Kako da uklonite ASF 2FA?
 
-Jednostavno isključite ASF i uklonite `BotName.db` vašeg bota koji posjeduje ASF 2FA a kome želite da ga uklonite. Ova opcija će ukloniti asocirani 2FA od ASF-a, ali NEĆE razdvojiti vaš autentikator. If you instead want to delink your authenticator, apart from removing it from ASF (firstly), you should delink it in authenticator of your choice (Android, iOS, SDA or WinAuth), or - if you can't for some reason, use revocation code that you received during linking that authenticator, on the Steam website. It's not possible to unlink your authenticator through ASF, this is what general-purpose authenticator that you already have should be used for.
+Jednostavno isključite ASF i uklonite `BotName.db` vašeg bota koji posjeduje ASF 2FA a kome želite da ga uklonite. Ova opcija će ukloniti asocirani 2FA od ASF-a, ali NEĆE razdvojiti vaš autentikator. If you instead want to delink your authenticator, apart from removing it from ASF (firstly), you should delink it in authenticator of your choice (Android, SDA or WinAuth), or - if you can't for some reason, use revocation code that you received during linking that authenticator, on the Steam website. It's not possible to unlink your authenticator through ASF, this is what general-purpose authenticator that you already have should be used for.
 
 ---
 
 ### I linked authenticator in SDA/WinAuth, then imported to ASF. Can I now unlink it and link it again on my phone?
 
-**Ne**. ASF **imports** your authenticator data in order to use it. If you delink your authenticator then you'll also cause ASF 2FA to stop functioning, regardless if you remove it firstly like stated in above question or not. If you want to use your authenticator on both your phone and ASF (plus optionally in SDA/WinAuth), then you'll need to **import** your authenticator from your phone, and not create new one in SDA/WinAuth. You can have only **one** linked authenticator, that's why ASF **imports** that authenticator and its data in order to use it as ASF 2FA - it's **the same** authenticator, just existing in two places. If you decide to delink your mobile authenticator credentials - regardless in which way, ASF 2FA will stop working, as previously copied mobile authenticator credentials will no longer be valid. In order to use ASF 2FA together with authenticator on your phone, you must import it from Android/iOS, which is described above.
+**Ne**. ASF **imports** your authenticator data in order to use it. If you delink your authenticator then you'll also cause ASF 2FA to stop functioning, regardless if you remove it firstly like stated in above question or not. If you want to use your authenticator on both your phone and ASF (plus optionally in SDA/WinAuth), then you'll need to **import** your authenticator from your phone, and not create new one in SDA/WinAuth. You can have only **one** linked authenticator, that's why ASF **imports** that authenticator and its data in order to use it as ASF 2FA - it's **the same** authenticator, just existing in two places. If you decide to delink your mobile authenticator credentials - regardless in which way, ASF 2FA will stop working, as previously copied mobile authenticator credentials will no longer be valid. In order to use ASF 2FA together with authenticator on your phone, you must import it from Android, which is described above.
 
 ---
 

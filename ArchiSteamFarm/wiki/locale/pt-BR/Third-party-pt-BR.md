@@ -1,6 +1,6 @@
 # Terceiros
 
-Essa seção inclui vários adicionais de terceiros escritos exclusivamente (ou principalmente) para serem usados em conjunto com o ASF. Elas variam desde plugins para o ASF à simples aplicações web e bibliotecas internas para maior integração, terminando com bots cheios de recursos para as outras plataformas. Caso deseje adicionar algo à lista, conte-nos em nosso servidor do Discord ou em nosso Grupo Steam.
+Essa seção inclui vários adicionais de terceiros escritos exclusivamente (ou principalmente) para serem usados em conjunto com o ASF. Eles variam desde plugins para o ASF, passando por aplicativos web simples e bibliotecas internas para integração, até bots totalmente equipados para outras plataformas. Caso deseje adicionar algo à lista, conte-nos em nosso servidor do Discord ou em nosso Grupo Steam.
 
 Por favor, saiba que os programas abaixo **não** são mantidos pelos desenvolvedores do ASF e **nós não nos responsabilizamos por nenhum deles**, especialmente em termos de segurança, confiança ou conformidade com os Termos de Serviço do Steam. Esta lista é mantida apenas para referência. Você deve sempre garantir que o utilitário de terceiros que você está prestes a usar é seguro e legítimo o suficiente para você, você estará usando-os por sua conta e risco.
 
@@ -10,9 +10,9 @@ Por favor, saiba que os programas abaixo **não** são mantidos pelos desenvolve
 
 ### **[Citrinate](https://github.com/Citrinate)**
 
-- **[BoosterManager](https://github.com/Citrinate/BoosterManager)**, plugin for ASF providing an easy-to-use interface for turning gems into booster packs as well as various features for managing inventories and market listings.
-- **[CS2Interface](https://github.com/Citrinate/CS2Interface)**, plugin for ASF that allows you to interact with Counter-Strike 2 using **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)**.
-- **[FreePackages](https://github.com/Citrinate/FreePackages)**, plugin for ASF that finds free packages on Steam and adds them to your account.
+- **[BoosterManager](https://github.com/Citrinate/BoosterManager)**, plugin para o ASF que fornece uma interface fácil de usar para transformar gemas em pacotes de cartas e vários recursos para gerenciar inventários e listagens de mercado.
+- **[CS2Interface](https://github.com/Citrinate/CS2Interface)**, plugin para o ASF que permite a você interagir com Counter-Strike 2 usando **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)**.
+- **[FreePackages](https://github.com/Citrinate/FreePackages)**, plugin para o ASF que encontra pacotes gratuitos no Steam e os adiciona à sua conta.
 
 ### **[Rudokhvist](https://github.com/Rudokhvist)**
 
@@ -35,7 +35,7 @@ Por favor, saiba que os programas abaixo **não** são mantidos pelos desenvolve
 ### Outros
 
 - **[ASFEnhance](https://github.com/chr233/ASFEnhance)**, plugin para aprimorar o ASF com vários recursos novos, especialmente comandos.
-- **[ASFFreeGames](https://github.com/maxisoft/ASFFreeGames)**, plugin for ASF allowing one to automatically collect free steam games posted on reddit.
+- **[ASFFreeGames](https://github.com/maxisoft/ASFFreeGames)**, plugin que permite a coleta automática de jogos Steam gratuitos publicados no Reddit.
 
 ---
 

@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,9 +29,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
-using Newtonsoft.Json;
 using SteamKit2;
 using SteamKit2.Internal;
 
@@ -128,7 +130,7 @@ internal static class Commands {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
 		}
 
-		Steam.Security.MobileAuthenticator? mobileAuthenticator = JsonConvert.DeserializeObject<Steam.Security.MobileAuthenticator>(json);
+		Steam.Security.MobileAuthenticator? mobileAuthenticator = json.ToJsonObject<Steam.Security.MobileAuthenticator>();
 
 		if (mobileAuthenticator == null) {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
@@ -261,7 +263,7 @@ internal static class Commands {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
 		}
 
-		Steam.Security.MobileAuthenticator? mobileAuthenticator = JsonConvert.DeserializeObject<Steam.Security.MobileAuthenticator>(json);
+		Steam.Security.MobileAuthenticator? mobileAuthenticator = json.ToJsonObject<Steam.Security.MobileAuthenticator>();
 
 		if (mobileAuthenticator == null) {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
@@ -360,7 +362,7 @@ internal static class Commands {
 		MaFileData maFileData = new(response, bot.SteamID, deviceID);
 
 		string maFilePendingPath = $"{bot.GetFilePath(Bot.EFileType.MobileAuthenticator)}.PENDING";
-		string json = JsonConvert.SerializeObject(maFileData, Formatting.Indented);
+		string json = maFileData.ToJsonText(true);
 
 		try {
 			await File.WriteAllTextAsync(maFilePendingPath, json).ConfigureAwait(false);

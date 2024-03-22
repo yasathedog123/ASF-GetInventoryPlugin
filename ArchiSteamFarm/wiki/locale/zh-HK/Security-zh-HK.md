@@ -54,7 +54,7 @@ Remember to ensure that file containing the password is not readable by unauthor
 
 ---
 
-## 推薦
+## Encryption recommendations
 
 如果兼容性對您來說不是問題，並且您對` ProtectedDataForCurrentUser `方法的工作方式沒有問題，那麼將密碼存儲在ASF中是**推薦**選項，因為它提供最好的安全性。 ` AES `方法對於那些仍想在他們想要的任何機器上使用他們的配置的人來說是一個不錯的選擇，而` PlainText `是存儲密碼的最簡單的方法，如果您不介意任何人都可以查看JSON配置文件。
 
@@ -110,6 +110,6 @@ ASF allows you to specify salt for this method via `--cryptkey` **[command-line 
 
 ---
 
-## 推薦
+## Hashing recommendations
 
 If you'd like to use a hashing method for storing some secrets, such as `IPCPassword`, we recommend to use `SCrypt` with custom salt, as it provides a very decent security against brute-forcing attempts. `Pbkdf2` is offered only for compatibility reasons, mainly because we already have a working (and needed) implementation of it for other use cases across Steam platform (e.g. parental pins). It's still considered secure, but weak compared to alternatives (e.g. `SCrypt`).

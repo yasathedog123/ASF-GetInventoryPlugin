@@ -54,7 +54,7 @@ Remember to ensure that file containing the password is not readable by unauthor
 
 ---
 
-## Recommandation
+## Encryption recommendations
 
 Si la compatibilité ne vous pose pas problème et que la méthode ` ProtectedDataForCurrentUser </ 0> vous convient, c’est l’option <strong x-id="1"> recommandée </ 1> de stockage du mot de passe dans ASF, car celle-ci fournit la meilleure sécurité. La méthode <code> AES </ 0> est un bon choix pour les personnes qui souhaitent continuer à utiliser leurs configurations sur la machine de leur choix, tandis que <code> PlainText </ 0> est le moyen le plus simple de stocker le mot de passe, si cela ne vous dérange pas que quelqu'un puisse voir le fichier de configuration JSON.</p>
 
@@ -110,6 +110,6 @@ ASF allows you to specify salt for this method via `--cryptkey` **[command-line 
 
 ---
 
-## Recommandation
+## Hashing recommendations
 
 If you'd like to use a hashing method for storing some secrets, such as `IPCPassword`, we recommend to use `SCrypt` with custom salt, as it provides a very decent security against brute-forcing attempts. `Pbkdf2` is offered only for compatibility reasons, mainly because we already have a working (and needed) implementation of it for other use cases across Steam platform (e.g. parental pins). It's still considered secure, but weak compared to alternatives (e.g. `SCrypt`).

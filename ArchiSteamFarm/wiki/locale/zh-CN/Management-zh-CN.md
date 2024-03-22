@@ -21,9 +21,9 @@ useradd -m asf # 创建您要用来运行 ASF 的用户
 
 我们最好先确认一下我们的目录仍然属于 `asf` 用户，也就是执行一次 `chown -hR asf:asf /home/asf/ArchiSteamFarm` 命令。 因为如果您是以 `root` 用户下载或解压 zip 文件，权限可能是错误的。
 
-然后，如果您正在使用 ASF 的 Generic 版本，您还需要确认 `dotnet` 命令可以被识别到，并且在下列标准路径之一：`/usr/local/bin`、`/usr/bin` 或 `/bin`。 这是我们执行 `dotnet /path/to/ArchiSteamFarm.dll` 命令的 systemd 服务所必需的条件。 您需要检查 `dotnet --info` 是否正常，如果正常，则输入 `command -v dotnet` 命令获取它的位置。 如果您使用的是官方安装器，它应该在 `/usr/bin/dotnet` 或者另外两个位置，这不会有问题。 如果它在自定义位置，例如 `/usr/share/dotnet/dotnet`，则需要使用 `ln -s "$(command -v dotnet)" /usr/bin/dotnet` 命令创建一个符号链接。 现在 `command -v dotnet` 命令应该也输出 `/usr/bin/dotnet` 了，这能让我们的 systemd 单元正常工作。 如果您使用的是特定操作系统的版本，则不需要进行本段落的任何操作。
+然后，如果您正在使用 ASF 的 Generic 版本，您还需要确认 `dotnet` 命令可以被识别到，并且在下列标准路径之一：`/usr/local/bin`、`/usr/bin` 或 `/bin`。 这是我们执行 `dotnet /path/to/ArchiSteamFarm.dll` 命令的 systemd 服务所必需的条件。 您需要检查 `dotnet --info` 是否正常，如果正常，则输入 `command -v dotnet` 命令获取它的位置。 如果您使用的是官方安装器，它应该在 `/usr/bin/dotnet` 或者另外两个位置，这不会有问题。 如果它在自定义位置，例如 `/usr/share/dotnet/dotnet`，则需要使用 `ln -s "$(command -v dotnet)" /usr/bin/dotnet` 命令创建一个[**符号链接**](https://wikipedia.org/wiki/Symbolic_link)。 现在 `command -v dotnet` 命令应该也输出 `/usr/bin/dotnet` 了，这能让我们的 systemd 单元正常工作。 如果您使用的是特定操作系统的版本，则不需要进行本段落的任何操作。
 
-接下来，`cd /etc/systemd/system` 并执行 `ln -s /home/asf/ArchiSteamFarm/ArchiSteamFarm\@.service .`，这会为服务定义文件创建一个符号链接，并将它注册给 `systemd`。 使用符号链接是为了让 ASF 能在更新时自动更新您的 `systemd` 单元——取决于您的情况，您可能希望这样做，如果不希望，也可以直接使用 `cp` 命令复制文件并自行管理。
+接下来，执行 `ln -s /home/asf/ArchiSteamFarm/ArchiSteamFarm\@.service /etc/systemd/system/ArchiSteamFarm\@.service`，这会为服务定义文件创建一个符号链接，并将它注册给 `systemd`。 使用符号链接是为了让 ASF 能在更新时自动更新您的 `systemd` 单元——取决于您的情况，您可能希望这样做，如果不希望，也可以直接使用 `cp` 命令复制文件并自行管理。
 
 然后，确保 `systemd` 能够识别我们的服务：
 
@@ -105,15 +105,15 @@ Restart=always
 
 这就完成了，现在您的单元行为等同于只在 `[Service]` 下修改了 `Restart=always`。
 
-当然，您也可以 `cp` 单元文件并自己手动管理，但覆盖的方法让您能做到更灵活的修改，同时仍然保留原始的或符号链接过的 ASF 单元文件。
+当然，您也可以 `cp` 单元文件并自己手动管理，但覆盖的方法让您能做到更灵活的修改，例如[**符号链接**](https://wikipedia.org/wiki/Symbolic_link)，同时仍然保留原始的 ASF 单元文件。
 
 ---
 
 ## 不要以管理员身份运行 ASF！
 
-ASF 有自己的逻辑，验证自身是否以管理员用户（`root`）运行。 只要环境配置正确，ASF 进程的任何操作都**不**需要 root 权限，因此以 root 用户运行算是一种**错误实践**。 这意味着在 Windows 上，ASF 永远不应该“以管理员身份运行”，而在 Unix 上，ASF 应该以专门的用户帐户运行，或者在桌面环境下使用您自己的帐户。
+ASF 有自己的逻辑，验证自身是否以管理员用户（`root`）运行。 只要环境配置正确，ASF 进程的任何操作都**不**需要 `root` 权限，因此以 root 用户运行算是一种**错误实践**。 这意味着在 Windows 上，ASF **永远不**应该“以管理员身份运行”，而在 Unix 上，ASF 应该以**专门的用户帐户**运行，或者在桌面环境下使用您自己的帐户。
 
-若要进一步了解我们*为什么*不鼓励以 root 权限运行 ASF，请阅读 **[SuperUser](https://superuser.com/questions/218379/why-is-it-bad-to-run-as-root)** 或其他资料。 如果您仍然不相信，请想象一下，如果 ASF 在启动后自动执行 `rm -rf /*` 命令会发生什么。
+若要进一步了解我们*为什么*不鼓励以 `root` 权限运行 ASF，请阅读 **[SuperUser](https://superuser.com/questions/218379/why-is-it-bad-to-run-as-root)** 或其他资料。 如果您仍然不相信，请想象一下，如果 ASF 在启动后自动执行 `rm -rf /*` 命令会发生什么。
 
 ### 我用 `root` 运行是因为 ASF 无法写入自己的文件
 

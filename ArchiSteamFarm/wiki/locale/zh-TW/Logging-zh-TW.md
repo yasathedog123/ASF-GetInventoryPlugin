@@ -19,30 +19,30 @@ ASF允許您自訂執行期間使用的紀錄日誌模組。 您可以將叫做&
     <target xsi:type="ColoredConsole" name="ColoredConsole" layout="${date:format=yyyy-MM-dd HH\:mm\:ss}|${processname}-${processid}|${level:uppercase=true}|${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}" />
     <target xsi:type="File" name="File" archiveFileName="${currentdir}/logs/log.{#}.txt" archiveNumbering="Rolling" archiveOldFileOnStartup="true" cleanupFileName="false" concurrentWrites="false" deleteOldFileOnStartup="true" fileName="${currentdir}/log.txt" layout="${date:format=yyyy-MM-dd HH\:mm\:ss}|${processname}-${processid}|${level:uppercase=true}|${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}" maxArchiveFiles="10" />
 
-    <!-- 在ASF的IPC介面啟動時，下列將變為活動狀態 -->
+    <!-- 下列命令僅在 ASF 的 IPC 介面啟動時執行 -->
     <target type="History" name="History" layout="${date:format=yyyy-MM-dd HH\:mm\:ss}|${processname}-${processid}|${level:uppercase=true}|${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}" maxCount="20" />
   </targets>
 
   <rules>
-    <!-- 下列項指定了ASP.NET（IPC）紀錄，我們宣告它們，因此我們最頂層的Debug catch-all在預設情形下不包含ASP.NET紀錄 -->
-    <logger name="Microsoft*" finalMinLevel="Warn" writeTo="ColoredConsole" />
-    <logger name="Microsoft.Hosting.Lifetime*" finalMinLevel="Info" writeTo="ColoredConsole" />
-    <logger name="System*" finalMinLevel="Warn" writeTo="ColoredConsole" />
+    <!-- 下列條目指定 ASP.NET (IPC) 紀錄，我們宣告它們，使我們的最頂層 Debug catch-all 預設不會包含 ASP.NET 紀錄 -->
+    <logger name="Microsoft.*" finalMinLevel="Warn" writeTo="ColoredConsole" />
+    <logger name="Microsoft.Hosting.Lifetime" finalMinLevel="Info" writeTo="ColoredConsole" />
+    <logger name="System.*" finalMinLevel="Warn" writeTo="ColoredConsole" />
 
     <logger name="*" minlevel="Debug" writeTo="ColoredConsole" />
 
-    <!-- 下列項指定了ASP.NET（IPC）紀錄，我們宣告它們，因此我們最頂層的Debug catch-all在預設情形下不包含ASP.NET紀錄 -->
-    <logger name="Microsoft*" finalMinLevel="Warn" writeTo="File" />
-    <logger name="Microsoft.Hosting.Lifetime*" finalMinLevel="Info" writeTo="File" />
-    <logger name="System*" finalMinLevel="Warn" writeTo="File" />
+    <!-- 下列條目指定 ASP.NET (IPC) 紀錄，我們宣告它們，使我們的最頂層 Debug catch-all 預設不會包含 ASP.NET 紀錄 -->
+    <logger name="Microsoft.*" finalMinLevel="Warn" writeTo="File" />
+    <logger name="Microsoft.Hosting.Lifetime" finalMinLevel="Info" writeTo="File" />
+    <logger name="System.*" finalMinLevel="Warn" writeTo="File" />
 
     <logger name="*" minlevel="Debug" writeTo="File" />
 
-    <!-- 在ASF的IPC介面啟用時，下列將變為活動狀態 -->
-    <!-- 下列項指定了ASP.NET（IPC）紀錄，我們宣告它們，因此我們最頂層的Debug catch-all在預設情形下不包含ASP.NET紀錄 -->
-    <logger name="Microsoft*" finalMinLevel="Warn" writeTo="History" />
-    <logger name="Microsoft.Hosting.Lifetime*" finalMinLevel="Info" writeTo="History" />
-    <logger name="System*" finalMinLevel="Warn" writeTo="History" />
+    <!-- 下列命令僅在 ASF 的 IPC 介面啟用時執行 -->
+    <!-- 下列條目指定 ASP.NET (IPC) 紀錄，我們宣告它們，使我們的最頂層 Debug catch-all 預設不會包含 ASP.NET 紀錄 -->
+    <logger name="Microsoft.*" finalMinLevel="Warn" writeTo="History" />
+    <logger name="Microsoft.Hosting.Lifetime" finalMinLevel="Info" writeTo="History" />
+    <logger name="System.*" finalMinLevel="Warn" writeTo="History" />
 
     <logger name="*" minlevel="Debug" writeTo="History" />
   </rules>
@@ -107,7 +107,7 @@ ASF也會記錄額外資訊，例如在&#8203;`Trace`&#8203;的記錄層級中�
 
 若您現在啟動ASF，就會注意到日期、層級及記錄器名稱都消失了⸺只留下格式為&#8203;`Function() Message`&#8203;的ASF訊息。
 
-我們還可以修改設定以記錄多個目標。 讓我們同時記錄到&#8203;`ColoredConsole`&#8203;和&#8203;**[File](https://github.com/nlog/nlog/wiki/File-target)**&#8203;中。
+我們還可以修改設定以記錄多個目標。 讓我們同時記錄&#8203;`ColoredConsole`&#8203;及&#8203;**[`File`](https://github.com/nlog/nlog/wiki/File-target)**&#8203;。
 
 ```xml
 <?xml version="1.0" encoding="utf-8" ?>

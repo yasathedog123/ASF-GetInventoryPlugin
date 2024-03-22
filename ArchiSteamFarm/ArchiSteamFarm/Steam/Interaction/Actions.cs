@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,6 +34,8 @@ using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Plugins;
+using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Storage;
@@ -76,6 +80,30 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 		if (CardsFarmerResumeTimer != null) {
 			await CardsFarmerResumeTimer.DisposeAsync().ConfigureAwait(false);
 		}
+	}
+
+	[PublicAPI]
+	public async Task<(EResult Result, IReadOnlyCollection<uint>? GrantedApps, IReadOnlyCollection<uint>? GrantedPackages)> AddFreeLicenseApp(uint appID) {
+		ArgumentOutOfRangeException.ThrowIfZero(appID);
+
+		SteamApps.FreeLicenseCallback callback;
+
+		try {
+			callback = await Bot.SteamApps.RequestFreeLicense(appID).ToLongRunningTask().ConfigureAwait(false);
+		} catch (Exception e) {
+			Bot.ArchiLogger.LogGenericWarningException(e);
+
+			return (EResult.Timeout, null, null);
+		}
+
+		return (callback.Result, callback.GrantedApps, callback.GrantedPackages);
+	}
+
+	[PublicAPI]
+	public async Task<(EResult Result, EPurchaseResultDetail PurchaseResultDetail)> AddFreeLicensePackage(uint subID) {
+		ArgumentOutOfRangeException.ThrowIfZero(subID);
+
+		return await Bot.ArchiWebHandler.AddFreeLicense(subID).ConfigureAwait(false);
 	}
 
 	[PublicAPI]
@@ -401,7 +429,7 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 				TradingScheduled = false;
 			}
 
-			inventory = await Bot.ArchiWebHandler.GetInventoryAsync(appID: appID, contextID: contextID).Where(item => item.Tradable && filterFunction(item)).ToHashSetAsync().ConfigureAwait(false);
+			inventory = await Bot.ArchiHandler.GetMyInventoryAsync(appID, contextID, true).Where(item => filterFunction(item)).ToHashSetAsync().ConfigureAwait(false);
 		} catch (HttpRequestException e) {
 			Bot.ArchiLogger.LogGenericWarningException(e);
 
@@ -449,19 +477,46 @@ public sealed class Actions : IAsyncDisposable, IDisposable {
 			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));
 		}
 
-		Version? version = await ASF.Update(channel, true).ConfigureAwait(false);
+		(Version? newVersion, bool restartNeeded) = await ASF.Update(channel, true).ConfigureAwait(false);
 
-		if (version == null) {
+		if (restartNeeded) {
+			Utilities.InBackground(ASF.RestartOrExit);
+		}
+
+		if (newVersion == null) {
 			return (false, null, null);
 		}
 
-		if (SharedInfo.Version >= version) {
-			return (false, $"V{SharedInfo.Version} ≥ V{version}", version);
+		return newVersion > SharedInfo.Version ? (true, null, newVersion) : (false, $"V{SharedInfo.Version} ≥ V{newVersion}", newVersion);
+	}
+
+	[PublicAPI]
+	public static async Task<(bool Success, string? Message)> UpdatePlugins(IReadOnlyCollection<string> plugins, GlobalConfig.EUpdateChannel? channel = null) {
+		if ((plugins == null) || (plugins.Count == 0)) {
+			throw new ArgumentNullException(nameof(plugins));
 		}
 
-		Utilities.InBackground(ASF.RestartOrExit);
+		if (channel.HasValue && !Enum.IsDefined(channel.Value)) {
+			throw new InvalidEnumArgumentException(nameof(channel), (int) channel, typeof(GlobalConfig.EUpdateChannel));
+		}
 
-		return (true, null, version);
+		HashSet<string> pluginAssemblyNames = plugins.ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+		HashSet<IPluginUpdates> pluginsForUpdate = PluginsCore.GetPluginsForUpdate(pluginAssemblyNames);
+
+		if (pluginsForUpdate.Count == 0) {
+			return (false, Strings.NothingFound);
+		}
+
+		bool restartNeeded = await PluginsCore.UpdatePlugins(SharedInfo.Version, pluginsForUpdate, channel).ConfigureAwait(false);
+
+		if (restartNeeded) {
+			Utilities.InBackground(ASF.RestartOrExit);
+		}
+
+		string message = restartNeeded ? Strings.UpdateFinished : Strings.NothingFound;
+
+		return (true, message);
 	}
 
 	internal async Task AcceptDigitalGiftCards() {

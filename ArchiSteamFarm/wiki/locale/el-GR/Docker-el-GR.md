@@ -1,6 +1,6 @@
 # Docker
 
-ASF is available as **[docker container](https://www.docker.com/what-container)**. Our docker packages are currently available on **[ghcr.io](https://github.com/orgs/JustArchiNET/packages/container/archisteamfarm/versions)** as well as **[Docker Hub](https://hub.docker.com/r/justarchi/archisteamfarm)**.
+ASF is available as **[docker container](https://www.docker.com/what-container)**. Our docker packages are currently available on **[ghcr.io](https://github.com/JustArchiNET/ArchiSteamFarm/pkgs/container/archisteamfarm)** as well as **[Docker Hub](https://hub.docker.com/r/justarchi/archisteamfarm)**.
 
 It's important to note that running ASF in Docker container is considered **advanced setup**, which is **not needed** for vast majority of users, and typically gives **no advantages** over container-less setup. If you're considering Docker as a solution for running ASF as a service, for example making it start automatically with your OS, then you should consider reading **[management](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Management#systemd-service-for-linux)** section instead and set up a proper `systemd` service which will be **almost always** a better idea than running ASF in a Docker container.
 
@@ -65,7 +65,7 @@ docker run -it --name asf --pull always --rm justarchi/archisteamfarm
 
 `docker run` creates a new ASF docker container for you and runs it in the foreground (`-it`). `--pull always` ensures that up-to-date image will be pulled first, and `--rm` ensures that our container will be purged once stopped, since we're just testing if everything works fine for now.
 
-If everything ended successfully, after pulling all layers and starting container, you should notice that ASF properly started and informed us that there are no defined bots, which is good - we verified that ASF in docker works properly. Hit `CTRL+P` then `CTRL+Q` in order to quit foreground docker container, then stop ASF container with `docker stop asf`.
+If everything ended successfully, after pulling all layers and starting container, you should notice that ASF properly started and informed us that there are no defined bots, which is good - we verified that ASF in docker works properly. Hit `CTRL+C` to terminate the ASF process and therefore also the container.
 
 If you take a closer look at the command then you'll notice that we didn't declare any tag, which automatically defaulted to `latest` one. If you want to use other tag than `latest`, for example `released`, then you should declare it explicitly:
 
@@ -85,7 +85,7 @@ For example, we'll assume that your ASF config folder is in `/home/archi/ASF/con
 docker run -it -v /home/archi/ASF/config:/app/config --name asf --pull always justarchi/archisteamfarm
 ```
 
-And that's it, now your ASF docker container will use shared directory with your local machine in read-write mode, which is everything you need for configuring ASF. In similar way you can mount other volumes that you'd like to share with ASF, such as `/app/logs` or `/app/plugins/MyCustomPluginDirectory` (you don't want to override `/app/plugins` itself, since this way you'll remove plugins that ship with ASF by default).
+And that's it, now your ASF docker container will use shared directory with your local machine in read-write mode, which is everything you need for configuring ASF. In similar, way you can mount other volumes that you'd like to share with ASF, such as `/app/logs` or `/app/plugins`.
 
 Of course, this is just one specific way to achieve what we want, nothing is stopping you from e.g. creating your own `Dockerfile` that will copy your config files into `/app/config` directory inside ASF docker container. We're only covering basic usage in this guide.
 
@@ -93,19 +93,27 @@ Of course, this is just one specific way to achieve what we want, nothing is sto
 
 ASF container by default is initialized with default `root` user, which allows it to handle the internal permissions stuff and then eventually switch to `asf` (UID `1000`) user for the remaining part of the main process. While this should be satisfying for the vast majority of users, it does affect the shared volume as newly-generated files will be normally owned by `asf` user, which may not be desired situation if you'd like some other user for your shared volume.
 
-Docker allows you to pass `--user` **[flag](https://docs.docker.com/engine/reference/run/#user)** to `docker run` command which will define default user that ASF will run under. You can check your `uid` and `gid` for example with `id` command, then pass it to the rest of the command. For example, if your target user has `uid` and `gid` of 1001:
+There are two ways you can change the user ASF is running under. The first one, recommended, is to declare `ASF_USER` environment variable with target UID you want to run under. Second, alternative one, is to pass `--user` **[flag](https://docs.docker.com/engine/reference/run/#user)**, which is directly supported by docker.
+
+You can check your `uid` for example with `id -u` command, then declare it as specified above. For example, if your target user has `uid` of 1001:
 
 ```shell
-docker run -it -u 1001:1001 -v /home/archi/ASF/config:/app/config --name asf --pull always justarchi/archisteamfarm
+docker run -it -e ASF_USER=1001 -v /home/archi/ASF/config:/app/config --name asf --pull always justarchi/archisteamfarm
+
+# Alternatively, if you understand the limitations below
+docker run -it -u 1001 -v /home/archi/ASF/config:/app/config --name asf --pull always justarchi/archisteamfarm
 ```
 
-Remember that by default `/app` directory used by ASF is still owned by `asf`. If you run ASF under custom user, then your ASF process won't have write access to its own files. This access is not mandatory for operation, but it is crucial e.g. for auto-updates feature. In order to fix this, it's enough to change ownership of all ASF files from default `asf` to your new custom user.
+The difference between `ASF_USER` and `--user` flag is subtle, but important. `ASF_USER` is custom mechanism supported by ASF, in this scenario docker container still starts as `root`, and then ASF startup script starts main binary under `ASF_USER`. When using `--user` flag, you're starting whole process, including ASF startup script as given user. First option allows ASF startup script to handle permissions and other stuff automatically for you, resolving some common issues that you might've caused, for example it ensures that your `/app` and `/asf` directories are actually owned by `ASF_USER`. In second scenario, since we're not running as `root`, we can't do that, and you're expected to handle all of that yourself in advance.
+
+If you've decided to use `--user` flag, you need to change ownership of all ASF files from default `asf` to your new custom user. You can do so by executing command below:
 
 ```shell
-docker exec -u root asf chown -hR 1001:1001 /app
+# Execute only if you're not using ASF_USER
+docker exec -u root asf chown -hR 1001 /app /asf
 ```
 
-This has to be done only once after you created your container with `docker run`, and only if you decided to use custom user for ASF process. Also don't forget to change `1001:1001` argument in both commands above to the `uid` and `gid` you actually want to run ASF under.
+This has to be done only once after you created your container with `docker run`, and only if you decided to use custom user through `--user` docker flag. Also don't forget to change `1001` argument in command above to the `UID` you actually want to run ASF under.
 
 ### Volume with SELinux
 
@@ -189,7 +197,7 @@ If you set everything properly, `docker run` command above will make **[IPC](htt
 Combining whole knowledge above, an example of a complete setup would look like this:
 
 ```shell
-docker run -p 127.0.0.1:1242:1242 -p [::1]:1242:1242 -v /home/archi/ASF/config:/app/config -v /home/archi/ASF/plugins:/app/plugins/custom --name asf --pull always justarchi/archisteamfarm
+docker run -p 127.0.0.1:1242:1242 -p [::1]:1242:1242 -v /home/archi/ASF/config:/app/config -v /home/archi/ASF/plugins:/app/plugins --name asf --pull always justarchi/archisteamfarm
 ```
 
 Αυτό υποθέτει ότι θα χρησιμοποιήσετε ένα μόνο ASF container, με όλα τα ASF config αρχεία σε `/home/archi/ASF/config`. You should modify the config path to the one that matches your machine. It's also possible to provide custom plugins for ASF, which you can put in `/home/archi/ASF/plugins`. This setup is also ready for optional IPC usage if you've decided to include `IPC.config` in your config directory with a content like below:

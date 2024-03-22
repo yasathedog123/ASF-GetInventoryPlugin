@@ -16,7 +16,7 @@ Toto FAQ obsahuje odpovědi na obyklé otázky. Pro méně obvyklé dotazy navš
 
 ### Co je ASF?
 ### Proč program tvrdí, že na mém účtu není nic k farmení?
-### Why ASF doesn't detect all of my games?
+### Proč ASF nedetekuje všechny mé hry?
 ### Proč je můj účet omezený?
 
 Dříve než se pokusíte pochopit, co je ASF, měli byste se ujistit, že rozumíte tomu, co jsou Steam karty a jak je získat, což je dobře popsáno v oficiálním FAQ **[zde](https://steamcommunity.com/tradingcards/faq)**.
@@ -25,8 +25,8 @@ Ve zkratce, Steam karty jsou sbíratelné položky, které můžete získat při
 
 Core points are stated once again here, because people in general don't want to agree with them and prefer to pretend that those do not exist:
 
-- **You need to own the game on your Steam account in order to be eligible for any card drops from it. Rodinné sdílení se nepočítá.**
-- **You can't farm the game infinitely, every game has fixed number of card drops. Once you drop all of them (around a half of the full set), the game is not a candidate for farming anymore. It doesn't matter whether you've sold, traded, crafted or forgot what happened to those cards you've obtained, once you run out of card drops, the game is finished.**
+- **Musíte být vlastníkem hry, abyste byl způsobilý pro získání karet. Rodinné sdílení se nepočítá.**
+- **Nemůžete farmit hru donekonečna, každá hra má pevně stanovený počet karet, který lze získat. Once you drop all of them (around a half of the full set), the game is not a candidate for farming anymore. It doesn't matter whether you've sold, traded, crafted or forgot what happened to those cards you've obtained, once you run out of card drops, the game is finished.**
 - **You can't drop cards from F2P games without spending any money in them. This means permanently F2P games like Team Fortress 2 or Dota 2. Owning F2P games does not grant you card drops.**
 - **You can't drop cards on [limited accounts](https://help.steampowered.com/faqs/view/71D3-35C2-AD96-AA3A), regardless of owned games. It was possible in the past, but it's no longer the case.**
 - **Paid games that you've obtained for free during a promotion can't be farmed for card drops, regardless of what is displayed on the store page. It was possible in the past, but it's no longer the case.**
@@ -89,7 +89,7 @@ When/If all ASF requirements are satisfied, we'll consider releasing an official
 
 ### Can I choose which games should be farmed?
 
-**Yes**, through several different ways. If you want to alter the default order of farming queue, then that's what `FarmingOrders` **[bot configuration property](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#bot-config)** can be used for. If you want to manually blacklist given games from being farmed automatically, you can use idle blacklist which is available with `fb` **[command](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands)**. If you'd like to farm everything but give some apps priority over everything else, that is what idle priority queue available with `fq` **[command](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands)** can be used for. And finally, if you want to farm specific games of your choice only, then you can use `FarmPriorityQueueOnly` **[bot configuration property](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#bot-config)** in order to achieve this, together with adding your selected apps to idle priority queue.
+**Yes**, through several different ways. If you want to alter the default order of farming queue, then that's what `FarmingOrders` **[bot configuration property](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#bot-config)** can be used for. If you want to manually blacklist given games from being farmed automatically, you can use idle blacklist which is available with `fb` **[command](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands)**. If you'd like to farm everything but give some apps priority over everything else, that is what idle priority queue available with `fq` **[command](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands)** can be used for. And finally, if you want to farm specific games of your choice only, then you can declare `FarmPriorityQueueOnly` in bot's **[`FarmingPreferences`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#farmingpreferences)** in order to achieve this, together with adding your selected apps to idle priority queue.
 
 In addition to managing automatic cards farming module which was described above, you can also switch ASF to manual farming mode with `play` **[command](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands)**, or use some other misc external settings such as `GamesPlayedWhileIdle` **[bot configuration property](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#bot-config)**.
 
@@ -99,7 +99,7 @@ In addition to managing automatic cards farming module which was described above
 
 Yes, ASF allows you to do that through at least several ways.
 
-The best way to achieve that is to make use of **[`GamesPlayedWhileIdle`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#gamesplayedwhileidle)** configuration property, which will play your chosen appIDs when ASF has no cards to farm. If you'd like to play your games all the time, even if you do have card drops from other games, then you can combine it with **[`FarmPriorityQueueOnly`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#farmpriorityqueueonly)**, so ASF will farm only those games for card drops that you explicitly set, or **[`Paused`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#paused)**, which will cause cards farming module to be paused until you unpause it yourself.
+The best way to achieve that is to make use of **[`GamesPlayedWhileIdle`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#gamesplayedwhileidle)** configuration property, which will play your chosen appIDs when ASF has no cards to farm. If you'd like to play your games all the time, even if you do have card drops from other games, then you can combine it with **[`FarmPriorityQueueOnly`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#farmingpreferences)**, so ASF will farm only those games for card drops that you explicitly set, or **[`FarmingPausedByDefault`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#farmingpreferences)**, which will cause cards farming module to be paused until you unpause it yourself.
 
 Alternatively, you can make use of the **[`play`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands#commands-1)** command, which will cause ASF to play your selected games. However, keep in mind that `play` should be used only for games you want to play temporarily, as it's not a persistent state, causing ASF to revert back to default state e.g. upon disconnection from Steam network. Therefore, we recommend you to use `GamesPlayedWhileIdle`, unless you indeed want to start your selected games just for a short time period, and then revert back to general flow.
 
@@ -147,11 +147,13 @@ First and foremost, you have some built-in features mentioned **[above](#is-it-w
 
 - **You can farm offline** (`OnlineStatus` in `Offline` setting). Farming offline makes it possible for you to skip your Steam in-game status entirely, which allows you to farm with ASF while showing "Online" on Steam at the same time, without your friends even noticing that ASF is playing a game on your behalf. This is superior feature, since it allows you to remain online in your Steam client, while not annoying your friends with constant game changes, or misleading them into thinking that you're playing a game while in reality you're not. This point alone makes it worthwhile to use ASF if you respect your own friends, but it's only the beginning. It's also nice to note that this feature has nothing to do with Steam privacy settings - if you launch the game yourself, then you'll properly show as in-game to your friends, making only ASF part invisible and not affecting your account at all.
 
-- **You can skip refundable games** (`SkipRefundableGames` feature). ASF has proper built-in logic for refundable games and you can configure ASF to not farm refundable games automatically. This allows you to evaluate yourself if your newly-bought game from Steam store was worth your money, without ASF trying to drop cards from it as soon as possible. If you play it for 2+ hours, or 2 weeks pass since your purchase, then ASF will proceed with that game as it's not refundable anymore. Until then you have full control whether you enjoy it or not and you can easily refund it if needed, without having to manually blacklist that game or not use ASF for entire duration.
+- **You can skip refundable games** (`SkipRefundableGames` in bot's `FarmingPreferences` feature). ASF has proper built-in logic for refundable games and you can configure ASF to not farm refundable games automatically. This allows you to evaluate yourself if your newly-bought game from Steam store was worth your money, without ASF trying to drop cards from it as soon as possible. If you play it for 2+ hours, or 2 weeks pass since your purchase, then ASF will proceed with that game as it's not refundable anymore. Until then you have full control whether you enjoy it or not and you can easily refund it if needed, without having to manually blacklist that game or not use ASF for entire duration.
+
+- **You can skip unplayed games** (`SkipUnplayedGames` in bot's `FarmingPreferences` feature). ASF has proper built-in logic for hours in games and you can configure ASF to not farm unplayed games automatically. This allows you to control yourself the games you play and farm, without having to manually blacklist all of them or skip using ASF entirely.
 
 - **You can automatically mark new items as received** (`BotBehaviour` of `DismissInventoryNotifications` feature). Farming with ASF will result in your account receiving new card drops. You already know that this is going to happen, so let ASF clear that useless notification for you, ensuring that only important things will raise your attention. Of course, only if you want to.
 
-- **You can automatically receive cards from Steam events** (`AutoSteamSaleEvent` feature). ASF allows you to automate going through discovery queue during Steam sale, of course only if you'd like to make use of that. This saves enormous amount of time each day while Steam sale is on, and ensures that you'll never miss your daily card drops again.
+- **You can automatically receive cards from Steam events** (`AutoSteamSaleEvent` in bot's `FarmingPreferences` feature). ASF allows you to automate going through discovery queue during Steam sale, of course only if you'd like to make use of that. This saves enormous amount of time each day while Steam sale is on, and ensures that you'll never miss your daily card drops again.
 
 - **You can customize preferred farming order with more available options** (`FarmingOrders` feature). Perhaps you want to farm your newly bought games first? Or your oldest ones? According to number of card drops? Badge levels you already crafted? Played hours? Alphabetically? According to AppIDs? Or maybe fully random? That's entirely up to you to decide.
 
@@ -337,7 +339,7 @@ Yes, you must set it in `SteamParentalCode` bot config property. This is mainly 
 
 Yes, if you just want to start ASF with paused cards farming module, you can set `Paused` bot config property to `true` in order to achieve that. This will allow you to `resume` it during runtime.
 
-If you want to completely disable cards farming module and ensure that it'll never run without you explicitly telling it otherwise, then we recommend to set `FarmPriorityQueueOnly` to `true`, which instead of just pausing it, will disable the farming completely until you add the games to idle priority queue yourself.
+If you want to completely disable cards farming module and ensure that it'll never run without you explicitly telling it otherwise, then we recommend to set `FarmPriorityQueueOnly` in bot's `FarmingPreferences`, which instead of just pausing it, will disable the farming completely until you add the games to idle priority queue yourself.
 
 With cards farming module paused/disabled, you can make use of extra ASF features, such as `GamesPlayedWhileIdle`.
 
@@ -458,7 +460,7 @@ In short, card drops icon in Steam store doesn't mean anything, check your **[ba
 
 Second issue is less obvious, and it's the situation when you can see that your game indeed is available with card drops on your badge page, yet it's not being farmed by ASF right away. Unless you're hitting some other bug, such as ASF being unable to check badge pages (described below), it's simply a cache effect and on ASF side Steam is still reporting outdated badges page. This issue should solve itself sooner or later, when cache gets invalidated. There is also no way to fix this on our side.
 
-Of course, all of that assumes that you're running ASF with default untouched settings, since you could also add this game to farming blacklist, use `FarmPriorityQueueOnly`, `SkipRefundableGames` and so on.
+Of course, all of that assumes that you're running ASF with default untouched settings, since you could also add this game to farming blacklist, use selected `FarmingPreferences` such as `FarmPriorityQueueOnly` or `SkipRefundableGames`, and so on.
 
 ---
 

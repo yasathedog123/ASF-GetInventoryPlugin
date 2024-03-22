@@ -42,7 +42,7 @@ ASF, yukarıda bahsi geçen anahtar dosyasına ek olarak, herhangi bir IPC arac�
 
 Oyunlar başarıyla içe aktarıldığında, sıraya eklenirler. Bot, Steam ağına bağlı olduğu sürece ve kuyruk boş değilse ASF otomatik olarak arka plan kuyruğundan geçer. Etkinleştirilmeye çalışılan ve `RateLimited`'den başka bir yanıt alınan tüm anahtarlar sıradan çıkarılır ve durumu, eğer anahtar kullanıldıysa (örn. `NoDetail`, `BadActivationCode`, `DuplicateActivationCode` yanıtları alındıysa) `Botunuzunİsmi.keys.used` dosyasına veya kullanılmadıysa `Botunuzunİsmi.keys.unused` dosyasına yazılır. ASF bilerek sizin sunduğunuz ismi kullanır, çünkü Steam ağından gelecek isim doğru veya mantıklı olmayabilir - böylelikle gerektiğinde/istediğinizde anahtarlarınızı özel isimlerle hatırlayabilirsiniz.
 
-Eğer bu süreçte hesabımız `RateLimited` durumuna gelirse, bekleme süresinin geçmesi için sıra bir saatliğine geçici olarak durdurulur. Afterwards, the process continues where it left, until the entire queue is empty or another `RateLimited` occurs.
+Eğer bu süreçte hesabımız `RateLimited` durumuna gelirse, bekleme süresinin geçmesi için sıra bir saatliğine geçici olarak durdurulur. Sonrasında, süreç kaldığı yerden devam eder, tüm sıra boş olana kadar veya başka bir `RateLimited` durumu meydana gelene kadar.
 
 ---
 

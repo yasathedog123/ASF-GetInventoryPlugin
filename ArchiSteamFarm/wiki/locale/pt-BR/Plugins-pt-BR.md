@@ -1,6 +1,6 @@
 # Plugins
 
-ASF includes support for custom plugins that can be loaded during runtime. Plugins permitem que você personalize o comportamento do ASF, adicionando comandos e lógicas de troca personalizados ou mesmo uma completa integração com serviços de terceiros e APIs.
+O ASF inclui suporte para plug-ins personalizados que podem ser carregadas durante a execução. Plugins permitem que você personalize o comportamento do ASF, adicionando comandos e lógicas de troca personalizados ou mesmo uma completa integração com serviços de terceiros e APIs.
 
 ---
 
@@ -47,7 +47,7 @@ Se você fez tudo certo, seu `csproj` será semelhante ao exemplo abaixo:
   <ItemGroup>
     <ProjectReference Include="C:\\Path\To\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="false" />
 
-    <!-- If building with downloaded DLL binary, use this instead of <ProjectReference> above -->
+    <!-- Se estiver construindo com a DLL binária baixada, use isso no lugar de <ProjectReference> acima -->
     <!-- <Reference Include="ArchiSteamFarm" HintPath="C:\\Path\To\Downloaded\ArchiSteamFarm.dll" /> -->
   </ItemGroup>
 </Project>
@@ -118,9 +118,9 @@ Faremos o nosso melhor para manter partes públicas do ASF funcionais e estávei
 
 Seu plugin incluirá pelo menos duas dependências por padrão, referência para a API interna `ArchiSteamFarm` e `PackageReference` de `System.Composition.AttributedMode` que é necessário para ser reconhecido como um plugin do ASF. Além disso, mais dependências podem ser inclusas dependendo do que você decidiu fazer no seu plugin (por exemplo, a biblioteca `Discord.Net` caso você decidir integrar com o Discord).
 
-A saída da sua compilação incluirá a biblioteca princilpal `YourPluginName.dll`, bem como todas as dependências que você referenciou. Como você estará desenvolvendo um plugin para um programa já em funcionamento, você não precisa e **não deve** incluir dependências que o ASF já inclui, como por exemplo, `ArchiSteamFarm`, `SteamKit2` ou `Newtonsoft. Json`. Retirar as dependências compiladas que são compartilhadas com o ASF não é um requisito absoluto para que seu plugin funcione, mas fazer isso irá reduzir drasticamente a quantidade de memória utilizada e o tamanho do seu plugin, além de melhorar o desempenho, devido ao fato de que o ASF compartilhará suas dependências e só carregará as bibliotecas que ele não conhece.
+A saída da sua compilação incluirá a biblioteca princilpal `YourPluginName.dll`, bem como todas as dependências que você referenciou. Como você está desenvolvendo um plug-in para um programa que já funciona, você não precisa e até mesmo **não deve** incluir dependências que o ASF já possui, como por exemplo `ArchiSteamFarm`, `SteamKit2` ou `AngleSharp`. Retirar as dependências compiladas que são compartilhadas com o ASF não é um requisito absoluto para que seu plugin funcione, mas fazer isso irá reduzir drasticamente a quantidade de memória utilizada e o tamanho do seu plugin, além de melhorar o desempenho, devido ao fato de que o ASF compartilhará suas dependências e só carregará as bibliotecas que ele não conhece.
 
-No geral, é recomendado incluir apenas as bibliotecas que o ASF não inclui ou inclui em uma versão errada/incompatível. Um exemplo óbvio é `YourPluginName.dll`, mas também pode incluir, por exempo, `Discord.Net.dll`, caso você decida ter dependencias dele que o ASF não inclui. Compilar bibliotecas que são compartilhadas com o ASF ainda pode fazer sentido se você quiser garantir uma compatibilidade de API (por exemplo, ter certeza que a biblioteca `Newtonsoft.Json` da qual você depende sempre estará na versão `X` ao invés da versão embutida no ASF), mas isso custa o preço de um maior uso/tamanho de memória e queda na performance e, portanto, deve ser avaliado com cautela.
+No geral, é recomendado incluir apenas as bibliotecas que o ASF não inclui ou inclui em uma versão errada/incompatível. Um exemplo óbvio é `YourPluginName.dll`, mas também pode incluir, por exempo, `Discord.Net.dll`, caso você decida ter dependencias dele que o ASF não inclui. Agrupar bibliotecas compartilhadas com o ASF ainda pode fazer sentido caso você deseja garantir a compatibilidade com a API (por exemplo, ter certeza de que o `AngleSharp`, no qual seu plug-in depende, sempre estará na versão `X` e não na que o ASF inclui), mas obviamente fazer isso tem um custo de aumento de memória/tamanho e pior desempenho, e, portanto, deve ser cuidadosamente avaliado.
 
 Se você sabe que a dependência que você precisa está inclusa no ASF, você pode marcá-la com `IncludeAssets="compile"` conforme mostramos no exemplo `csproj` acima. Isto dirá ao compilador para evitar a publicação da biblioteca referenciada em si, pois o ASF já a inclui. Da mesma forma, note que referimos o projeto ASF com `ExcludeAssets="all" Private="false"` que funciona de forma muito semelhante - dizer ao compilador para não produzir arquivos do ASF (já que o usuário os possui). Isso se aplica somente quando faz referência ao projeto do ASF, uma vez que se você faz referência a uma biblioteca `dll`, então você não estará produzindo arquivos do ASF como parte do seu plugin.
 

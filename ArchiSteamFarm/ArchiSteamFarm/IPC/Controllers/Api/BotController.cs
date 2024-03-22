@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +27,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Requests;
@@ -33,7 +36,6 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Storage;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using SteamKit2.Internal;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api;
@@ -127,9 +129,9 @@ public sealed class BotController : ArchiController {
 				}
 
 				if (bot.BotConfig.AdditionalProperties?.Count > 0) {
-					request.BotConfig.AdditionalProperties ??= new Dictionary<string, JToken>(bot.BotConfig.AdditionalProperties.Count, bot.BotConfig.AdditionalProperties.Comparer);
+					request.BotConfig.AdditionalProperties ??= new Dictionary<string, JsonElement>(bot.BotConfig.AdditionalProperties.Count, bot.BotConfig.AdditionalProperties.Comparer);
 
-					foreach ((string key, JToken value) in bot.BotConfig.AdditionalProperties.Where(property => !request.BotConfig.AdditionalProperties.ContainsKey(property.Key))) {
+					foreach ((string key, JsonElement value) in bot.BotConfig.AdditionalProperties.Where(property => !request.BotConfig.AdditionalProperties.ContainsKey(property.Key))) {
 						request.BotConfig.AdditionalProperties.Add(key, value);
 					}
 

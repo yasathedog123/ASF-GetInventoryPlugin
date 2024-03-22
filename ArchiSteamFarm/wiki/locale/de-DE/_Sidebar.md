@@ -23,7 +23,7 @@
 * **[🛠️ Kompatibilität](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compatibility-de-DE)**
 * **[🧩 ItemsMatcherPlugin](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/ItemsMatcherPlugin-de-DE)**
 * **[📋 Verwaltung](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Management-de-DE)**
-* **[⏱️ Leistung](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Performance-de-DE)**
+* **[⏱️ Leistungseffizienz](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Performance-de-DE)**
 * **[📡 Telekommunikation](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Remote-communication-de-DE)**
 * **[👪 Steam Familienbibliothek](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Steam-Family-Sharing-de-DE)**
 * **[🔄 Handel](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Trading-de-DE)**
@@ -39,8 +39,8 @@
 * **[🔗 IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC-de-DE)**
 * **[🌐 Übersetzung](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Localization-de-DE)**
 * **[📝 Protokollierung](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Logging-de-DE)**
-* **[💾 Speichereffizientes Einrichtung](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Low-memory-setup-de-DE)**
-* **[🔌 Plugins](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Plugins-de-DE)**
+* **[💾 Speichereffiziente Einrichtung](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Low-memory-setup-de-DE)**
+* **[🔌 Erweiterungen (Plugins)](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Plugins-de-DE)**
 * **[🔐 Sicherheit](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Security-de-DE)**
 * **[🧩 SteamTokenDumperPlugin](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/SteamTokenDumperPlugin-de-DE)**
 * **[📦 Drittanbieter](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Third-party-de-DE)**

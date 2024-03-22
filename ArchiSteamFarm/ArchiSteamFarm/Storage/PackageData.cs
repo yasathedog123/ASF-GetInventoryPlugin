@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,23 +23,25 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Storage;
 
 public sealed class PackageData {
-	[JsonProperty]
-	public ImmutableHashSet<uint>? AppIDs { get; private set; }
+	[JsonInclude]
+	public ImmutableHashSet<uint>? AppIDs { get; private init; }
 
-	[JsonProperty(Required = Required.Always)]
-	public uint ChangeNumber { get; private set; }
+	[JsonInclude]
+	[JsonRequired]
+	public uint ChangeNumber { get; private init; }
 
-	[JsonProperty]
-	public ImmutableHashSet<string>? ProhibitRunInCountries { get; private set; }
+	[JsonInclude]
+	public ImmutableHashSet<string>? ProhibitRunInCountries { get; private init; }
 
-	[JsonProperty(Required = Required.Always)]
-	public DateTime ValidUntil { get; private set; }
+	[JsonInclude]
+	[JsonRequired]
+	public DateTime ValidUntil { get; private init; }
 
 	internal PackageData(uint changeNumber, DateTime validUntil, ImmutableHashSet<uint>? appIDs = null, ImmutableHashSet<string>? prohibitRunInCountries = null) {
 		ArgumentOutOfRangeException.ThrowIfZero(changeNumber);

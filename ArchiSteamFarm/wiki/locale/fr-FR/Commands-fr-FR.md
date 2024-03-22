@@ -135,13 +135,14 @@ Comme vous l'avez lu plus haut, un caractère d'espacement est utilisé comme d�
 
 Some commands are also available with their aliases, mostly to save you on typing or account for different dialects:
 
-| Commande     | Alias        |
-| ------------ | ------------ |
-| `addlicense` | `addlicence` |
-| `owns ASF`   | `oa`         |
-| `status ASF` | `sa`         |
-| `redeem`     | `r`          |
-| `redeem^`    | `r^`         |
+| Commande         | Alias              |
+| ---------------- | ------------------ |
+| `addlicense`     | `al`, `addlicence` |
+| `addlicense ASF` | `ala`              |
+| `owns ASF`       | `oa`               |
+| `status ASF`     | `sa`               |
+| `redeem`         | `r`                |
+| `redeem^`        | `r^`               |
 
 ---
 

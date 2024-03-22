@@ -15,7 +15,7 @@ Os comandos executados através do chat Steam são afetados pela **[propriedade 
 
 ### Console interativo
 
-ASF has support for interactive console, as long as you're not running ASF in [**`Headless`**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#headless) mode. Simplesmente pressione o botão `c` para ativar o modo de comando, digite seu comando e confirme com enter.
+O ASF suporta interação via console, desde que você não execute o ASF no modo [**`Headless`**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-pt-BR#headless). Simplesmente pressione o botão `c` para ativar o modo de comando, digite seu comando e confirme com enter.
 
 ![Captura da tela](https://i.imgur.com/bH5Gtjq.png)
 
@@ -48,7 +48,7 @@ A forma mais avançada e flexível de executar comandos, perfeito para interaç�
 | Comando                                                              | Permissão de acesso | Descrição                                                                                                                                                                                                                                                                                                                                                                |
 | -------------------------------------------------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `2fa [Bots]`                                                         | `Master`            | Gera um código **[2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-pt-BR)** temporário para os bot indicados.                                                                                                                                                                                                                          |
-| `2fafinalize [Bots] <ActivationCode>`                          | `Master`            | Finalizes process of assigning new **[2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication#creation)** credentials for given bot instances, using SMS/e-mail activation code.                                                                                                                                                              |
+| `2fafinalize [Bots] <ActivationCode>`                          | `Master`            | Finaliza o processo de atribuição de novas credenciais **[2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-pt-BR#criação)** para determinadas instâncias de bot, usando o código de ativação por SMS/e-mail.                                                                                                                           |
 | `2fafinalized [Bots] <ActivationCode>`                         | `Master`            | Importa credenciais **[2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-pt-BR#creation)** já finalizadas para as instâncias de bot específicas, usando um token 2FA para verificação.                                                                                                                                                  |
 | `2fafinalizedforce [Bots]`                                           | `Master`            | Importa as credenciais **[2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-pt-BR#creation)** já finalizadas para as instâncias de bot específicas, ignorando a verificação do token 2FA.                                                                                                                                               |
 | `2fainit [Bots]`                                                     | `Master`            | Inicia o processo de atribuição de novas credenciais **[ 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-pt-BR#creation)** para os bots indicados.                                                                                                                                                                                    |
@@ -94,14 +94,14 @@ A forma mais avançada e flexível de executar comandos, perfeito para interaç�
 | `start [Bots]`                                                       | `Master`            | Inicia os bots indicados.                                                                                                                                                                                                                                                                                                                                                |
 | `stats`                                                              | `Owner`             | Mostra estatísticas do processo, tais como o uso de memória gerenciada.                                                                                                                                                                                                                                                                                                  |
 | `status [Bots]`                                                      | `FamilySharing`     | Mostra o estado dos bots indicados.                                                                                                                                                                                                                                                                                                                                      |
-| `std [Bots]`                                                         | `Master`            | Special command for **[`SteamTokenDumperPlugin`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/SteamTokenDumperPlugin)** which triggers refresh of selected bots and submission of data immediately.                                                                                                                                                               |
+| `std [Bots]`                                                         | `Master`            | Comando especial para **[`SteamTokenDumperPlugin`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/SteamTokenDumperPlugin-pt-BR)** que aciona a atualização dos bots selecionados e o envio dos dados imediatamente.                                                                                                                                                 |
 | `stop [Bots]`                                                        | `Master`            | Para os bots indicados.                                                                                                                                                                                                                                                                                                                                                  |
 | `tb [Bots]`                                                          | `Master`            | Lista os usuários bloqueados no módulo de trocas dos bots indicados.                                                                                                                                                                                                                                                                                                     |
 | `tbadd [Bots] <SteamIDs64>`                                    | `Master`            | Bloqueia as `steamIDs` indicadas no módulo de trocas dos bots indicados.                                                                                                                                                                                                                                                                                                 |
 | `tbrm [Bots] <SteamIDs64>`                                     | `Master`            | Remove o bloqueio das `steamIDs` indicadas no módulo de trocas dos bots indicados.                                                                                                                                                                                                                                                                                       |
 | `transfer [Bots] <TargetBot>`                                  | `Master`            | Envia todos os itens da Comunidade Steam indicados como `TransferableTypes` (tipos transferíveis) do bot indicado para o bot de destino.                                                                                                                                                                                                                                 |
 | `transfer@ [Bots] <AppIDs> <TargetBot>`                  | `Master`            | Envia todos os itens da Comunidade Steam indicados como `TransferableTypes` (tipos transferíveis) cujos `AppIDs` coincidam com o indicado, do bot indicado para o bot de destino. Funciona como o oposto de `transfer%`.                                                                                                                                                 |
-| `transfer% [Bots] <AppIDs> <TargetBot>`                  | `Master`            | Envia todos os itens da Comunidade Steam indicados como `TransferableTypes` (tipos transferíveis) independentemente de os `AppIDs` coincidirem com o indicado, do bot indicado para o bot de destino. Funciona como o oposto de `transfer@`.                                                                                                                             |
+| `transfer% [Bots] <AppIDs> <TargetBot>`                  | `Master`            | Envia todos os itens da Comunidade Steam indicados como `TransferableTypes` (tipos transferíveis) com exceção dos `AppIDs` indicados, do bot indicado para o bot de destino. Funciona como o oposto de `transfer@`.                                                                                                                                                      |
 | `transfer^ [Bots] <AppID> <ContextID> <TargetBot>` | `Master`            | Envia todos itens Steam do `AppID` determinado com `ContextID` dos bots indicados para o bot de destino.                                                                                                                                                                                                                                                                 |
 | `unpack [Bots]`                                                      | `Master`            | Abre todos os pacotes de cartas armazenados no inventario dos bots indicados.                                                                                                                                                                                                                                                                                            |
 | `update [Channel]`                                                   | `Owner`             | Verifica no GitHub novas versões e atualizações do ASF se disponíveis. Isso é feito automaticamente em todo `UpdatePeriod` (período de atualização). O argumento opcional `Channel` especifica o `UpdateChannel`, se não for fornecido, o padrão é aquele definido na configuração global.                                                                               |
@@ -131,13 +131,14 @@ Como você leu acima, um caractere de espaço está sendo usado como um delimita
 
 Alguns comandos também estão disponíveis com pseudônimos, tanto para economizar na digitação ou para diferentes dialetos:
 
-| Comando      | Pseudônimo   |
-| ------------ | ------------ |
-| `addlicense` | `addlicence` |
-| `owns ASF`   | `oa`         |
-| `status ASF` | `sa`         |
-| `redeem`     | `r`          |
-| `redeem^`    | `r^`         |
+| Comando      | Pseudônimo         |
+| ------------ | ------------------ |
+| `addlicense` | `al`, `addlicence` |
+| `addlicense` | `ala`              |
+| `owns ASF`   | `oa`               |
+| `status ASF` | `sa`               |
+| `redeem`     | `r`                |
+| `redeem^`    | `r^`               |
 
 ---
 
@@ -177,11 +178,11 @@ Enquanto os valores válidos para todas elas são:
 | 2     | `FriendsOnly` |
 | 3     | `Public`      |
 
-Você pode tanto usar um nome que não distingue maiúsculas de minúsculas, quanto um valor numérico. Argumentos que foram omitidos serão definidos por padrão como `Privado`. É importante notar a relação entre argumentos filhos e pais especificados acima, uma vez que um filho nunca pode ter permissão mais ampla que o seu pai. For example, you **can't** have `Public` games owned setting while having `Private` profile setting.
+Você pode tanto usar um nome que não distingue maiúsculas de minúsculas, quanto um valor numérico. Argumentos que foram omitidos serão definidos por padrão como `Private`. É importante notar a relação entre argumentos filhos e pais especificados acima, uma vez que um filho nunca pode ter permissão mais ampla que o seu pai. Por exemplo, você **não pode** ter a configuração de jogos possuídos `Public` enquanto possuí uma configuração de perfil `Private`.
 
 ### Exemplo
 
-Se você deseja definir **todas as** configurações de privacidade do seu bot chamado `Main` para `Privado`, você pode usar qualquer um comandos abaixo:
+Se você deseja definir **todas as** configurações de privacidade do seu bot chamado `Main` para `Private`, você pode usar qualquer um comandos abaixo:
 
 ```text
 privacy Main 1

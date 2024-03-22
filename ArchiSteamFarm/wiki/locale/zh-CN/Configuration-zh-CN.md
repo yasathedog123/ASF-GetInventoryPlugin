@@ -191,7 +191,7 @@ ASF 默认有两个黑名单——`SalesBlacklist` 是内置黑名单，无法�
 
 ### `IdleFarmingPeriod`
 
-这是一个默认值为 `8` 的 `byte` 类型属性。 当 ASF 没有游戏可挂卡时，它将每隔 `IdleFarmingPeriod` 小时检查帐户内是否有新游戏可以挂卡。 ASF 足够智能，能够在我们获得新游戏时自动开始检查徽章页面，此时并不需要定期检查功能。 `IdleFarmingPeriod` 主要针对帐户中已有的游戏添加了新卡牌的情况。 这种情况不会产生事件，因此这时 ASF 只能定期检查徽章页面。 将值设置为 `0` 可以禁用此功能。 还需注意属性：`ShutdownOnFarmingFinished`。
+这是一个默认值为 `8` 的 `byte` 类型属性。 当 ASF 没有游戏可挂卡时，它将每隔 `IdleFarmingPeriod` 小时检查帐户内是否有新游戏可以挂卡。 ASF 足够智能，能够在我们获得新游戏时自动开始检查徽章页面，此时并不需要定期检查功能。 `IdleFarmingPeriod` 主要针对帐户中已有的游戏添加了新卡牌的情况。 这种情况不会产生事件，因此这时 ASF 只能定期检查徽章页面。 将值设置为 `0` 可以禁用此功能。 还需注意：`FarmingPreferences` 中的 `ShutdownOnFarmingFinished` 偏好。
 
 ---
 
@@ -368,15 +368,13 @@ ASF 的更新过程会完全更新 ASF 使用的目录结构，但不包括您�
 ```json
 {
     "AcceptGifts": false,
-    "AutoSteamSaleEvent": false,
     "BotBehaviour": 0,
     "CompleteTypesToSend": [],
     "CustomGamePlayedWhileFarming": null,
     "CustomGamePlayedWhileIdle": null,
     "Enabled": false,
-    "EnableRiskyCardsDiscovery": false,
     "FarmingOrders": [],
-    "FarmPriorityQueueOnly": false,
+    "FarmingPreferences": 0,
     "GamesPlayedWhileIdle": [],
     "HoursUntilCardDrops": 3,
     "LootableTypes": [1, 3, 5],
@@ -384,13 +382,9 @@ ASF 的更新过程会完全更新 ASF 使用的目录结构，但不包括您�
     "OnlineFlags": 0,
     "OnlineStatus": 1,
     "PasswordFormat": 0,
-    "Paused": false,
     "RedeemingPreferences": 0,
     "RemoteCommunication": 3,
-    "SendOnFarmingFinished": false,
     "SendTradePeriod": 0,
-    "ShutdownOnFarmingFinished": false,
-    "SkipRefundableGames": false,
     "SteamLogin": null,
     "SteamMasterClanID": 0,
     "SteamParentalCode": null,
@@ -414,14 +408,6 @@ ASF 的更新过程会完全更新 ASF 使用的目录结构，但不包括您�
 这是一个默认值为 `false` 的 `bool` 类型属性。 当启用时，ASF 会自动接受并激活所有发送给此机器人的 Steam 礼物（包括钱包礼物卡）。 不在 `SteamUserPermissions` 中的用户发来的礼物也算在内。 请注意，发送到电子邮箱的礼物不会直接转发给客户端，所以 ASF 无法自动接受这种礼物，除非您提供帮助。
 
 仅建议您在子帐户上启用此选项，因为有可能您不希望在主帐户上自动激活所有礼物。 如果您不确定是否要启用此功能，请保留默认值 `false`。
-
----
-
-### `AutoSteamSaleEvent`
-
-这是一个默认值为 `false` 的 `bool` 类型属性。 在 Steam 夏季/冬季特卖活动期间，您每天可以通过浏览探索队列或者其他活动事件获得额外的集换式卡牌。 启用此选项时，ASF 将会每隔 `8` 小时自动检查 Steam 探索队列（从程序启动一小时后开始），并且在需要时浏览完成这些探索队列。 如果您希望自己手动执行这些操作，则不建议使用此选项，通常情况下，该功能仅对纯机器人帐户有意义。 此外，如果您希望收到这些卡牌，首先要确保您的帐户至少达到 `8` 级，这是 Steam 本身的限制。 如果您不确定是否要启用此功能，请保留默认值 `false`。
-
-请注意，由于 Valve 经常造成问题或变更，**我们无法保证此功能正常工作**，因此该选项是有可能**完全无效**的。 我们不接受**任何**与此有关的漏洞报告，也不支持关于此选项的请求。 该属性是在完全无保证的情况下提供的，您需要自行承担风险。
 
 ---
 
@@ -474,7 +460,7 @@ ASF 的更新过程会完全更新 ASF 使用的目录结构，但不包括您�
 
 请注意，无论如何设置上述选项，ASF 都只会处理 [**Steam 社区物品**](https://steamcommunity.com/my/inventory/#753_6)（`appID` 为 753，`contextID` 为 6），所以所有的游戏物品、礼物等都会被排除在交易报价之外。
 
-由于启用此选项会带来额外开销，我们建议您只在确实有机会自行集齐物品的机器人上启用——例如，如果您平时已经使用 `SendOnFarmingFinished`、`SendTradePeriod` 或 `loot` 命令来收集物品，就没有必要使用此选项。
+由于启用此选项会带来额外开销，我们建议您只在确实有机会自行集齐物品的机器人上启用——例如，如果您平时已经使用 `FarmingPreferences` 中的 `SendOnFarmingFinished` 偏好、`SendTradePeriod` 或 `loot` 命令来收集物品，就没有必要使用此选项。
 
 如果您不确定如何配置此选项，最好将其保留为默认值。
 
@@ -497,16 +483,6 @@ ASF 提供了一些您可以在文本中使用的特殊变量。 `{0}` 会被 AS
 ### `Enabled`
 
 这是一个默认值为 `false` 的 `bool` 类型属性。 该属性定义了是否启用此机器人。 已启用（`true`）的机器人实例将会在 ASF 启动后自动开始运行，而已禁用（`false`）的机器人就必须由您手动启动。 默认情况下，所有机器人都是被禁用的，所以需要为每个需要自动运行的机器人设置该属性为 `true`。
-
----
-
-### `EnableRiskyCardsDiscovery`
-
-这是一个默认值为 `false` 的 `bool` 类型属性。 该属性启用额外的回退机制，在 ASF 因为无法加载一个或多个徽章页面而无法找到可以挂卡的游戏时激活。 特别是，一些掉落卡片数量极大的帐户可能会遇到根本无法加载徽章页面的情况（由于服务端性能），这些帐户也无法专门用于挂卡，因为我们无法获取要启动挂卡流程所需的信息。 对于这些少数情况，此选项允许使用替代算法，即将可合成的补充包与当前帐户可用的补充包结合起来，以找出潜在的可挂卡游戏，然后消耗大量资源来验证和获取所需信息，并尝试在数据和信息有限的情况下开始挂卡过程，以便最终使徽章页面能够加载，我们也可以回归到正常的算法。 请注意，激活此回退方法时，ASF 只能基于有限数据操作，因此，如果 ASF 找到的掉落数量比实际低，是完全正常的——其他的掉落数量会在挂卡的后续阶段逐渐被发现。
-
-此选项被认为“有风险”是有原因的——它的过程非常缓慢，还需要消耗大量的资源（包括网络请求）才能运作，因此**不推荐**启用，更不推荐长期启用。 您只应该在认为当前的帐户正因为无法加载徽章页面导致 ASF 失效，无法加载挂卡流程所需必要信息的情况下使用此选项。 即使我们尽最大努力优化这一流程，此选项仍然可能会造成预料之外的结果，例如因为发送过多请求、对 Steam 服务器造成性能压力而导致临时甚至永久 Steam 封禁。 因此，我们提前警告过您，并在完全无保证的情况下提供此选项，您需要自行承担风险。
-
-除非您明确了解自己在做什么，否则请将其保留为默认值 `false`。
 
 ---
 
@@ -541,9 +517,43 @@ ASF 提供了一些您可以在文本中使用的特殊变量。 `{0}` 会被 AS
 
 ---
 
-### `FarmPriorityQueueOnly`
+### `FarmingPreferences`
 
-这是一个默认值为 `false` 的 `bool` 类型属性。 这个属性定义 ASF 是否应该仅自动挂您通过 `fq` [**命令**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-zh-CN)添加到优先挂卡队列内的应用。 在启用此选项时，ASF 将会跳过所有不在队列中的 `appIDs`，使您可以选择性地忽略 ASF 自动挂卡的游戏。 请记住，如果您没有向队列中添加任何游戏，ASF 就会表现得像您的帐户中没有游戏可以挂卡。 如果您不确定是否要启用此功能，请保留默认值 `false`。
+这是一个默认值为 `0` 的 `byte flags` 类型属性。 该属性定义 ASF 有关挂卡的行为，可选项如下：
+
+| 值   | 名称                        |
+| --- | ------------------------- |
+| 0   | None                      |
+| 1   | FarmingPausedByDefault    |
+| 2   | ShutdownOnFarmingFinished |
+| 4   | SendOnFarmingFinished     |
+| 8   | FarmPriorityQueueOnly     |
+| 16  | SkipRefundableGames       |
+| 32  | SkipUnplayedGames         |
+| 64  | EnableRiskyCardsDiscovery |
+| 128 | AutoSteamSaleEvent        |
+
+请注意，该属性是 `flags` 字段，因此可以设置为可用选项的任意组合。 如果您想了解更多，请阅读 **[JSON 映射](#json-映射)**。 不启用任何 Flag 即为 `None` 选项。
+
+所有选项都在下文解释。
+
+`FarmingPausedByDefault` 定义了机器人 `CardsFarmer` 模块的初始状态。 通常，机器人会在通过 `Enabled` 或 `start` 命令启动时自动开始挂卡。 如果您希望手动 `resume`（恢复）自动挂卡进程，可以设置 `FarmingPausedByDefault` 选项，例如，您可能只使用 `play` 命令，从来都不用 `CardFarmer`（挂卡）模块——这与发送 `pause` [**命令**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-zh-CN)的效果完全相同。
+
+`ShutdownOnFarmingFinished` 允许您在挂卡完成后停止机器人。 通常，ASF 会在机器人激活期间始终“占用”帐户。 在指定帐户挂卡完成后，ASF 会定期（每隔 `IdleFarmingPeriod` 小时）检查帐户内是否有新游戏含有 Steam 卡牌，以便于在不重启进程的情况下恢复此帐户的挂卡过程。 这应该适合大多数人，因为 ASF 可以在需要时自动恢复挂卡。 但是，您可能希望在指定帐户挂卡完成后停止进程，这就需要设置此选项。 在启用时，ASF 将会在挂卡完成之后注销帐户，这意味着此帐户将不再被定期检查或占用。 您应该自己决定，更希望 ASF 始终处理指定的机器人实例，还是在挂卡结束后停止。 如果所有帐户都停止运行，并且程序没有以 `--process-required` [**模式**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Command-Line-Arguments-zh-CN)运行，则 ASF 本身也会关闭，让您的机器休息，您可以在获得最后一张卡牌之后为计算机安排睡眠或者关机等其他操作。
+
+`SendOnFarmingFinished` 允许您自动将全部挂卡所得通过交易报价发送给拥有 `Master` 权限的用户，免去您手动发送交易报价的麻烦。 此选项的运作方式与 `loot` 命令相同，因此请注意，您需要先正确为用户设置 `Master` 权限，并且设置有效的 `SteamTradeToken`，并且还要保证此帐户原本就能够进行交易。 启用此选项时，除了在挂卡完成之后激发 `loot` 命令，ASF 也会在每次获得新物品时（未挂卡时）以及每次在交易中获得新物品时激发 `loot` 命令。 这可以方便地将来自其他人的物品“转发”到我们的帐户中。 通常您需要同时启用 **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-CN)** 以更好地使用此功能，但如果您愿意及时手动处理 2FA 交易确认，也可以跳过这一步。
+
+`FarmPriorityQueueOnly` 定义 ASF 是否应该仅自动挂您通过 `fq` [**命令**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-zh-CN)添加到优先挂卡队列内的应用。 在启用此选项时，ASF 将会跳过所有不在队列中的 `appIDs`，使您可以选择性地忽略 ASF 自动挂卡的游戏。 请记住，如果您没有向队列中添加任何游戏，ASF 就会表现得像您的帐户中没有游戏可以挂卡。
+
+`SkipRefundableGames` 定义 ASF 是否应该跳过可退款游戏的自动挂卡。 可退款游戏指的是您在 2 周内通过 Steam 商店购买的、游戏时间不超过 2 小时的游戏，详见 **[Steam 退款](https://store.steampowered.com/steam_refunds)**。 默认情况下，ASF 将会完全忽略 Steam 的退款策略，挂一切可以挂的游戏，这也是大多数用户所需要的。 然而，如果您不希望 ASF 马上开始挂您的可退款游戏，就可以设置该选项，这样您就可以自己体验游戏，并在需要时退款，避免 ASF 影响您的游戏时间。 请注意，如果您启用此选项，自您在 Steam 商店购买游戏起的 14 天内，ASF 将不会挂这款游戏，如果在此期间，您没有其他可挂卡游戏，ASF 就会表现为闲置。
+
+`SkipUnplayedGames` 定义 ASF 是否应该跳过尚未运行过的游戏。 这里提到的“尚未运行过的游戏”指的是您在 Steam 上完全没有游玩时间记录的游戏。 如果设置此选项，那么这种游戏会始终被跳过，直到 Steam 记录下任意游戏时长。 这可以让您更好地控制 ASF 能够挂哪些游戏的卡牌，跳过那些您还没有机会尝试的游戏，让一些 Steam 功能更加实用——例如推荐尚未游玩过的游戏。
+
+`EnableRiskyCardsDiscovery` 启用额外的回退机制，在 ASF 因为无法加载一个或多个徽章页面而无法找到可以挂卡的游戏时激活。 特别是，一些掉落卡片数量极大的帐户可能会遇到根本无法加载徽章页面的情况（由于服务端性能），这些帐户也无法专门用于挂卡，因为我们无法获取要启动挂卡流程所需的信息。 对于这些少数情况，此选项允许使用替代算法，即将可合成的补充包与当前帐户可用的补充包结合起来，以找出潜在的可挂卡游戏，然后消耗大量资源来验证和获取所需信息，并尝试在数据和信息有限的情况下开始挂卡过程，以便最终使徽章页面能够加载，我们也可以回归到正常的算法。 请注意，激活此回退方法时，ASF 只能基于有限数据操作，因此，如果 ASF 找到的掉落数量比实际低，是完全正常的——其他的掉落数量会在挂卡的后续阶段逐渐被发现。
+
+此选项被认为“有风险”是有原因的——它的过程非常缓慢，还需要消耗大量的资源（包括网络请求）才能运作，因此**不推荐**启用，更不推荐长期启用。 您只应该在认为当前的帐户正因为无法加载徽章页面导致 ASF 失效，无法加载挂卡流程所需必要信息的情况下使用此选项。 即使我们尽最大努力优化这一流程，此选项仍然可能会造成预料之外的结果，例如因为发送过多请求、对 Steam 服务器造成性能压力而导致临时甚至永久 Steam 封禁。 因此，我们提前警告过您，并在完全无保证的情况下提供此选项，您需要自行承担风险。
+
+`AutoSteamSaleEvent` 允许您在 Steam 夏季/冬季促销活动期间，通过每天浏览探索队列获取额外的卡牌。 启用此选项时，ASF 将会每隔 `8` 小时自动检查 Steam 探索队列（从程序启动一小时后开始），并且在需要时浏览完成这些探索队列。 如果您希望自己手动执行这些操作，则不建议使用此选项，通常情况下，该功能仅对纯机器人帐户有意义。 请注意，由于 Valve 经常造成问题或变更，**我们无法保证此功能正常工作**，因此该选项是有可能**完全无效**的。 我们不接受**任何**与此有关的漏洞报告，也不支持关于此选项的请求。 该属性是在完全无保证的情况下提供的，您需要自行承担风险。
 
 ---
 
@@ -672,11 +682,7 @@ ASF 提供了一些您可以在文本中使用的特殊变量。 `{0}` 会被 AS
 
 这是一个默认值为 `0`（`PlainText`）的 `byte` 类型属性。 该属性定义了 `SteamPassword` 的格式，目前支持的选项值详见[**安全性**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Security-zh-CN)章节。 您应该跟随那里的步骤，因为您需要确保 `SteamPassword` 属性的确按照 `PasswordFormat` 指定的格式存储了密码。 换句话说，在您更改 `PasswordFormat` 时，必须确保您的 `SteamPassword` **已经**是您所选择的格式。 除非您明确了解自己在做什么，否则请将其保留为默认值 `0`。
 
----
-
-### `Paused`
-
-这是一个默认值为 `false` 的 `bool` 类型属性。 这个属性定义了机器人 `CardsFarmer` 模块的初始状态。 在使用默认值 `false` 时，机器人会在通过 `Enabled` 或 `start` 命令启动时自动开始挂卡。 只有您希望手动 `resume`（恢复）自动挂卡进程时，才应该将这个属性设置为 `true`。例如，您可能只使用 `play` 命令，从来都不用 `CardFarmer`（挂卡）模块——这一属性与发送 `pause` [**命令**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-zh-CN)的效果完全相同。 如果您不确定是否要启用此功能，请保留默认值 `false`。
+如果您决定为一个至少登录过一次 Steam 网络的机器人更改 `PasswordFormat`，则可能会在下次启动机器人时遇到一次解密错误——这是因为 `PasswordFormat` 也被用于自动加密/解密 `Bot.db` 数据库文件中的机器人敏感属性。 您可以安全地忽略此错误，因为 ASF 能够自行解决此问题。 但如果此情况持续发生，例如在每次重新启动时，则应该进行排查。
 
 ---
 
@@ -728,33 +734,11 @@ ASF 提供了一些您可以在文本中使用的特殊变量。 `{0}` 会被 AS
 
 ---
 
-### `SendOnFarmingFinished`
-
-这是一个默认值为 `false` 的 `bool` 类型属性。 当 ASF 完成给定帐户的挂卡任务时，它可以通过交易报价将全部挂卡所得发送给拥有 `Master` 权限的用户，免去您手动发送交易报价的麻烦。 此选项的运作方式与 `loot` 命令相同，因此请注意，您需要先正确为用户设置 `Master` 权限，并且设置有效的 `SteamTradeToken`，并且还要保证此帐户原本就能够进行交易。 启用此选项时，除了在挂卡完成之后激发 `loot` 命令，ASF 也会在每次获得新物品时（未挂卡时）以及每次在交易中获得新物品时激发 `loot` 命令。 这可以方便地将来自其他人的物品“转发”到我们的帐户中。
-
-通常您需要同时启用 **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-CN)** 以更好地使用此功能，但如果您愿意及时手动处理 2FA 交易确认，也可以跳过这一步。 如果您不确定应该如何设置这个属性，请保留默认值 `false`。
-
----
-
 ### `SendTradePeriod`
 
-这是一个默认值为 `0` 的 `byte` 类型属性。 该属性的工作方式非常类似于 `SendOnFarmingFinished` 属性，只有一点区别——不是在挂卡完成时发送交易报价，而是每隔 `SendTradePeriod` 小时发送一次，无论是否挂卡完成。 如果您希望定期对子帐户发送 `loot` 命令而不是等到挂卡结束，则应该设置此属性。 默认值 `0` 会禁用此功能，如果您希望您的机器人每天发送一次交易报价，就可以设置为 `24`。
+这是一个默认值为 `0` 的 `byte` 类型属性。 该属性的工作方式非常类似于 `FarmingPreferences` 中的 `SendOnFarmingFinished` 偏好，只有一点区别——不是在挂卡完成时发送交易报价，而是每隔 `SendTradePeriod` 小时发送一次，无论是否挂卡完成。 如果您希望定期对子帐户发送 `loot` 命令而不是等到挂卡结束，则应该设置此属性。 默认值 `0` 会禁用此功能，如果您希望您的机器人每天发送一次交易报价，就可以设置为 `24`。
 
 通常您需要同时启用 **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-zh-CN)** 以更好地使用此功能，但如果您愿意及时手动处理 2FA 交易确认，也可以跳过这一步。 如果您不确定应该如何设置这个属性，请保留默认值 `0`。
-
----
-
-### `ShutdownOnFarmingFinished`
-
-这是一个默认值为 `false` 的 `bool` 类型属性。 ASF 会在机器人激活期间始终“占用”帐户。 在指定帐户挂卡完成后，ASF 会定期（每隔 `IdleFarmingPeriod` 小时）检查帐户内是否有新游戏含有 Steam 卡牌，以便于在不重启进程的情况下恢复此帐户的挂卡过程。 这应该适合大多数人，因为 ASF 可以在需要时自动恢复挂卡。 但是，您可能希望在指定帐户挂卡完成后停止进程，这就需要将这个属性设置为 `true`。 在启用时，ASF 将会在挂卡完成之后注销帐户，这意味着此帐户将不再被定期检查或占用。 您应该自己决定，更希望 ASF 始终处理指定的机器人实例，还是在挂卡结束后停止。 如果所有帐户都停止运行，并且程序没有以 `--process-required` [**模式**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Command-Line-Arguments-zh-CN)运行，则 ASF 本身也会关闭，让您的机器休息，您可以在获得最后一张卡牌之后为计算机安排睡眠或者关机等其他操作。
-
-如果您不确定应该如何设置这个属性，请保留默认值 `false`。
-
----
-
-### `SkipRefundableGames`
-
-这是一个默认值为 `false` 的 `bool` 类型属性。 该属性定义了 ASF 是否应该挂仍可以退款的游戏。 可退款游戏指的是您在 2 周内通过 Steam 商店购买的、游戏时间不超过 2 小时的游戏，详见 **[Steam 退款](https://store.steampowered.com/steam_refunds)**。 该选项的默认值为 `false`，ASF 将会完全忽略 Steam 的退款策略，挂一切可以挂的游戏，这也是大多数用户所需要的。 然而，如果您不希望 ASF 马上开始挂您的可退款游戏，就可以将该选项改为 `true`，这样您就可以自己体验游戏，并在需要时退款，避免 ASF 影响您的游戏时间。 请注意，如果您启用此选项，自您在 Steam 商店购买游戏起的 14 天内，ASF 将不会挂这款游戏，如果在此期间，您没有其他可挂卡游戏，ASF 就会表现为闲置。 如果您不确定是否要启用此功能，请保留默认值 `false`。
 
 ---
 
@@ -805,7 +789,7 @@ ASF 提供了一些您可以在文本中使用的特殊变量。 `{0}` 会被 AS
 
 简而言之，此属性允许您设定指定用户操作此机器人的权限。 权限主要用于访问 ASF **[命令](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-zh-CN)**，但也用于启用很多其他 ASF 功能，例如接受交易报价。 例如，您可能希望将自己的帐户设置为 `Master`，然后为您的两三位朋友设置 `Operator` 权限，使他们可以简单地通过 ASF 为您的机器人激活游戏序列号，但又**无法**执行停止机器人等操作。 因此，您可以轻松将权限分配给指定的用户，使他们能够在您设定的限制下操作您的机器人。
 
-我们建议您只设置一名用户为 `Master`，然后设定其他用户为较低权限的 `Operators`。 但从技术上来讲，您可以为机器人设定多名 `Master` 用户，并且 ASF 仍然可以正常工作，接受来自其中每名用户的交易报价，如果操作的目标用户只能有一名，例如 `loot` 请求、`SendOnFarmingFinished` 属性或 `SendTradePeriod` 属性，ASF 就会选择这些用户中 Steam ID 数字最小的一个。 如果您完全理解这些限制，特别是无论实际执行命令的 `Master` 用户是谁，`loot` 请求总是会将物品发送给 Steam ID 数字最小的那名 `Master` 用户，那么您就可以在这里设置多名 `Master` 权限用户，但仍然建议您选择单 Master 方案。
+我们建议您只设置一名用户为 `Master`，然后设定其他用户为较低权限的 `Operators`。 但从技术上来讲，您可以为机器人设定多名 `Master` 用户，并且 ASF 仍然可以正常工作，接受来自其中每名用户的交易报价，如果操作的目标用户只能有一名，例如 `loot` 请求、`FarmingPreferences` 属性中的 `SendOnFarmingFinished` 偏好或 `SendTradePeriod` 属性，ASF 就会选择这些用户中 Steam ID 数字最小的一个。 如果您完全理解这些限制，特别是无论实际执行命令的 `Master` 用户是谁，`loot` 请求总是会将物品发送给 Steam ID 数字最小的那名 `Master` 用户，那么您就可以在这里设置多名 `Master` 权限用户，但仍然建议您选择单 Master 方案。
 
 值得注意的是，还有一个额外的 `Owner` 权限，此权限由全局配置属性 `SteamOwnerID` 设置。 您无法在这里将 `Owner` 权限授予任何人，因为 `SteamUserPermissions` 属性仅能定义与此机器人实例相关，而非 ASF 进程相关的权限。 对于机器人相关的任务，`SteamOwnerID` 被视为与 `Master` 相同，因此也没有必要在此设置 `SteamOwnerID`。
 
@@ -853,7 +837,7 @@ ASF 提供了一些您可以在文本中使用的特殊变量。 `{0}` 会被 AS
 | 8  | Consumable            | 使用后消失的特殊消耗品               |
 | 9  | ProfileModifier       | 修改 Steam 个人资料外观的特殊物品      |
 | 10 | Sticker               | Steam 聊天中使用的特殊物品（聊天贴纸）    |
-| 11 | ChatEffect            | Steam 聊天中使用的特殊物品（聊天贴纸）    |
+| 11 | ChatEffect            | Steam 聊天中使用的特殊物品（聊天室效果）   |
 | 12 | MiniProfileBackground | Steam 个人资料迷你背景            |
 | 13 | AvatarProfileFrame    | Steam 个人资料头像边框            |
 | 14 | AnimatedAvatar        | Steam 个人资料动画头像            |

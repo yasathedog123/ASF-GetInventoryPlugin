@@ -191,7 +191,7 @@ If you're running ASF on the server, you probably want to use this option togeth
 
 ### `IdleFarmingPeriod`
 
-`byte` 타입으로 기본값은 `8`입니다. ASF가 농사지을 것이 없다면 주기적으로 `IdleFarmingPeriod` 시간마다 계정에 새로운 농사지을 게임이 있는지 확인합니다. 이 기능은 우리가 갖게될 새 게임에 대해 이야기 할때는 필요없습니다. ASF는 배지 페이지를 자동으로 확인할 만큼 똑똑합니다. `IdleFarmingPeriod`는 주로 이미 갖고 있는 오래된 게임에 트레이딩 카드가 추가되는 경우를 위한 것입니다. 이경우 아무런 알림도 없어서 이것을 알기 위해서는 ASF가 주기적으로 배지 페이지를 확인해야 합니다. `0`값은 이 기능을 비활성화 합니다. `ShutdownOnFarmingFinished`도 함께 확인하십시오.
+`byte` 타입으로 기본값은 `8`입니다. ASF가 농사지을 것이 없다면 주기적으로 `IdleFarmingPeriod` 시간마다 계정에 새로운 농사지을 게임이 있는지 확인합니다. 이 기능은 우리가 갖게될 새 게임에 대해 이야기 할때는 필요없습니다. ASF는 배지 페이지를 자동으로 확인할 만큼 똑똑합니다. `IdleFarmingPeriod`는 주로 이미 갖고 있는 오래된 게임에 트레이딩 카드가 추가되는 경우를 위한 것입니다. 이경우 아무런 알림도 없어서 이것을 알기 위해서는 ASF가 주기적으로 배지 페이지를 확인해야 합니다. `0`값은 이 기능을 비활성화 합니다. Also check: `ShutdownOnFarmingFinished` preference in `FarmingPreferences`.
 
 ---
 
@@ -368,15 +368,13 @@ In general, lowering `WebLimiterDelay` under default value is **strongly discour
 ```json
 {
     "AcceptGifts": false,
-    "AutoSteamSaleEvent": false,
     "BotBehaviour": 0,
     "CompleteTypesToSend": [],
     "CustomGamePlayedWhileFarming": null,
     "CustomGamePlayedWhileIdle": null,
     "Enabled": false,
-    "EnableRiskyCardsDiscovery": false,
     "FarmingOrders": [],
-    "FarmPriorityQueueOnly": false,
+    "FarmingPreferences": 0,
     "GamesPlayedWhileIdle": [],
     "HoursUntilCardDrops": 3,
     "LootableTypes": [1, 3, 5],
@@ -384,13 +382,9 @@ In general, lowering `WebLimiterDelay` under default value is **strongly discour
     "OnlineFlags": 0,
     "OnlineStatus": 1,
     "PasswordFormat": 0,
-    "Paused": false,
     "RedeemingPreferences": 0,
     "RemoteCommunication": 3,
-    "SendOnFarmingFinished": false,
     "SendTradePeriod": 0,
-    "ShutdownOnFarmingFinished": false,
-    "SkipRefundableGames": false,
     "SteamLogin": null,
     "SteamMasterClanID": 0,
     "SteamParentalCode": null,
@@ -414,14 +408,6 @@ In general, lowering `WebLimiterDelay` under default value is **strongly discour
 `bool` 타입으로 기본값은 `false`입니다. 활성화 되어있으면 ASF는 자동으로 봇으로 보내지는 모든 Steam 선물(월렛 기프트카드 포함)을 수락하고 등록합니다. `SteamUserPermissions`에서 정의된 사용자 이외의 사용자가 보낸 선물도 포함됩니다. 이메일 주소로 보낸 선물은 클라이언트로 직접 전달되지 않음을 명심하십시오. ASF는 당신의 도움 없이는 그것을 받을 수 없습니다.
 
 이 옵션은 부계정에 권장합니다. 주 계정에 모든 선물을 자동으로 등록하지는 않기 때문입니다. 이 기능을 사용할지 아닐지 불확실하다면 기본값인 `false`를 유지하십시오.
-
----
-
-### `AutoSteamSaleEvent`
-
-`bool` 타입으로 기본값은 `false`입니다. Steam의 여름/겨울 세일 이벤트 기간동안 Steam은 매일 맞춤 대기열을 확인하거나 특정 이벤트 행동을 하면 추가로 카드를 제공합니다. 이 옵션이 활성화되어 있으면 ASF는 자동으로 프로그램이 시작한지 한시간안에 시작하여 `8`시간마다 Steam 맞춤 대기열을 확인하고, 필요하다면 클리어합니다. 그 행동을 직접하기 원한다면 이 옵션은 권장하지 않습니다. 일반적으로 봇 계정에만 맞는 이야기입니다. 또한, 처음으로 이 카드를 받기 원한다면 계정이 적어도 `8` 레벨 이상인지 확인해야 합니다. 이는 Steam의 직접 요구사항입니다. 이 기능을 사용할지 아닐지 불확실하다면 기본값인 `false`를 유지하십시오.
-
-Valve의 이슈, 변화, 문제에 따라 **이 기능이 정상작동할지 보증하지 않습니다**. 따라서 이 옵션이**전혀 작동하지 않을** 수도 있습니다. 이 옵션과 관련한 **어떠한** 버그 제보, 지원 요청도 받지 않습니다. 보증을 전혀 하지 않고 제공되는 기능이므로, 위험을 감수하고 사용하시기 바랍니다.
 
 ---
 
@@ -474,7 +460,7 @@ As of today, the following item types are supported in this setting:
 
 Please note that regardless of the settings above, ASF will only ask for **[Steam community items](https://steamcommunity.com/my/inventory/#753_6)** (`appID` of 753, `contextID` of 6), so all game items, gifts and likewise, are excluded from the trade offer by definition.
 
-Due to additional overhead of using this option, it's recommended to use it only on bot accounts that have a realistic chance of finishing sets on their own - for example, it makes no sense to activate if you're already using `SendOnFarmingFinished`, `SendTradePeriod` or `loot` command on usual basis.
+Due to additional overhead of using this option, it's recommended to use it only on bot accounts that have a realistic chance of finishing sets on their own - for example, it makes no sense to activate if you're already using `SendOnFarmingFinished` preference in `FarmingPreferences`, `SendTradePeriod` or `loot` command on usual basis.
 
 이 옵션을 어떻게 설정해야 할지 확실치 않다면 기본값으로 두는 것이 최선입니다.
 
@@ -497,16 +483,6 @@ ASF provides a few special variables that you can optionally use in your text. `
 ### `Enabled`
 
 `bool` 타입으로 기본값은 `false`입니다. 이 속성값은 이 봇의 활성화 여부를 정의합니다. 활성화된 봇 인스턴스(`true`)는 ASF 실행시에 자동으로 시작되고, 비활성된 봇 인스턴스(`false`)는 수동으로 시작해야 합니다. 기본값으로 모든 봇이 비활성화되어 있습니다. 따라서 자동으로 시작할 모든 봇의 이 속성값을 `true`로 바꾸어야 합니다.
-
----
-
-### `EnableRiskyCardsDiscovery`
-
-`bool` 타입으로 기본값은 `false`입니다. This property enables additional fallback which triggers when ASF is unable to load one or more of badge pages and is therefore unable to find games available for farming. In particular, some accounts with massive amount of card drops might cause a situation where loading badge pages is no longer possible (due to overhead), and those accounts are impossible for farming purely because we can't load the information based on which we can start the process. For those handful cases, this option allows alternative algorithm to be used, which uses a combination of boosters possible to craft and booster packs the account is eligible for, in order to find potentially available games to idle, then spends excessive amount of resources for verifying and fetching required information, and attempts to start the process of farming on limited amount of data and information in order to eventually reach a situation when badge page loads and we'll be able to use normal approach. Please note that when this fallback is used, ASF operates only with limited data, therefore it's completely normal for ASF to find much less drops than in reality - other drops will be found at later stage of farming process.
-
-This option is called "risky" for a very good reason - it's extremely slow and requires significant amount of resources (including network requests) for operation, therefore it's **not recommended** to be enabled, and especially in long-term. You should use this option only if you previously determined that your account suffers from being unable to load badge pages and ASF can't operate on it, always failing to load necessary information to start the process. Even if we made our best to optimize the process as much as possible, it's still possible for this option to backfire, and it might cause unwanted outcomes, such as temporary and maybe even permanent bans from Steam side for sending too many requests and otherwise causing overhead on Steam servers. Therefore, we warn you in advance and we're offering this option with absolutely no guarantees, you're using it at your own risk.
-
-Unless you know what you're doing, you should keep it with default value of `false`.
 
 ---
 
@@ -541,9 +517,43 @@ There is also farming priority queue that is accessible through `fq` **[commands
 
 ---
 
-### `FarmPriorityQueueOnly`
+### `FarmingPreferences`
 
-`bool` 타입으로 기본값은 `false`입니다. This property defines if ASF should consider for automatic farming only apps that you added yourself to priority farming queue available with `fq` **[commands](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands)**. When this option is enabled, ASF will skip all `appIDs` that are missing on the list, effectively allowing you to cherry-pick games for automatic ASF farming. Keep in mind that if you didn't add any games to the queue then ASF will act as if there is nothing to farm on your account. 이 기능을 사용할지 아닐지 불확실하다면 기본값인 `false`를 유지하십시오.
+`byte flags` 타입으로 기본값은 `0`입니다. This property defines ASF behaviour related to farming, and is defined as below:
+
+| 값   | 이름                        |
+| --- | ------------------------- |
+| 0   | 없음(None)                  |
+| 1   | FarmingPausedByDefault    |
+| 2   | ShutdownOnFarmingFinished |
+| 4   | SendOnFarmingFinished     |
+| 8   | FarmPriorityQueueOnly     |
+| 16  | SkipRefundableGames       |
+| 32  | SkipUnplayedGames         |
+| 64  | EnableRiskyCardsDiscovery |
+| 128 | AutoSteamSaleEvent        |
+
+이 속성값은 `flags` 항목이므로, 가능한 여러 값을 조합할 수 있습니다. Check out **[json mapping](#json-mapping)** if you'd like to learn more. 플래그를 활성화 하지 않으면 `없음(None)`과 같습니다.
+
+All of the options are described below.
+
+`FarmingPausedByDefault` defines initial state of `CardsFarmer` module. Normally bot will automatically start farming when it's started, either because of `Enabled` or `start` command. Using `FarmingPausedByDefault` can be used if you want to manually `resume` automatic farming process, for example because you want to use `play` all the time and never use automatic `CardsFarmer` module - this works exactly the same as `pause` **[command](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands)**.
+
+`ShutdownOnFarmingFinished` allows you to shutdown bot once it's done farming. Normally ASF is "occupying" an account for the whole time of process being active. 해당 계정의 농사가 끝났다면, ASF는 주기적으로 매 `IdleFarmingPeriod` 시간마다 Steam 카드가 있는 새로운 게임이 그 사이에 추가되었는지를 확인하여 프로세스를 재시작할 필요없이 농사를 계속할 수 있도록 합니다. 이는 대부분의 사람들에게 유용한데, ASF는 필요하면 자동으로 농사를 이어서할 수 있기 때문입니다. However, you may actually want to stop the process when given account is fully farmed, you can achieve that by using this flag. 활성화되면 ASF는 계정의 농사가 완전히 끝나면 로그오프하여 더이상 주기적으로 체크하거나 점유하지 않게 합니다. ASF가 모든 시간을 봇 인스턴스에 사용하도록 하거나, 혹은 농사 프로세스가 끝나면 멈추게 할지를 스스로 정해야 합니다. 모든 계정이 멈추고 프로세스가 `--process-required` **[모드](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Command-Line-Arguments-ko-KR)** 에서 실행중이 아니면, ASF 또한 종료되고 기기도 쉴 수 있게 되며, 마지막 카드 획득 순간에 대기모드나 종료 등 다른 작업을 할 수 있도록 합니다.
+
+`SendOnFarmingFinished` allows you to automatically send steam trade containing everything farmed up to this point to user with `Master` permission, which is very convenient if you don't want to bother with trades yourself. This option works the same as `loot` command, therefore keep in mind that it requires user with `Master` permission set, you may also need a valid `SteamTradeToken`, as well as using an account that is eligible for trading in the first place. 이 옵션이 켜져있다면 농사 후 `루팅`을 시작하는 것과 함께, ASF는 거래로 생기는 새로운 아이템의 알림도 `루팅`을 시작합니다. 이것은 다른 사람이 우리 계정에 보낸 아이템을 "전달"하는데 매우 유용합니다. Typically you'll want to use **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication)** together with this feature, although it's not a requirement if you intend to handle 2FA confirmations manually in timely fashion.
+
+`FarmPriorityQueueOnly` defines if ASF should consider for automatic farming only apps that you added yourself to priority farming queue available with `fq` **[commands](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands)**. When this option is enabled, ASF will skip all `appIDs` that are missing on the list, effectively allowing you to cherry-pick games for automatic ASF farming. Keep in mind that if you didn't add any games to the queue then ASF will act as if there is nothing to farm on your account.
+
+`SkipRefundableGames` defines if ASF should skip games that are still refundable from automatic farming. 환불 가능한 게임은 **[Steam 환불](https://store.steampowered.com/steam_refunds)** 페이지에 게시된 것 처럼 Steam 상점에서 구매한지 2주 이내이고 2시간을 넘지않게 플레이한 게임입니다. By default, ASF ignores Steam refunds policy entirely and farms everything, as most people would expect. However, you can use this flag if you want to ensure that ASF won't farm any of your refundable games too soon, allowing you to evaluate those games yourself and refund if needed without worrying about ASF affecting playtime negatively. Please note that if you enable this option then games you purchased from Steam Store won't be farmed by ASF for up to 14 days since redeem date, which will show as nothing to farm if your account doesn't own anything else.
+
+`SkipUnplayedGames` defines if ASF should skip games that you didn't launch yet. Unplayed game in this context means that you have exactly no playtime recorded for it on Steam. If you use this flag, then such games will be skipped until Steam registers any playtime for them. This allows you to control better which games ASF is eligible to farm, skipping those that you didn't have a chance of trying out yet, keeping selected Steam features more useful - such as suggesting unplayed games to play.
+
+`EnableRiskyCardsDiscovery` enables additional fallback which triggers when ASF is unable to load one or more of badge pages and is therefore unable to find games available for farming. In particular, some accounts with massive amount of card drops might cause a situation where loading badge pages is no longer possible (due to overhead), and those accounts are impossible for farming purely because we can't load the information based on which we can start the process. For those handful cases, this option allows alternative algorithm to be used, which uses a combination of boosters possible to craft and booster packs the account is eligible for, in order to find potentially available games to idle, then spending excessive amount of resources for verifying and fetching required information, and attempting to start the process of farming on limited amount of data and information in order to eventually reach a situation when badge page loads and we'll be able to use normal approach. Please note that when this fallback is used, ASF operates only with limited data, therefore it's completely normal for ASF to find much less drops than in reality - other drops will be found at later stage of farming process.
+
+This option is called "risky" for a very good reason - it's extremely slow and requires significant amount of resources (including network requests) for operation, therefore it's **not recommended** to be enabled, and especially in long-term. You should use this option only if you previously determined that your account suffers from being unable to load badge pages and ASF can't operate on it, always failing to load necessary information to start the process. Even if we made our best to optimize the process as much as possible, it's still possible for this option to backfire, and it might cause unwanted outcomes, such as temporary and maybe even permanent bans from Steam side for sending too many requests and otherwise causing overhead on Steam servers. Therefore, we warn you in advance and we're offering this option with absolutely no guarantees, you're using it at your own risk.
+
+`AutoSteamSaleEvent` allows you to claim additional cards during Steam summer/winter sale events from browsing discovery queue each day. 이 옵션이 활성화되어 있으면 ASF는 자동으로 프로그램이 시작한지 한시간안에 시작하여 `8`시간마다 Steam 맞춤 대기열을 확인하고, 필요하다면 클리어합니다. 그 행동을 직접하기 원한다면 이 옵션은 권장하지 않습니다. 일반적으로 봇 계정에만 맞는 이야기입니다. Valve의 이슈, 변화, 문제에 따라 **이 기능이 정상작동할지 보증하지 않습니다**. 따라서 이 옵션이**전혀 작동하지 않을** 수도 있습니다. 이 옵션과 관련한 **어떠한** 버그 제보, 지원 요청도 받지 않습니다. 보증을 전혀 하지 않고 제공되는 기능이므로, 위험을 감수하고 사용하시기 바랍니다.
 
 ---
 
@@ -672,11 +682,7 @@ However, there is one catch with `Invisible` mode - it doesn't go well with prim
 
 `byte` type with default value of `0` (`PlainText`). This property defines the format of `SteamPassword` property, and currently supports values specified in the **[security](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Security)** section. You should follow the instructions specified there, as you'll need to ensure that `SteamPassword` property indeed includes password in matching `PasswordFormat`. 즉, `PasswordFormat`을 변경하면 `SteamPassword`는 그 후에 변경하는 것이 아니고 **이미** 그 형식으로 바뀌어있어야 합니다. 무슨 일을 하고 있는지 알지 못한다면 기본값인 `0`을 유지하십시오.
 
----
-
-### `Paused`
-
-`bool` 타입으로 기본값은 `false`입니다. 이 속성값은 `CardsFarmer` 모듈의 최초상태를 정의합니다. 기본값인 `false` 상태에서, 봇이 `Enabled` 또는 `start` 명령어로 시작되면 자동으로 농사를 시작합니다. 자동 농사 프로세스를 수동으로 `resume` 하려고 할때만 이 속성값을 `true`로 변경하십시오. 예를 들어 항상 `play`만 사용하고 절대로 자동 `CardsFarmer` 모듈을 사용하지 않는 경우입니다. 이 경우는 `pause` **[명령어](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-ko-KR)** 와 정확하게 동일하게 동작합니다. 이 기능을 사용할지 아닐지 불확실하다면 기본값인 `false`를 유지하십시오.
+If you decide to change `PasswordFormat` of a bot that has already logged in to Steam network at least once, it's possible that you'll get one-time decrypt error on the next bot's start - this is caused by the fact that `PasswordFormat` is also used in regards to automatic encryption/decryption of sensitive properties in `Bot.db` database file. You can safely ignore that error, as ASF will be able to recover from this situation on its own. If it's happening on constant basis though, e.g. each restart, it should be investigated.
 
 ---
 
@@ -728,33 +734,11 @@ Further explanation on this subject is available in **[remote communication](htt
 
 ---
 
-### `SendOnFarmingFinished`
-
-`bool` 타입으로 기본값은 `false`입니다. ASF가 해당 계정의 농사를 끝내면 이 시점까지 농사지은 모든 것을 포함시킨 Steam 거래를 `주인(Master)` 권한을 가진 사용자에게 자동으로 보낼 수 있습니다. 이는 직접 거래하기 귀찮다면 매우 편리합니다. This option works the same as `loot` command, therefore keep in mind that it requires user with `Master` permission set, you may also need a valid `SteamTradeToken`, as well as using an account that is eligible for trading in the first place. 이 옵션이 켜져있다면 농사 후 `루팅`을 시작하는 것과 함께, ASF는 거래로 생기는 새로운 아이템의 알림도 `루팅`을 시작합니다. 이것은 다른 사람이 우리 계정에 보낸 아이템을 "전달"하는데 매우 유용합니다.
-
-Typically you'll want to use **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication)** together with this feature, although it's not a requirement if you intend to handle 2FA confirmations manually in timely fashion. 이 속성값을 어떻게 설정해야 할지 모르겠다면, 기본값인 `false`로 두십시오.
-
----
-
 ### `SendTradePeriod`
 
-`byte` 타입으로 기본값은 `0`입니다. 이 속성값은 `SendOnFarmingFinished` 속성값과 매우 유사하게 동작하지만 차이가 하나 있습니다. 농사가 끝나면 거래를 보내는 대신 농사가 얼마나 남았는지와 상관없이 매 `SendTradePeriod` 시간마다 거래를 보냅니다. 부계정의 농사가 끝날때까지 기다리는 대신 평소에 `루팅` 하고 싶은 경우 유용합니다. 기본값인 `0`은 이 기능을 비활성화합니다. 예를 들어 봇이 매일 거래를 보내길 원한다면 여기에 `24`를 넣으십시오.
+`byte` 타입으로 기본값은 `0`입니다. This property works very similar to `SendOnFarmingFinished` preference in `FarmingPreferences`, with one difference - instead of sending trade when farming is done, we can also send it every `SendTradePeriod` hours, regardless of how much we have to farm left. 부계정의 농사가 끝날때까지 기다리는 대신 평소에 `루팅` 하고 싶은 경우 유용합니다. 기본값인 `0`은 이 기능을 비활성화합니다. 예를 들어 봇이 매일 거래를 보내길 원한다면 여기에 `24`를 넣으십시오.
 
 Typically you'll want to use **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication)** together with this feature, although it's not a requirement if you intend to handle 2FA confirmations manually in timely fashion. 이 속성값을 어떻게 설정해야 할지 모르겠다면, 기본값인 `0`으로 두십시오.
-
----
-
-### `ShutdownOnFarmingFinished`
-
-`bool` 타입으로 기본값은 `false`입니다. ASF는 활성화된 모든 시간동안 계정을 "점유하고" 있습니다. 해당 계정의 농사가 끝났다면, ASF는 주기적으로 매 `IdleFarmingPeriod` 시간마다 Steam 카드가 있는 새로운 게임이 그 사이에 추가되었는지를 확인하여 프로세스를 재시작할 필요없이 농사를 계속할 수 있도록 합니다. 이는 대부분의 사람들에게 유용한데, ASF는 필요하면 자동으로 농사를 이어서할 수 있기 때문입니다. 하지만 해당 계정이 완전히 농사가 끝난 다음에 프로세스를 실제로 멈추고 싶다면, 이 속성값을 `true`로 설정함으로써 그렇게 할 수 있습니다. 활성화되면 ASF는 계정의 농사가 완전히 끝나면 로그오프하여 더이상 주기적으로 체크하거나 점유하지 않게 합니다. ASF가 모든 시간을 봇 인스턴스에 사용하도록 하거나, 혹은 농사 프로세스가 끝나면 멈추게 할지를 스스로 정해야 합니다. 모든 계정이 멈추고 프로세스가 `--process-required` **[모드](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Command-Line-Arguments-ko-KR)** 에서 실행중이 아니면, ASF 또한 종료되고 기기도 쉴 수 있게 되며, 마지막 카드 획득 순간에 대기모드나 종료 등 다른 작업을 할 수 있도록 합니다.
-
-이 속성값을 어떻게 설정해야 할지 모르겠다면, 기본값인 `false`로 두십시오.
-
----
-
-### `SkipRefundableGames`
-
-`bool` 타입으로 기본값은 `false`입니다. This property defines if ASF is permitted to farm games that are still refundable. 환불 가능한 게임은 **[Steam 환불](https://store.steampowered.com/steam_refunds)** 페이지에 게시된 것 처럼 Steam 상점에서 구매한지 2주 이내이고 2시간을 넘지않게 플레이한 게임입니다. By default when this option is set to `false`, ASF ignores Steam refunds policy entirely and farms everything, as most people would expect. However, you can change this option to `true` if you want to ensure that ASF won't farm any of your refundable games too soon, allowing you to evaluate those games yourself and refund if needed without worrying about ASF affecting playtime negatively. Please note that if you enable this option then games you purchased from Steam Store won't be farmed by ASF for up to 14 days since redeem date, which will show as nothing to farm if your account doesn't own anything else. 이 기능을 사용할지 아닐지 불확실하다면 기본값인 `false`를 유지하십시오.
 
 ---
 
@@ -805,7 +789,7 @@ In limited circumstances, ASF is also able to generate a valid Steam parental co
 
 간단하게 말하면 주어진 사용자에 대해 권한을 부여하는 속성값입니다. 권한은 ASF **[명령어](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-ko-KR)** 에 접근할 때 중요하지만, 거래를 수락하는 것 같은 많은 ASF 기능을 활성화하는데도 중요합니다. For example you may want to set your own account as `Master`, and give `Operator` access to 2-3 of your friends so they can easily redeem keys for your bot with ASF, while **not** being eligible e.g. for stopping it. 사용자에게 권한을 쉽게 줄수 있으므로 당신의 봇을 특정행동을 하도록 허용할 수 있습니다.
 
-정확히 한 사용자만을 `주인(Master)`으로, 그리고 필요한 만큼을 `운영자(Operator)` 및 그 이하로 설정하기를 권장합니다. 기술적으로 여러명의 `주인(Master)` 을 설정해도 ASF는 봇에게 들어오는 모든 거래를 수락하는 등 정상적으로 동작합니다. `loot` 요청이나 `SendOnFarmingFinished`, `SendTradePeriod` 속성값처럼 단일 대상이 필요한 모든 행동의 경우 ASF는 Steam ID 숫자가 가장 작은 사용자를 그 대상으로 합니다. If you perfectly understand those limitations, especially the fact that `loot` request will always send items to the `Master` with lowest steam ID, regardless of the `Master` that actually executed the command, then you can define multiple users with `Master` permission here, but we still recommend a single master scheme.
+정확히 한 사용자만을 `주인(Master)`으로, 그리고 필요한 만큼을 `운영자(Operator)` 및 그 이하로 설정하기를 권장합니다. While it's technically possible to set multiple `Masters` and ASF will work correctly with them, for example by accepting all of their trades sent to the bot, ASF will use only one of them (with lowest steam ID) for every action that requires a single target, for example a `loot` request, so also properties like `SendOnFarmingFinished` preference in `FarmingPreferences` or `SendTradePeriod`. If you perfectly understand those limitations, especially the fact that `loot` request will always send items to the `Master` with lowest steam ID, regardless of the `Master` that actually executed the command, then you can define multiple users with `Master` permission here, but we still recommend a single master scheme.
 
 `소유자(Owner)` 권한이 또 하나 있습니다. 일반 환경설정의 `SteamOwnerID` 속성값에 선언되어 있습니다. `SteamUserPermissions` 속성값은 ASF 프로세스가 아니라 봇 인스턴스와 관련된 권한만 정의하므로 `소유자(Owner)` 권한을 여기에서 할당할 수 없습니다. 봇과 관련된 작업에서 `SteamOwnerID`는 `주인(Master)`과 동일하게 취급되므로 여기에서 `SteamOwnerID`를 설정하는 것은 꼭 필요하지는 않습니다.
 

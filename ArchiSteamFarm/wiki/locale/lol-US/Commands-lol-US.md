@@ -94,7 +94,7 @@ TEH MOST ADVANCD AN FLEXIBLE WAI OV EXECUTIN COMMANDZ, PERFIK 4 USR INTERACSHUN 
 | `start [Bots]`                                                       | `Master`        | STARTS GIVEN BOT INSTANCEZ.                                                                                                                                                                                                                                                                                   |
 | `stats`                                                              | `Owner`         | PRINTS PROCES STATISTICS, SUCH AS MANAGD MEMS USAGE.                                                                                                                                                                                                                                                          |
 | `status [Bots]`                                                      | `FamilySharing` | PRINTS STATUS OV GIVEN BOT INSTANCEZ.                                                                                                                                                                                                                                                                         |
-| `std [Bots]`                                                         | `Master`        | Special command for **[`SteamTokenDumperPlugin`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/SteamTokenDumperPlugin)** which triggers refresh of selected bots and submission of data immediately.                                                                                                    |
+| `std [Bots]`                                                         | `Master`        | SPESHUL COMMAND 4 **[`SteamTokenDumperPlugin`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/SteamTokenDumperPlugin-lol-US)** WHICH TRIGGERS REFRASH OV SELECTET BODS END SUBMISHUN OV DATA IMMEDIATELY.                                                                                                |
 | `stop [Bots]`                                                        | `Master`        | STOPS GIVEN BOT INSTANCEZ.                                                                                                                                                                                                                                                                                    |
 | `tb [Bots]`                                                          | `Master`        | LISTS BLACKLISTD USERS FRUM TRADIN MODULE OV GIVEN BOT INSTANCEZ.                                                                                                                                                                                                                                             |
 | `tbadd [Bots] <SteamIDs64>`                                    | `Master`        | BLACKLISTS GIVEN `steamIDs` FRUM TRADIN MODULE OV GIVEN BOT INSTANCEZ.                                                                                                                                                                                                                                        |
@@ -131,13 +131,14 @@ AS UVE READ ABOOV, SPACE CHARACTR IZ BEAN USD AS DELIMITR 4 COMMAND, THEREFORE I
 
 SUM COMMANDZ R ALSO AVAILABLE WIF THEIR ALIASEZ, MOSTLY 2 SAVE U ON TYPIN OR AKOWNT 4 DIFFERENT DIALECTS:
 
-| COMMAND      | ALIAS        |
-| ------------ | ------------ |
-| `addlicense` | `addlicence` |
-| `owns ASF`   | `oa`         |
-| `status ASF` | `sa`         |
-| `redeem`     | `r`          |
-| `redeem^`    | `r^`         |
+| COMMAND          | ALIAS              |
+| ---------------- | ------------------ |
+| `addlicense`     | `al`, `addlicence` |
+| `addlicense ASF` | `ala`              |
+| `owns ASF`       | `oa`               |
+| `status ASF`     | `sa`               |
+| `redeem`         | `r`                |
+| `redeem^`        | `r^`               |
 
 ---
 

@@ -12,13 +12,13 @@ using System.Reflection;
 
 [assembly: System.Reflection.AssemblyCompanyAttribute("YourName")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
-[assembly: System.Reflection.AssemblyCopyrightAttribute("Copyright © 2023 YourName")]
+[assembly: System.Reflection.AssemblyCopyrightAttribute("Copyright © 2024 YourName")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("GetInventoryPlugin description.")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("2.0.1.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("2.0.1")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0.0+160212d2af01458c30f7185d09adb15b6001e3cb")]
 [assembly: System.Reflection.AssemblyProductAttribute("GetInventoryPlugin")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GetInventoryPlugin")]
-[assembly: System.Reflection.AssemblyVersionAttribute("2.0.1.0")]
+[assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyMetadataAttribute("RepositoryUrl", "https://github.com/YourName/GetInventoryPlugin.git")]
 [assembly: System.Resources.NeutralResourcesLanguageAttribute("en")]
 

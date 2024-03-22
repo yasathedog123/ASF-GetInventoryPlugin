@@ -1,12 +1,12 @@
-# Third-party
+# Tretie strany
 
-This section includes various third-party additions written exclusively (or mainly) for usage together with ASF. They range from ASF plugins, through simple web applications and internal libraries for integration, ending with fully-featured bots for other platforms. If you'd like to add something to the list, let us know on Discord or on our Steam group.
+Táto časť obsahuje rôzne doplnky tretích strán napísané výhradne na použitie spolu s ASF. They range from ASF plugins, through simple web applications and internal libraries for integration, ending with fully-featured bots for other platforms. Ak by ste chceli niečo pridať do zoznamu, dajte nám vedieť na Discorde alebo v našej Steam skupine.
 
-Please note that below programs are **not** maintained by ASF developers and therefore **we give no guarantee about any of them**, especially in terms of security, safety or Steam ToS compliance. This list is maintained for reference only. You should always ensure that the third-party utility you're about to use is safe and legit enough for you, as you're using all of them at your own risk.
+Please note that below programs are **not** maintained by ASF developers and therefore **we give no guarantee about any of them**, especially in terms of security, safety or Steam ToS compliance. Tento list slúži len ako referencia. Vždy by ste sa mali uistiť, že nástroje tretej strany ktoré sa chystáte použiť, je pre vás dostatočne bezpečný pretože všetky používate na vlastné riziko.
 
 ---
 
-## ASF plugins
+## ASF pluginy
 
 ### **[Citrinate](https://github.com/Citrinate)**
 

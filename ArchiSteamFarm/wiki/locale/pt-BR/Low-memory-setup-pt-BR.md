@@ -28,7 +28,7 @@ As dicas abaixo **não afetam negativamente o desempenho** e podem ser aplicados
 
 - Execute a **[versão genérica](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Setting-up-pt-BR#configuração-genérica)** do ASF, se possível. A versão genérica do ASF utiliza menos memória, pois não inclui um tempo de execução interno, não vem como um único arquivo, não precisa se descompactar durante a execução e, portanto, é menor e tem uma pegada de memória menor. Os pacotes de um sistema operacional específicos são práticos e convenientes, mas também estão incluídos com tudo o que é necessário para iniciar o ASF, algo que você pode lidar por conta própria e usar a variante genérica do ASF.
 - Nunca execute mais de uma cópia do ASF. O ASF destina-se a lidar com um número ilimitado de bots de uma vez e a menos que você esteja vinculando cada cópia do ASF para diferentes interfaces/endereços de IP, você deve ter exatamente **um** processo do ASF, com vários bots (se necessário).
-- Utilize o `ShutdownOnFarmingFinished`. Um bot ativo ocupa mais recursos que um desativado. Não é um ganho significativo, já que o estado do bot ainda precisa ser mantido, mas você está salvando uma certa quantidade de recursos, especialmente de todos os recursos relacionados à rede, tais como soquetes TCP. Você sempre pode utilizar outros bots, se necessário.
+- Faça o uso de `ShutdownOnFarmingFinished` em `FarmingPreferences`. Um bot ativo ocupa mais recursos que um desativado. Não é um ganho significativo, já que o estado do bot ainda precisa ser mantido, mas você está salvando uma certa quantidade de recursos, especialmente de todos os recursos relacionados à rede, tais como soquetes TCP. Você sempre pode utilizar outros bots, se necessário.
 - Mantenha uma quantidade baixa de bots. Um bot sem o parâmetro `Enabled` toma menos recursos, já que o ASF não se preocupa em iniciá-lo. Também tenha em mente que o ASF tem que criar um bot para cada uma das suas configurações, portanto se você não precisa iniciar um bot com o comando `start` e quer salvar alguma memória extra, você pode renomear temporariamente `Bot.json` para, por exemplo, `Bot.json.bak`, para que o ASF não crie um bot inativo no processo. Desta forma você não será capaz de iniciá-lo pelo comando `start` sem renomeá-lo de volta, mas o ASF também não se preocupa em manter o estado deste bot na memória deixando espaço para outras coisas (é um ganho muito pequeno, em 99,9% casos você não deveria se preocupar com isso, só mantér seus bot com o parâmetro `Enabled` com o valor `false`).
 - Ajuste suas configurações. Especialmente a configuração global do ASF possui muitas variáveis para ajustar. Por exemplo, ao aumentar `LoginLimiterDelay`, você fará com que seus bots iniciem mais lentamente, permitindo que as instâncias já em execução coletem insígnias enquanto isso, em vez de iniciar os bots mais rapidamente, o que exigiria mais recursos, já que mais bots executarão trabalhos significativos (como análise de insígnias) ao mesmo tempo. Quanto menos trabalho a ser feito ao mesmo tempo - menos memória é usada.
 
@@ -60,9 +60,9 @@ Por outro lado, definir esse valor alto o suficiente é uma maneira perfeita par
 
 ### [`GCConserveMemory`](https://learn.microsoft.com/dotnet/core/runtime-config/garbage-collector#conserve-memory)
 
-> Configures the garbage collector to conserve memory at the expense of more frequent garbage collections and possibly longer pause times.
+> Configura o coletor de lixo para conservar memória à custa de coletas de lixo mais frequentes e possivelmente tempos de pausa mais longos.
 
-A value between 0-9 can be used. The bigger the value, the more GC will optimize memory over performance.
+Um valor entre 0-9 pode ser usado. Quanto maior o valor, mais o coletor de lixo otimizará a memória em detrimento do desempenho.
 
 ### [`GCHighMemPercent`](https://docs.microsoft.com/dotnet/core/run-time-config/garbage-collector#high-memory-percent)
 
@@ -87,31 +87,31 @@ Isso oferece pouca melhoria, mas pode tornar o coletor de lixo ainda mais agress
 Você pode habilitar propriedades selecionadas ao definir variáveis de ambiente apropriadas. Por exemplo, no linux (shell):
 
 ```shell
-# Don't forget to tune those if you're planning to make use of them
-export DOTNET_GCHeapHardLimitPercent=0x4B # 75% as hex
-export DOTNET_GCHighMemPercent=0x50 # 80% as hex
+# Não se esqueça de ajustar esses valores se você planeja usá-los.
+export DOTNET_GCHeapHardLimitPercent=0x4B # 75% como hex
+export DOTNET_GCHighMemPercent=0x50 # 80% como hex
 
 export DOTNET_GCConserveMemory=9
 export DOTNET_GCLatencyLevel=0
 export DOTNET_gcTrimCommitOnLowMemory=1
 
-./ArchiSteamFarm # For OS-specific build
-./ArchiSteamFarm.sh # For generic build
+./ArchiSteamFarm # Para uma build de SO específica
+./ArchiSteamFarm.sh # Para uma build genérica
 ```
 
 Ou no Windows (powershell):
 
 ```powershell
-# Don't forget to tune those if you're planning to make use of them
-$Env:DOTNET_GCHeapHardLimitPercent=0x4B # 75% as hex
-$Env:DOTNET_GCHighMemPercent=0x50 # 80% as hex
+# Não se esqueça de ajustar esses valores se você planeja usá-los.
+$Env:DOTNET_GCHeapHardLimitPercent=0x4B # 75% como hex
+$Env:DOTNET_GCHighMemPercent=0x50 # 80% como hex
 
 $Env:DOTNET_GCConserveMemory=9
 $Env:DOTNET_GCLatencyLevel=0
 $Env:DOTNET_gcTrimCommitOnLowMemory=1
 
-.\ArchiSteamFarm.exe # For OS-specific build
-.\ArchiSteamFarm.cmd # For generic build
+.\ArchiSteamFarm.exe # Para uma build de SO específica
+.\ArchiSteamFarm.cmd # Para uma build genérica
 ```
 
 `GCLatencyLevel` será especialmente útil, pois verificamos que o tempo de execução de fato otimiza o código para a memória e portanto diminui significativamente o uso de memória, mesmo com o coletor de lixo do servidor. Esse é uma das melhores dicas que você pode aplicar se você deseja diminuir significativamente o uso de memória pelo ASF sem degradar demais o desempenho com `OptimizationMode`.

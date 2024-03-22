@@ -42,7 +42,7 @@ Kromě použití výše uvedeného souboru klíčů ASF také odhaluje `GamesToR
 
 Jakmile jsou hry úspěšně importovány, přidávají se do fronty. ASF automaticky prochází frontou na pozadí, pokud je bot připojen k síti Steam a fronta není prázdná. Klíč, který byl použit k pokusu o vybrání a nevedl k `RateLimited`, je ze fronty odstraněn, a status je zapsán do souboru ve složce `config` - anebo `BotName.keys.used`, pokud byl klíč použit v procesu (např. `NoDetail`, `BadActivationCode`, `DuplicateActivationCode`) nebo `BotName.keys.unused`. ASF úmyslně používá zadaný název hry, protože klíč nezaručuje odpovídající jméno poskytnuté sítí Steam - tímto způsobem můžete své klíče označit i pomocí vlastních názvů, pokud je to nutné/chtěné.
 
-Pokud během procesu náš účet zasáhne stav `RateLimited`, fronta je dočasně pozastavena na celou hodinu, aby bylo možné čekat na vypršení cooldownu. Afterwards, the process continues where it left, until the entire queue is empty or another `RateLimited` occurs.
+Pokud během procesu náš účet zasáhne stav `RateLimited`, fronta je dočasně pozastavena na celou hodinu, aby bylo možné čekat na vypršení cooldownu. Poté pokračuje proces tam, kde skončil, dokud není celá fronta prázdná nebo se neobjeví další `RateLimited`.
 
 ---
 

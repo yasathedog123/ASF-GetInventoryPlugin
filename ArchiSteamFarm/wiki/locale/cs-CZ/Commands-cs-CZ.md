@@ -1,21 +1,21 @@
 # Příkazy
 
-ASF supports variety of commands, which can be used to control behaviour of the process and bot instances.
+ASF podporuje řadu příkazů, kterými lze ovládat chování instancí procesu a bota.
 
-Below commands can be sent to the bot through various different ways:
-- Through interactive ASF console
-- Through Steam private/group chat
-- Through our **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)** interface
+Níže uvedené příkazy lze botovi posílat různými způsoby:
+- Prostřednictvím interaktivní ASF konzole
+- Prostřednictvím Steam soukromého/skupinového chatu
+- Prostřednictvím našeho rozhraní **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)**
 
-Keep in mind that ASF interaction requires from you to be eligible for the command according to ASF permissions. Check out `SteamUserPermissions` and `SteamOwnerID` config properties for more details.
+Mějte na paměti, že interakce s ASF vyžaduje, abyste byli oprávněni k příkazu podle oprávnění ASF. Podívejte se na `SteamUserPermissions` a `SteamOwnerID` vlastnosti pro více detailů.
 
-Commands executed through Steam chat are affected by `CommandPrefix` **[global configuration property](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#commandprefix)**, which is `!` by default. This means that for executing e.g. `status` command, you should actually write `!status` (or custom `CommandPrefix` of your choice that you set instead). `CommandPrefix` is not mandatory when using console or IPC and can be omitted.
+Příkazy prováděné prostřednictvím chatu služby Steam jsou podmíněny `CommandPrefix` **[globální konfigurační vlastností](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#commandprefix)**, která je ve výchozím nastavení nastavena na `!`. To znamená, že pro provedení např. příkazu `status` byste měli ve skutečnosti napsat `!status` (nebo vlastní `CommandPrefix` podle vašeho výběru, který nastavíte místo toho). `CommandPrefix` není povinný při použití konzole nebo IPC a lze jej vynechat.
 
 ---
 
-### Interactive console
+### Interaktivní konzole
 
-ASF has support for interactive console, as long as you're not running ASF in [**`Headless`**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#headless) mode. Simply press `c` button in order to enable command mode, type your command and confirm with enter.
+ASF podporuje interaktivní konzoli, pokud ASF nespouštíte v režimu [**`Headless`**](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#headless). Pro zapnutí příkazového režimu stačí stisknout tlačítko `c`, zadat příkaz a potvrdit enterem.
 
 ![Screenshot](https://i.imgur.com/bH5Gtjq.png)
 
@@ -23,21 +23,21 @@ ASF has support for interactive console, as long as you're not running ASF in [*
 
 ### Steam chat
 
-You can execute command to given ASF bot also through Steam chat. Obviously you can't talk to yourself directly, therefore you'll need at least one another bot account if you want to execute commands targetting your main.
+Příkaz pro daného ASF bota můžete provést také prostřednictvím Steam chatu. Je zřejmé, že nemůžete komunikovat přímo se svým účtem, proto budete potřebovat alespoň jeden další Steam účet bota, prostřednictvím kterého můžete provádět příkazy určené pro vašeho hlavního bota.
 
 ![Screenshot](https://i.imgur.com/IvFRJ5S.png)
 
-In similar way you can also use group chat of given Steam group. Keep in mind that this option requires properly set `SteamMasterClanID` property, in which case bot will listen for commands also on group's chat (and join it if needed). This can also be used for "talking to yourself" since it doesn't require a dedicated bot account, as opposed to private chat. You can simply set `SteamMasterClanID` property to your newly-created group, then give yourself access either through `SteamOwnerID` or `SteamUserPermissions` of your own bot. This way ASF bot (you) will join group and chat of your selected group, and listen to commands from your own account. You can join the same group chatroom in order to issue commands to yourself (as you'll be sending command to chatroom, and ASF instance sitting on the same chatroom will receive them, even if it shows only as your account being there).
+Podobným způsobem můžete používat také skupinový chat Steam skupiny. Mějte na paměti, že tato možnost vyžaduje správně nastavenou hodnotu `SteamMasterClanID`, v takovém případě bude bot poslouchat příkazy i na chatu skupiny (a v případě potřeby se k němu připojí). Na rozdíl od soukromého chatu jej lze použít i pro "komunikaci se sebou samým", protože nevyžaduje speciální účet bota. Můžete jednoduše nastavit hodnotu `SteamMasterClanID` na nově vytvořenou skupinu a poté si udělit přístup buď prostřednictvím `SteamOwnerID` nebo `SteamUserPermissions` pro vlastního bota. Tímto způsobem se ASF bot (vy) připojí ke skupině a chatu vybrané skupiny a bude poslouchat příkazy odeslané z vašeho účtu. Můžete se připojit ke stejné skupinové chatovací místnosti, abyste mohli vydávat příkazy sami sobě (protože budete posílat příkazy do chatovací místnosti a instance ASF sedící ve stejné chatovací místnosti je přijme, i když se zobrazí pouze jako váš účet).
 
-Please note that sending a command to the group chat acts like a relay. If you're saying `redeem X` to 3 of your bots sitting together with you on the group chat, it'll result in the same as you'd say `redeem X` to every single one of them privately. In most cases **this is not what you want**, and instead you should use `given bot` command that is being sent to **a single bot in private window**. ASF supports group chat, as in many cases it can be useful source for communication with your only bot, but you should almost never execute any command on the group chat if there are 2 or more ASF bots sitting there, unless you fully understand ASF behaviour written here and you in fact want to relay the same command to every single bot that is listening to you.
+Upozorňujeme, že odeslání příkazu do skupinového chatu funguje jako relé. Pokud napíšete `redeem X` třem botům, kteří s vámi sedí ve skupinovém chatu, bude to mít stejný výsledek, jako kdybyste napsali `redeem X` každému z nich soukromě. Ve většině případů **to není to, co chcete**, a místo toho byste měli použít `[bot]` příkaz, který je odeslán **jednomu botovi v soukromém okně**. ASF podporuje skupinový chat, protože v mnoha případech může být užitečným zdrojem pro komunikaci s vaším jediným botem, ale téměř nikdy byste neměli provádět příkazy ve skupinovém chatu, pokud se tam nachází 2 nebo více botů ASF, ledaže plně rozumíte chování ASF, které je zde popsáno a opravdu chcete předat stejný příkaz všem botům, kteří se v skupinovém chatu nacházejí.
 
-*And even in this case you should use private chat with `[Bots]` syntax instead.*
+*A i v tomto případě byste měli použít soukromý chat s `[Bots]` syntaxí.*
 
 ---
 
 ### IPC
 
-The most advanced and flexible way of executing commands, perfect for user interaction (ASF-ui) as well as third-party tools or scripting (ASF API), requires ASF to be run in `IPC` mode, and a client executing command through **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)** interface.
+Nejpokročilejší a nejflexibilnější způsob provádění příkazů, ideální pro interakci s uživatelem (ASF-ui) i pro nástroje třetích stran nebo skriptování (ASF API), vyžaduje spuštění ASF v režimu `IPC` a klienta provádějícího příkazy prostřednictvím rozhraní **[IPC](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC)**.
 
 ![Screenshot](https://raw.githubusercontent.com/JustArchiNET/ASF-ui/main/.github/previews/commands.png)
 
@@ -45,9 +45,9 @@ The most advanced and flexible way of executing commands, perfect for user inter
 
 ## Příkazy
 
-| Command                                                              | Přístup         | Description                                                                                                                                                                                                                                                                                                                         |
+| Příkaz                                                               | Přístup         | Popis                                                                                                                                                                                                                                                                                                                               |
 | -------------------------------------------------------------------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `2fa [Bots]`                                                         | `Master`        | Generates temporary **[2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication)** token for given bot instances.                                                                                                                                                                                         |
+| `2fa [Bots]`                                                         | `Master`        | Vygeneruje dočasný **[2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication)** token pro dané instance botů.                                                                                                                                                                                           |
 | `2fafinalize [Bots] <ActivationCode>`                          | `Master`        | Finalizes process of assigning new **[2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication#creation)** credentials for given bot instances, using SMS/e-mail activation code.                                                                                                                         |
 | `2fafinalized [Bots] <ActivationCode>`                         | `Master`        | Imports already-finalized **[2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication#creation)** credentials for given bot instances, using 2FA token for verification.                                                                                                                                  |
 | `2fafinalizedforce [Bots]`                                           | `Master`        | Imports already-finalized **[2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication#creation)** credentials for given bot instances, skipping 2FA token verification.                                                                                                                                   |
@@ -131,13 +131,14 @@ As you've read above, a space character is being used as a delimiter for a comma
 
 Some commands are also available with their aliases, mostly to save you on typing or account for different dialects:
 
-| Command      | Alias        |
-| ------------ | ------------ |
-| `addlicense` | `addlicence` |
-| `owns ASF`   | `oa`         |
-| `status ASF` | `sa`         |
-| `redeem`     | `r`          |
-| `redeem^`    | `r^`         |
+| Command          | Alias              |
+| ---------------- | ------------------ |
+| `addlicense`     | `al`, `addlicence` |
+| `addlicense ASF` | `ala`              |
+| `owns ASF`       | `oa`               |
+| `status ASF`     | `sa`               |
+| `redeem`         | `r`                |
+| `redeem^`        | `r^`               |
 
 ---
 

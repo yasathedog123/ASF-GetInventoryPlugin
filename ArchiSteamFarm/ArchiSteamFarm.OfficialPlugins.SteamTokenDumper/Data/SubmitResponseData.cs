@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,28 +22,40 @@
 // limitations under the License.
 
 using System.Collections.Immutable;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Data;
 
 #pragma warning disable CA1812 // False positive, the class is used during json deserialization
 internal sealed class SubmitResponseData {
-	[JsonProperty("new_apps", Required = Required.Always)]
-	internal readonly ImmutableHashSet<uint> NewApps = ImmutableHashSet<uint>.Empty;
+	[JsonInclude]
+	[JsonPropertyName("new_apps")]
+	[JsonRequired]
+	internal ImmutableHashSet<uint> NewApps { get; private init; } = [];
 
-	[JsonProperty("new_depots", Required = Required.Always)]
-	internal readonly ImmutableHashSet<uint> NewDepots = ImmutableHashSet<uint>.Empty;
+	[JsonInclude]
+	[JsonPropertyName("new_depots")]
+	[JsonRequired]
+	internal ImmutableHashSet<uint> NewDepots { get; private init; } = [];
 
-	[JsonProperty("new_subs", Required = Required.Always)]
-	internal readonly ImmutableHashSet<uint> NewPackages = ImmutableHashSet<uint>.Empty;
+	[JsonInclude]
+	[JsonPropertyName("new_subs")]
+	[JsonRequired]
+	internal ImmutableHashSet<uint> NewPackages { get; private init; } = [];
 
-	[JsonProperty("verified_apps", Required = Required.Always)]
-	internal readonly ImmutableHashSet<uint> VerifiedApps = ImmutableHashSet<uint>.Empty;
+	[JsonInclude]
+	[JsonPropertyName("verified_apps")]
+	[JsonRequired]
+	internal ImmutableHashSet<uint> VerifiedApps { get; private init; } = [];
 
-	[JsonProperty("verified_depots", Required = Required.Always)]
-	internal readonly ImmutableHashSet<uint> VerifiedDepots = ImmutableHashSet<uint>.Empty;
+	[JsonInclude]
+	[JsonPropertyName("verified_depots")]
+	[JsonRequired]
+	internal ImmutableHashSet<uint> VerifiedDepots { get; private init; } = [];
 
-	[JsonProperty("verified_subs", Required = Required.Always)]
-	internal readonly ImmutableHashSet<uint> VerifiedPackages = ImmutableHashSet<uint>.Empty;
+	[JsonInclude]
+	[JsonPropertyName("verified_subs")]
+	[JsonRequired]
+	internal ImmutableHashSet<uint> VerifiedPackages { get; private init; } = [];
 }
 #pragma warning restore CA1812 // False positive, the class is used during json deserialization

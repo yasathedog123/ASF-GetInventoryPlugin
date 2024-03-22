@@ -21,9 +21,9 @@ We'll do all below actions as `root`, so get to its shell with `su` or `sudo -i`
 
 Firstly it's a good idea to ensure that our folder still belongs to our `asf` user, `chown -hR asf:asf /home/asf/ArchiSteamFarm` executed once will do it. The permissions could be wrong e.g. if you've downloaded and/or unpacked the zip file as `root`.
 
-Secondly, if you're using generic variant of ASF, you need to ensure `dotnet` command is recognized and within one of the standard locations: `/usr/local/bin`, `/usr/bin` or `/bin`. This is required for our systemd service which executes `dotnet /path/to/ArchiSteamFarm.dll` command. Check if `dotnet --info` works for you, if yes, type `command -v dotnet` to find out where it's located. If you've used official installer, it should be in `/usr/bin/dotnet` or one of the two other locations, which is alright. If it's in custom location such as `/usr/share/dotnet/dotnet`, create a symlink for it using `ln -s "$(command -v dotnet)" /usr/bin/dotnet`. Now `command -v dotnet` should report `/usr/bin/dotnet`, which will also make our systemd unit work. If you're using OS-specific variant, you don't need to do anything in this regard.
+Secondly, if you're using generic variant of ASF, you need to ensure `dotnet` command is recognized and within one of the standard locations: `/usr/local/bin`, `/usr/bin` or `/bin`. This is required for our systemd service which executes `dotnet /path/to/ArchiSteamFarm.dll` command. Check if `dotnet --info` works for you, if yes, type `command -v dotnet` to find out where it's located. If you've used official installer, it should be in `/usr/bin/dotnet` or one of the two other locations, which is alright. If it's in custom location such as `/usr/share/dotnet/dotnet`, create a **[symlink](https://wikipedia.org/wiki/Symbolic_link)** for it using `ln -s "$(command -v dotnet)" /usr/bin/dotnet`. Now `command -v dotnet` should report `/usr/bin/dotnet`, which will also make our systemd unit work. If you're using OS-specific variant, you don't need to do anything in this regard.
 
-Next, `cd /etc/systemd/system` and execute `ln -s /home/asf/ArchiSteamFarm/ArchiSteamFarm\@.service .`, this will create a symbolic link to our service declaration and register it in `systemd`. Symbolic link will allow ASF to update your `systemd` unit automatically as part of ASF update - depending on your situation, you may want to use that approach, or simply `cp` the file and manage it yourself however you'd like.
+Next, execute `ln -s /home/asf/ArchiSteamFarm/ArchiSteamFarm\@.service /etc/systemd/system/ArchiSteamFarm\@.service`, this will create a symbolic link to our service declaration and register it in `systemd`. Symbolic link will allow ASF to update your `systemd` unit automatically as part of ASF update - depending on your situation, you may want to use that approach, or simply `cp` the file and manage it yourself however you'd like.
 
 Afterwards, ensure that `systemd` recognizes our service:
 
@@ -105,15 +105,15 @@ Restart=always
 
 And that's it, now your unit acts the same as if it had only `Restart=always` under `[Service]`.
 
-Of course, alternative is to `cp` the file and manage it yourself, but this allows you for flexible changes even if you decided to keep original ASF unit, for example with a symlink.
+Of course, alternative is to `cp` the file and manage it yourself, but this allows you for flexible changes even if you decided to keep original ASF unit, for example with a **[symlink](https://wikipedia.org/wiki/Symbolic_link)**.
 
 ---
 
 ## Never run ASF as administrator!
 
-ASF includes its own validation whether the process is being run as administrator (`root`) or not. Running as root is **not** required for any kind of operation done by the ASF process, assuming properly configured environment it's operating in, and therefore should be regarded as a **bad practice**. This means that on Windows, ASF should never be executed with "run as administrator" setting, and on Unix ASF should have a dedicated user account for itself, or re-use your own in case of a desktop system.
+ASF includes its own validation whether the process is being run as administrator (`root`) or not. Running as `root` is **not** required for any kind of operation done by the ASF process, assuming properly configured environment it's operating in, and therefore should be regarded as a **bad practice**. This means that on Windows, ASF should **never** be executed with "run as administrator" setting, and on Unix ASF should have a **dedicated user account** for itself, or re-use your own in case of a desktop system.
 
-For further elaboration on *why* we discourage running ASF as root, refer to **[superuser](https://superuser.com/questions/218379/why-is-it-bad-to-run-as-root)** and other resources. If you're still not convinced, ask yourself what would happen to your machine if ASF process executed `rm -rf /*` command right after its launch.
+For further elaboration on *why* we discourage running ASF as `root`, refer to **[superuser](https://superuser.com/questions/218379/why-is-it-bad-to-run-as-root)** and other resources. If you're still not convinced, ask yourself what would happen to your machine if ASF process executed `rm -rf /*` command right after its launch.
 
 ### I run as `root` because ASF can't write to its files
 

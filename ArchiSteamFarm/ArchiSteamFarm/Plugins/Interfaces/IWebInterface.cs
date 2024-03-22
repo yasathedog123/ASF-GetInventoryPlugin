@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +21,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.Plugins.Interfaces;
 
@@ -35,6 +37,6 @@ public interface IWebInterface : IPlugin {
 	/// <summary>
 	///     Specifies web path (address) under which ASF should host your static WWW files in <see cref="PhysicalPath" /> directory. Default value of "/" allows you to override default ASF files and gives you full flexibility in your <see cref="PhysicalPath" /> directory. However, you can instead host your files under some other fixed location specified here, such as "/MyPlugin".
 	/// </summary>
-	[JsonProperty]
+	[JsonInclude]
 	string WebPath => "/";
 }

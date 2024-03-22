@@ -16,7 +16,7 @@ Sie können sich entscheiden, dem Gruppenbeitritt zu widerrufen, indem Sie die `
 
 ## GitHub
 
-ASF kommuniziert mit **[GitHubs API](https://api.github.com)** um die **[ASF Veröffentlichungen](https://github.com/JustArchiNET/ArchiSteamFarm/releases)** für die Update-Funktionalität abzurufen. Dies geschieht als Teil des Auto-Updates (falls Sie **[`UpdatePeriod`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-de-DE#updateperiod)** aktiviert haben), sowie beim ****[Befehl](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-de-DE)** `update`. Sie können die Kommunikation von ASF mit GitHub durch die Variable **[`UpdateChannel`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#updatechannel)** beeinflussen - setzen Sie es auf `None` wird die gesamte Update-Funktionalität deaktivieren, einschließlich der Kommunikation mit GitHub in dieser Hinsicht.</p>
+ASF kommuniziert mit **[GitHubs API](https://api.github.com)** um die **[ASF Veröffentlichungen](https://github.com/JustArchiNET/ArchiSteamFarm/releases)** für die Update-Funktionalität abzurufen. Dies geschieht als Teil des Auto-Updates (falls Sie **[`UpdatePeriod`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-de-DE#updateperiod)** aktiviert haben), sowie beim ****[Befehl](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-de-DE)** `update`. Sie können die Kommunikation von ASF mit GitHub durch die Variable **[`UpdateChannel`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#updatechannel)** beeinflussen – setzen Sie es auf `None` wird die gesamte Update-Funktionalität deaktivieren, einschließlich der Kommunikation mit GitHub in dieser Hinsicht.</p>
 
 ## ASFs Server
 

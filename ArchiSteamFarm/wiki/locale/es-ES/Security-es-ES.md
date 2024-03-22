@@ -54,7 +54,7 @@ Recuerda asegurarte de que el archivo que contenga la contraseña no sea legible
 
 ---
 
-## Recomendación
+## Recomendaciones de encriptación
 
 Si la compatibilidad no es un problema para ti, y estás bien con cómo funciona el método `ProtectedDataForCurrentUser`, es la opción **recomendada** para almacenar la contraseña en ASF, ya que proporciona la mejor seguridad. El método `AES` es una buena opción para las personas que quieren usar sus configuraciones en cualquier máquina que deseen, mientras que `PlainText` es la forma más simple de almacenar la contraseña, si no te importa que cualquiera pueda buscarla en el archivo de configuración JSON.
 
@@ -110,6 +110,6 @@ ASF te permite especificar la sal para este método a través del **[argumento d
 
 ---
 
-## Recomendación
+## Recomendaciones de hashing
 
 Si quieres usar un método de hash para almacenar algunos datos confidenciales, tal como `IPCPassword`, recomendamos usar `SCrypt` con sal personalizada, ya que proporciona una seguridad razonable contra intentos de fuerza bruta. `Pbkdf2` solo se ofrece por razones de compatibilidad, principalmente porque ya tenemos una implementación funcional (y necesaria) de esta para otros casos en la plataforma de Steam (por ejemplo, códigos parentales). Se considera seguro, pero débil en comparación con otras alternativas (por ejemplo, `SCrypt`).

@@ -133,7 +133,8 @@ Some commands are also available with their aliases, mostly to save you on typin
 
 Command | Alias
 --- | ---
-`addlicense` | `addlicence`
+`addlicense` | `al`, `addlicence`
+`addlicense ASF` | `ala`
 `owns ASF` | `oa`
 `status ASF` | `sa`
 `redeem` | `r`

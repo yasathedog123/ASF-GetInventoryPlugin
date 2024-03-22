@@ -86,9 +86,7 @@
 		<value>Изключение: {0}() {1} StackTrace:{2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>Изключване при код за грешка различен от 0 (нула)!</value>
-	</data>
+	
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Провалена заявка: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -704,10 +702,7 @@
 		<value>Вашият криптиращ ключ е много къс. Препоръчваме да ползвате някой, който е поне {0} байта (символа) голям.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>Ползвате {0} настройка от {1} стойност, но не сте осигурили персонализиран крипто-ключ. Трябва да осигурите персонализиран крипто-ключ за увеличена защита.</value>
-		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
-	</data>
+	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Ползвате {0} настройка от {1} стойност, но не сте осигурили персонализиран крипто-ключ. Това напълно нарушава защитата, тъй като ASF е принуден да ползва собствен (познат) ключ. Трябва да осигурите персонализиран крипто-ключ, за да ползвате предлаганата защита от тези настройки.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
@@ -745,5 +740,20 @@
 		<value>Опитахте да използвате платена функция {0}, но нямате зададен валиден LicenseID в глобалната конфигурация на ASF. Моля, прегледайте конфигурацията си, тъй като функционалността няма да работи без допълнителни подробности.</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 </root>

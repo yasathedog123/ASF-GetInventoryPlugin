@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,8 +25,11 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Composition;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Localization;
@@ -33,8 +38,6 @@ using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Exchange;
 using ArchiSteamFarm.Steam.Integration.Callbacks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
@@ -43,10 +46,12 @@ namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher;
 internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, IBotIdentity, IBotModules, IBotTradeOfferResults, IBotUserNotifications {
 	internal static readonly ConcurrentDictionary<Bot, RemoteCommunication> RemoteCommunications = new();
 
-	[JsonProperty]
+	[JsonInclude]
+	[Required]
 	public override string Name => nameof(ItemsMatcherPlugin);
 
-	[JsonProperty]
+	[JsonInclude]
+	[Required]
 	public override Version Version => typeof(ItemsMatcherPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
 	public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0) {
@@ -83,7 +88,7 @@ internal sealed class ItemsMatcherPlugin : OfficialPlugin, IBot, IBotCommand2, I
 		return Task.CompletedTask;
 	}
 
-	public async Task OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
+	public async Task OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JsonElement>? additionalConfigProperties = null) {
 		ArgumentNullException.ThrowIfNull(bot);
 
 		if (RemoteCommunications.TryRemove(bot, out RemoteCommunication? remoteCommunication)) {

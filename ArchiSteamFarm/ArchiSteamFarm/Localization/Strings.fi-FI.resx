@@ -89,9 +89,7 @@ StackTrace:
 {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>Poistutaan muulla kuin 0 virhekoodilla!</value>
-	</data>
+	
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Pyyntö epäonnistuu: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -707,10 +705,7 @@ Prosessin käyttöaika: {1}</value>
 		<value>Salausavaimesi on liian lyhyt. Suosittelemme käyttämään salausavainta, joka on vähintään {0} tavua (merkkiä) pitkä.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>Käytät ominaisuuden {1} asetusta {0}, mutta et antanut mukautettua --cryptkey -argumenttia. Sinun pitäisi antaa mukautettu --cryptkey lisäturvallisuuden takaamiseksi.</value>
-		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
-	</data>
+	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>Käytät ominaisuuden {1} asetusta {0}, mutta et antanut mukautettua --cryptkey -argumenttia. Tämä tekee suojauksen täysin tyhjäksi, koska ASF joutuu käyttämään omaa (tunnettua) avaintaan. Sinun tulisi antaa mukautettu --cryptkey tämän asetuksen turvallisuushyöydyn saavuttamiseksi.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
@@ -752,4 +747,19 @@ Prosessin käyttöaika: {1}</value>
 		<value>ASF ei pysty pelaamaan sovellusta {0}, koska sillä on aluekohtainen rajoitus maassa {1}, joka kestää {2} asti.</value>
 		<comment>{0} will be replaced by app ID (number), {1} will be replaced by short country code (string, such as "PL"), {2} will be replaced by human-readable date (string).</comment>
 	</data>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 </root>

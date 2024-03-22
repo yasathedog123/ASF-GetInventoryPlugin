@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -311,27 +313,21 @@ public sealed class SteamChatMessage {
 		Assert.AreEqual(newlinePart, output[3]);
 	}
 
-	[ExpectedException(typeof(ArgumentOutOfRangeException))]
 	[TestMethod]
 	public async Task ThrowsOnTooLongNewlinesPrefix() {
 		string prefix = new('\n', (MaxMessagePrefixBytes / NewlineWeight) + 1);
 
 		const string message = "asdf";
 
-		await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
-
-		Assert.Fail();
+		await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(async () => await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false)).ConfigureAwait(false);
 	}
 
-	[ExpectedException(typeof(ArgumentOutOfRangeException))]
 	[TestMethod]
 	public async Task ThrowsOnTooLongPrefix() {
 		string prefix = new('x', MaxMessagePrefixBytes + 1);
 
 		const string message = "asdf";
 
-		await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
-
-		Assert.Fail();
+		await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(async () => await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false)).ConfigureAwait(false);
 	}
 }

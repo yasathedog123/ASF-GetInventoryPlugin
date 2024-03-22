@@ -86,9 +86,7 @@
 		<value>例外: {0} () {1} StackTrace: {2}</value>
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
-	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>nonzero error code で終了します！</value>
-	</data>
+	
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>要求が失敗: {0}</value>
 		<comment>{0} will be replaced by URL of the request</comment>
@@ -704,10 +702,7 @@ Process uptime: {1}</value>
 		<value>暗号化キーが短すぎます。少なくとも {0} バイト (文字) の長いものを使用することをお勧めします。</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
 	</data>
-	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
-		<value>{0} 設定の {1} プロパティを使用していますが、カスタム --cryptkeyを指定していません。セキュリティ強化のためにカスタム --cryptkey を指定する必要があります。</value>
-		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
-	</data>
+	
 	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
 		<value>{0} 設定の {1} プロパティを使用していますが、カスタム --cryptkey が設定されていません。 ASFは独自の(既知の) キーを使用することを余儀なくされているため、この状態ではセキュリティ保護がされていないことを意味します。 この設定で提供されるセキュリティ上のメリットを利用するためには、カスタム --cryptkey を提供する必要があります。</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
@@ -745,5 +740,20 @@ Process uptime: {1}</value>
 		<value>有償機能の{0} の使用を試みましたが、ASFグローバル設定に有効なLicenseIDが設定されていません。追加の設定が行われていない場合、この機能は動作しません。設定を確認してください。</value>
 		<comment>{0} will be replaced by feature name (e.g. MatchActively)</comment>
 	</data>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 </root>

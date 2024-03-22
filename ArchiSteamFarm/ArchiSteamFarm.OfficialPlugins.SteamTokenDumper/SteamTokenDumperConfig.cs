@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,29 +22,33 @@
 // limitations under the License.
 
 using System.Collections.Immutable;
+using System.Text.Json.Serialization;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.IPC.Integration;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
 public sealed class SteamTokenDumperConfig {
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonInclude]
 	public bool Enabled { get; internal set; }
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
 	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
-	public ImmutableHashSet<uint> SecretAppIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
+	public ImmutableHashSet<uint> SecretAppIDs { get; private init; } = [];
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
 	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
-	public ImmutableHashSet<uint> SecretDepotIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
+	public ImmutableHashSet<uint> SecretDepotIDs { get; private init; } = [];
 
-	[JsonProperty(Required = Required.DisallowNull)]
+	[JsonDisallowNull]
+	[JsonInclude]
 	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
-	public ImmutableHashSet<uint> SecretPackageIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
+	public ImmutableHashSet<uint> SecretPackageIDs { get; private init; } = [];
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	public bool SkipAutoGrantPackages { get; private set; } = true;
+	[JsonInclude]
+	public bool SkipAutoGrantPackages { get; private init; } = true;
 
 	[JsonConstructor]
 	internal SteamTokenDumperConfig() { }

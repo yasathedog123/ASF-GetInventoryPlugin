@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,19 +22,23 @@
 // limitations under the License.
 
 using System;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Steam.Data;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal sealed class AssetForListing : AssetInInventory {
-	[JsonProperty("i", Required = Required.Always)]
-	internal readonly uint Index;
+	internal string BackendHashCode => $"{Index}-{PreviousAssetID}-{AssetID}-{ClassID}-{Rarity}-{RealAppID}-{Tradable}-{Type}-{Amount}";
 
-	[JsonProperty("l", Required = Required.Always)]
-	internal readonly ulong PreviousAssetID;
+	[JsonInclude]
+	[JsonPropertyName("i")]
+	[JsonRequired]
+	internal uint Index { get; private init; }
 
-	internal string BackendHashCode => Index + "-" + PreviousAssetID + "-" + AssetID + "-" + ClassID + "-" + Rarity + "-" + RealAppID + "-" + Tradable + "-" + Type + "-" + Amount;
+	[JsonInclude]
+	[JsonPropertyName("l")]
+	[JsonRequired]
+	internal ulong PreviousAssetID { get; private init; }
 
 	internal AssetForListing(Asset asset, uint index, ulong previousAssetID) : base(asset) {
 		ArgumentNullException.ThrowIfNull(asset);

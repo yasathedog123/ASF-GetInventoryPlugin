@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,21 +24,23 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Storage;
-using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal sealed class AnnouncementDiffRequest : AnnouncementRequest {
-	[JsonProperty(Required = Required.Always)]
-	private readonly ImmutableHashSet<AssetForListing> InventoryRemoved;
+	[JsonInclude]
+	[JsonRequired]
+	private ImmutableHashSet<AssetForListing> InventoryRemoved { get; init; }
 
-	[JsonProperty(Required = Required.Always)]
-	private readonly string PreviousInventoryChecksum;
+	[JsonInclude]
+	[JsonRequired]
+	private string PreviousInventoryChecksum { get; init; }
 
-	internal AnnouncementDiffRequest(Guid guid, ulong steamID, IReadOnlyCollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<Asset.EType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, string tradeToken, IReadOnlyCollection<AssetForListing> inventoryRemoved, string previousInventoryChecksum, string? nickname = null, string? avatarHash = null) : base(guid, steamID, inventory, inventoryChecksum, matchableTypes, totalInventoryCount, matchEverything, maxTradeHoldDuration, tradeToken, nickname, avatarHash) {
+	internal AnnouncementDiffRequest(Guid guid, ulong steamID, IReadOnlyCollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<EAssetType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, string tradeToken, IReadOnlyCollection<AssetForListing> inventoryRemoved, string previousInventoryChecksum, string? nickname = null, string? avatarHash = null) : base(guid, steamID, inventory, inventoryChecksum, matchableTypes, totalInventoryCount, matchEverything, maxTradeHoldDuration, tradeToken, nickname, avatarHash) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {

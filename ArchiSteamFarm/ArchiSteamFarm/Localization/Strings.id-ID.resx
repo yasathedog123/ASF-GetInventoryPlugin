@@ -87,7 +87,8 @@
 		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
 	</data>
 	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-		<value>Keluar dengan kode kesalahan bukan nol!</value>
+		<value>Keluar dengan kode kesalahan {0} !</value>
+		<comment>{0} will be replaced by error code (number)</comment>
 	</data>
 	<data name="ErrorFailingRequest" xml:space="preserve">
 		<value>Permintaan gagal: {0}</value>
@@ -292,10 +293,22 @@
 	<data name="PlayingNotAvailable" xml:space="preserve">
 		<value>Bermain sedang tidak tersedia, kita akan coba lagi nanti!</value>
 	</data>
-	
-	
-	
-	
+	<data name="StillIdling" xml:space="preserve">
+		<value>Masih farming: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="StillIdlingList" xml:space="preserve">
+		<value>Masih farming: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="StoppedIdling" xml:space="preserve">
+		<value>Menghentikan farming: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="StoppedIdlingList" xml:space="preserve">
+		<value>Menghentikan farming: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="UnknownCommand" xml:space="preserve">
 		<value>Perintah tidak dikenal!</value>
 	</data>
@@ -310,7 +323,9 @@
 		<value>Menerima hadiah: {0}...</value>
 		<comment>{0} will be replaced by giftID (number)</comment>
 	</data>
-	
+	<data name="BotAccountLimited" xml:space="preserve">
+		<value>Akun ini terbatas, proses farming tidak tersedia sampai pembatasan hilang!</value>
+	</data>
 	<data name="BotAddLicense" xml:space="preserve">
 		<value>ID: {0} | Status: {1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
@@ -332,10 +347,18 @@
 		<value>Token 2FA: {0}</value>
 		<comment>{0} will be replaced by generated 2FA token (string)</comment>
 	</data>
-	
-	
-	
-	
+	<data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+		<value>Farming otomatis telah dijeda!</value>
+	</data>
+	<data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+		<value>Farming otomatis telah dilanjutkan!</value>
+	</data>
+	<data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+		<value>Farming otomatis sudah dijeda!</value>
+	</data>
+	<data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+		<value>Farming otomatis sudah dilanjutkan!</value>
+	</data>
 	<data name="BotConnected" xml:space="preserve">
 		<value>Terhubung ke Steam!</value>
 	</data>
@@ -348,7 +371,10 @@
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
 		<value>Tidak memulai instansi bot ini karena dinonaktifkan di file konfigurasi!</value>
 	</data>
-	
+	<data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+		<value>Menerima kode kesalahan TwoFactorCodeMismatch {0} kali berturut-turut. Entah kredensial 2FA Anda tidak lagi valid, atau jam Anda tidak sinkron, membatalkan!</value>
+		<comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+	</data>
 	<data name="BotLoggedOff" xml:space="preserve">
 		<value>Ter-log off dari Steam: {0}</value>
 		<comment>{0} will be replaced by logging off reason (string)</comment>
@@ -372,7 +398,9 @@
 	<data name="BotLootingSuccess" xml:space="preserve">
 		<value>Trade Offer berhasil dikirim!</value>
 	</data>
-	
+	<data name="BotSendingTradeToYourself" xml:space="preserve">
+		<value>Kamu tidak dapat mengirim trade ke dirimu sendiri!</value>
+	</data>
 	<data name="BotNoASFAuthenticator" xml:space="preserve">
 		<value>Bot tidak memiliki ASF 2FA yang diperbolehkan! Apakah kamu lupa untuk mengimpor authenticator kamu sebagai ASF 2FA?</value>
 	</data>
@@ -387,8 +415,14 @@
 		<value>Yang sudah dimiliki: {0} | {1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
 	</data>
-	
-	
+	<data name="BotPointsBalance" xml:space="preserve">
+		<value>Saldo poin: {0}</value>
+		<comment>{0} will be replaced by the points balance value (integer)</comment>
+	</data>
+	<data name="BotRateLimitExceeded" xml:space="preserve">
+		<value>Melebihi batas, kami akan mencoba lagi setelah menunggu selama {0}...</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
+	</data>
 	<data name="BotReconnecting" xml:space="preserve">
 		<value>Menyambungkan kembali...</value>
 	</data>
@@ -403,8 +437,12 @@
 	<data name="BotRemovedExpiredLoginKey" xml:space="preserve">
 		<value>Menghapus kunci login yang sudah kadaluarsa!</value>
 	</data>
-	
-	
+	<data name="BotStatusNotIdling" xml:space="preserve">
+		<value>Bot sedang tidak melakukan farming.</value>
+	</data>
+	<data name="BotStatusLimited" xml:space="preserve">
+		<value>Bot dalam kondisi terbatas dan tidak bisa mendapatkan kartu saat farming.</value>
+	</data>
 	<data name="BotStatusConnecting" xml:space="preserve">
 		<value>Bot sedang menghubungkan ke jaringan Steam.</value>
 	</data>
@@ -436,8 +474,12 @@
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>Koneksi ke Steam terputus, menghubungkan kembali...</value>
 	</data>
-	
-	
+	<data name="BotAccountFree" xml:space="preserve">
+		<value>Akun sedang tidak dipakai, proses farming dilanjutkan!</value>
+	</data>
+	<data name="BotAccountOccupied" xml:space="preserve">
+		<value>Akun sedang digunakan: ASF akan melanjutkan farming saat akun sedang tidak digunakan...</value>
+	</data>
 	<data name="BotConnecting" xml:space="preserve">
 		<value>Menghubungkan...</value>
 	</data>
@@ -471,8 +513,14 @@
 	<data name="ErrorInvalidCurrentCulture" xml:space="preserve">
 		<value>CurrentCulture yang anda berikan tidak valid, ASF akan tetap berjalan dengan kondisi default!</value>
 	</data>
-	
-	
+	<data name="TranslationIncomplete" xml:space="preserve">
+		<value>ASF akan mencoba menggunakan bahasa {0} pilihan Anda, namun terjemahan ke dalam bahasa tersebut baru {1}. Mungkin kamu bisa membantu kami meningkatkan terjemahan ASF untuk bahasa-mu?</value>
+		<comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
+	</data>
+	<data name="IdlingGameNotPossible" xml:space="preserve">
+		<value>Farming {0} ({1}) dinonaktifkan sementara, karena ASF tidak dapat memainkan game tersebut saat ini.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 	<data name="WarningIdlingGameMismatch" xml:space="preserve">
 		<value>ASF mendeetksi ketidakcocokan ID untuk {0} ({1}) dan akan menggunakan ID {2} sebagai gantinya.</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
@@ -481,8 +529,12 @@
 		<value>{0} V{1}</value>
 		<comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
 	</data>
-	
-	
+	<data name="BotAccountLocked" xml:space="preserve">
+		<value>Akun ini terkunci, proses farming tidak tersedia secara permanen!</value>
+	</data>
+	<data name="BotStatusLocked" xml:space="preserve">
+		<value>Bot sedang terkundi dan tidak bisa mendapatkan kartu saat farming.</value>
+	</data>
 	<data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
 		<value>Fungsi ini tersedia hanya dalam mode headless!</value>
 	</data>
@@ -493,8 +545,14 @@
 	<data name="ErrorAccessDenied" xml:space="preserve">
 		<value>Akses ditolak!</value>
 	</data>
-	
-	
+	<data name="WarningPreReleaseVersion" xml:space="preserve">
+		<value>Anda menggunakan versi yang lebih baru dari versi terbaru yang dirilis untuk saluran pembaruan Anda. Harap dicatat bahwa versi pra-rilis ditujukan untuk pengguna yang mengetahui cara melaporkan bug, menangani masalah, dan memberikan umpan balik - tidak ada dukungan teknis yang akan diberikan.</value>
+	</data>
+	<data name="BotStats" xml:space="preserve">
+		<value>Penggunaan memori saat ini: {0} MB.
+Waktu aktif proses: {1}</value>
+		<comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
+	</data>
 	<data name="ClearingDiscoveryQueue" xml:space="preserve">
 		<value>Membersihkan antrian penemuan Steam #{0}...</value>
 		<comment>{0} will be replaced by queue number</comment>
@@ -510,13 +568,21 @@
 	<data name="BotRefreshingPackagesData" xml:space="preserve">
 		<value>Menyegarkan data paket...</value>
 	</data>
-	
+	<data name="WarningDeprecated" xml:space="preserve">
+		<value>Penggunaan {0} tidak digunakan lagi dan akan dihapus pada versi program mendatang. Silakan gunakan {1} sebagai gantinya.</value>
+		<comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+	</data>
 	<data name="BotAcceptedDonationTrade" xml:space="preserve">
 		<value>Menerima trade donasi: {0}</value>
 		<comment>{0} will be replaced by trade's ID (number)</comment>
 	</data>
-	
-	
+	<data name="WarningWorkaroundTriggered" xml:space="preserve">
+		<value>Solusi untuk bug {0} telah dipicu.</value>
+		<comment>{0} will be replaced by the bug's name provided by ASF</comment>
+	</data>
+	<data name="TargetBotNotConnected" xml:space="preserve">
+		<value>Bot target tidak terhubung!</value>
+	</data>
 	<data name="BotWalletBalance" xml:space="preserve">
 		<value>Saldo wallet: {0} {1}</value>
 		<comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
@@ -528,12 +594,21 @@
 		<value>Bot mempunyai level {0}.</value>
 		<comment>{0} will be replaced by bot's level</comment>
 	</data>
-	
-	
+	<data name="ActivelyMatchingItems" xml:space="preserve">
+		<value>Mencocokkan item dari Steam, fase #{0}...</value>
+		<comment>{0} will be replaced by round number</comment>
+	</data>
+	<data name="DoneActivelyMatchingItems" xml:space="preserve">
+		<value>Selesai mencocokkan item dari Steam, fase #{0}.</value>
+		<comment>{0} will be replaced by round number</comment>
+	</data>
 	<data name="ErrorAborted" xml:space="preserve">
 		<value>Dibatalkan!</value>
 	</data>
-	
+	<data name="WarningExcessiveBotsCount" xml:space="preserve">
+		<value>Anda menjalankan lebih banyak akun bot pribadi dari batas maksimum yang kami rekomendasikan ({0}). Perlu diketahui bahwa pengaturan ini tidak didukung dan mungkin menyebabkan berbagai masalah terkait Steam, termasuk penangguhan akun. Lihat FAQ untuk lebih jelasnya.</value>
+		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
+	</data>
 	<data name="PluginLoaded" xml:space="preserve">
 		<value>{0} telah berhasil memuat!</value>
 		<comment>{0} will be replaced by the name of the custom ASF plugin</comment>
@@ -545,7 +620,9 @@
 	<data name="NothingFound" xml:space="preserve">
 		<value>Tidak ditemukan!</value>
 	</data>
-	
+	<data name="PluginsWarning" xml:space="preserve">
+		<value>Anda telah memuat satu atau beberapa plugin khusus ke ASF. Karena kami tidak dapat menawarkan dukungan untuk pengaturan yang dimodifikasi, harap hubungi pengembang plugin yang sesuai yang Anda putuskan untuk digunakan jika terjadi masalah.</value>
+	</data>
 	<data name="PleaseWait" xml:space="preserve">
 		<value>Harap tunggu...</value>
 	</data>
@@ -555,20 +632,45 @@
 	<data name="Executing" xml:space="preserve">
 		<value>Mengeksekusi...</value>
 	</data>
-	
+	<data name="InteractiveConsoleEnabled" xml:space="preserve">
+		<value>Konsol interaktif sekarang aktif, ketik 'c' untuk masuk ke mode perintah.</value>
+	</data>
 	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
 		<value>Bot mempunyai {0} game tersisa di dalam antrian.</value>
 		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="ErrorSingleInstanceRequired" xml:space="preserve">
+		<value>Proses ASF sudah berjalan untuk direktori kerja ini, dibatalkan!</value>
+	</data>
+	<data name="BotHandledConfirmations" xml:space="preserve">
+		<value>Berhasil menangani {0} konfirmasi!</value>
+		<comment>{0} will be replaced by number of confirmations</comment>
+	</data>
+	<data name="BotExtraIdlingCooldown" xml:space="preserve">
+		<value>Menunggu hingga {0} untuk memastikan bahwa kita bisa memulai farming...</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+	</data>
+	<data name="UpdateCleanup" xml:space="preserve">
+		<value>Membersihkan file lama setelah pembaruan...</value>
+	</data>
+	<data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+		<value>Seadng membuat Steam parental code, ini bisa memakan waktu cukup lama, pertimbangkan untuk memasukkannya ke dalam konfigurasi...</value>
+	</data>
+	<data name="IPCConfigChanged" xml:space="preserve">
+		<value>Konfigurasi IPC telah diubah!</value>
+	</data>
+	<data name="BotTradeOfferResult" xml:space="preserve">
+		<value>Penawaran trade {0} ditentukan menjadi {1} karena {2}.</value>
+		<comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by technical reason why the trade was determined to be in this state</comment>
+	</data>
+	<data name="BotInvalidPasswordDuringLogin" xml:space="preserve">
+		<value>Menerima kode kesalahan InvalidPassword {0} kali berturut-turut. Kata sandi Anda untuk akun ini kemungkinan besar salah, batalkan!</value>
+		<comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
+	</data>
+	<data name="Result" xml:space="preserve">
+		<value>Hasil: {0}</value>
+		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
+	</data>
 	
 	
 	
@@ -592,6 +694,21 @@
 		<value>Alamat IP {0} tidak diblokir!</value>
 		<comment>{0} will be replaced by an IP address which was requested to be unbanned from using IPC</comment>
 	</data>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 </root>

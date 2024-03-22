@@ -32,15 +32,15 @@ Sie können auch das betriebssystemspezifische .NET Paket erstellen, falls es ei
 dotnet publish ArchiSteamFarm -c "Release" -o "out/linux-x64" -r "linux-x64"
 ```
 
-Natürlich sollten Sie `linux-x64` durch eine Betriebssystemarchitektur ersetzen, die Sie anvisieren, wie etwa `win-x64`. Auch in diesem Build werden Aktualisierungen deaktiviert sein.
+Natürlich sollten Sie `linux-x64` durch eine Betriebssystemarchitektur ersetzen, die Sie anvisieren, z. B. `win-x64`. Auch in diesem Build werden Aktualisierungen deaktiviert sein.
 
 ### ASF-UI
 
 Während die oben genannten Schritte alles sind, was für ein vollständig funktionales ASF Build benötigt wird, könnten Sie eventuell *auch* für die Kompilierung der **[ASF-ui](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC#asf-ui)**, unserer grafischen Web-Oberfläche, interessieren. Seitens ASF müssen Sie lediglich die ASF-ui Build-Ausgabe im Verzeichnis `ASF-ui/dist` fallen lassen, anschließend ASF mit ihm (falls nötig erneut) kompilieren.
 
-ASF-ui ist Teil des ASF-Quellbaums des **[Git Submoduls](https://git-scm.com/book/en/v2/Git-Tools-Submodules)**; stellen Sie sicher, dass Sie das Repository mit `git clone --recursive`geklont haben, da Sie sonst nicht die erforderlichen Dateien haben. Sie benötigen außerdem einen funktionierendes NPM, **[Node.js](https://nodejs.org)** beinhaltet dies. Wenn Sie Linux/macOS verwenden, empfehlen wir unser `cc.sh` Skript, das automatisch die Erstellung und den Übermittlung von ASF-UI abdeckt (falls möglich, das heißt, wenn Sie die Anforderungen erfüllen, die wir gerade erwähnt haben).
+ASF-ui ist Teil des ASF-Quellbaums des **[Git-Submoduls](https://git-scm.com/book/en/v2/Git-Tools-Submodules)**; stellen Sie sicher, dass Sie das Repository mit `git clone --recursive`geklont haben, da Sie sonst nicht die erforderlichen Dateien haben. Sie benötigen außerdem einen funktionierendes NPM, **[Node.js](https://nodejs.org)** beinhaltet dies. Wenn Sie Linux/macOS verwenden, empfehlen wir unser `cc.sh` Skript, das automatisch die Erstellung und den Übermittlung von ASF-UI abdeckt (falls möglich, das heißt, wenn Sie die Anforderungen erfüllen, die wir gerade erwähnt haben).
 
-Zusätzlich zur `cc.sh` Skript, fügen wir auch die vereinfachten Build-Anweisungen unten hinzu, und verweisen Sie auf das**[ASF-ui Repository](https://github.com/JustArchiNET/ASF-ui)** für zusätzliche Dokumentation. Führen Sie im ASF-Quellverzeichnis aus (siehe oben die folgenden Befehle aus:
+Zusätzlich zur `cc.sh` Skript, fügen wir auch die vereinfachten Build-Anweisungen unten hinzu, und verweisen Sie auf das **[ASF-ui Repository](https://github.com/JustArchiNET/ASF-ui)** für zusätzliche Dokumentation. Führen Sie im ASF-Quellverzeichnis aus (siehe oben die folgenden Befehle aus:
 
 ```shell
 rm -rf "ASF-ui/dist" # ASF-ui bereinigt sich nach dem alten Build nicht von selbst
@@ -70,7 +70,7 @@ Natürlich sind alle obigen Vorschläge nur Empfehlungen, Sie können verwenden,
 
 ## Tags
 
-Der Zweig `main` ist nicht unbedingt in einem Zustand, der eine erfolgreiche Kompilierung oder eine fehlerfreie ASF-Ausführung überhaupt erst ermöglicht, da es sich um einen Entwicklungszweig handelt, wie in unserem **[Veröffentlichungszyklus](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Release-cycle-de-DE)** erläutert. Für die Kompilierung oder Referenz von ASF aus dem Quelltext, sollten Sie ein angemessenes **[Tag](https://github.com/JustArchiNET/ArchiSteamFarm/tags)** verwenden, welches zumindest eine erfolgreiche Kompilierung, und höchstwahrscheinlich problemlose Ausführung (falls das Build als stable release markiert wurde), garantiert. Um die aktuelle "Gesundheit" des Verzeichnisbaumes zu überprüfen, können Sie unser **[GitHub](https://github.com/JustArchiNET/ArchiSteamFarm/actions/workflows/ci.yml?query=branch%3Amain)**-CI verwenden.
+Der Zweig `main` ist nicht unbedingt in einem Zustand, der eine erfolgreiche Kompilierung oder eine fehlerfreie ASF-Ausführung überhaupt erst ermöglicht, da es sich um einen Entwicklungszweig handelt, wie in unserem **[Veröffentlichungszyklus](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Release-cycle-de-DE)** erläutert. Für die Kompilierung oder Referenz von ASF aus dem Quelltext, sollten Sie ein angemessenes **[Tag](https://github.com/JustArchiNET/ArchiSteamFarm/tags)** verwenden, welches zumindest eine erfolgreiche Kompilierung, und höchstwahrscheinlich problemlose Ausführung (falls das Build als stable release markiert wurde), garantiert. Um die aktuelle „Gesundheit“ des Verzeichnisbaumes zu überprüfen, können Sie unser **[GitHub](https://github.com/JustArchiNET/ArchiSteamFarm/actions/workflows/ci.yml?query=branch%3Amain)**-CI verwenden.
 
 ---
 

@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,8 +69,9 @@ internal sealed class ApiAuthenticationMiddleware {
 		}
 	}
 
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	[UsedImplicitly]
-	public async Task InvokeAsync(HttpContext context, IOptions<MvcNewtonsoftJsonOptions> jsonOptions) {
+	public async Task InvokeAsync(HttpContext context, IOptions<JsonOptions> jsonOptions) {
 		ArgumentNullException.ThrowIfNull(context);
 		ArgumentNullException.ThrowIfNull(jsonOptions);
 
@@ -84,7 +87,7 @@ internal sealed class ApiAuthenticationMiddleware {
 
 		StatusCodeResponse statusCodeResponse = new(statusCode, permanent);
 
-		await context.Response.WriteJsonAsync(new GenericResponse<StatusCodeResponse>(false, statusCodeResponse), jsonOptions.Value.SerializerSettings).ConfigureAwait(false);
+		await context.Response.WriteAsJsonAsync(new GenericResponse<StatusCodeResponse>(false, statusCodeResponse), jsonOptions.Value.JsonSerializerOptions).ConfigureAwait(false);
 	}
 
 	internal static void ClearFailedAuthorizations(object? state = null) => FailedAuthorizations.Clear();
@@ -148,9 +151,7 @@ internal sealed class ApiAuthenticationMiddleware {
 
 		ArchiCryptoHelper.EHashingMethod ipcPasswordFormat = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPasswordFormat : GlobalConfig.DefaultIPCPasswordFormat;
 
-		string inputHash = ArchiCryptoHelper.Hash(ipcPasswordFormat, inputPassword);
-
-		bool authorized = ipcPassword == inputHash;
+		bool authorized = ArchiCryptoHelper.VerifyHash(ipcPasswordFormat, inputPassword, ipcPassword);
 
 		while (true) {
 			if (AuthorizationTasks.TryGetValue(clientIP, out Task? task)) {
@@ -166,14 +167,14 @@ internal sealed class ApiAuthenticationMiddleware {
 			}
 
 			try {
-				bool hasFailedAuthorizations = FailedAuthorizations.TryGetValue(clientIP, out attempts);
+				attempts = FailedAuthorizations.GetValueOrDefault(clientIP);
 
-				if (hasFailedAuthorizations && (attempts >= MaxFailedAuthorizationAttempts)) {
+				if (attempts >= MaxFailedAuthorizationAttempts) {
 					return (HttpStatusCode.Forbidden, false);
 				}
 
 				if (!authorized) {
-					FailedAuthorizations[clientIP] = hasFailedAuthorizations ? ++attempts : (byte) 1;
+					FailedAuthorizations[clientIP] = ++attempts;
 				}
 			} finally {
 				AuthorizationTasks.TryRemove(clientIP, out _);

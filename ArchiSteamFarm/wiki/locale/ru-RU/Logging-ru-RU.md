@@ -19,30 +19,30 @@ ASF позволяет вам настроить свой собственный
     <target xsi:type="ColoredConsole" name="ColoredConsole" layout="${date:format=yyyy-MM-dd HH\:mm\:ss}|${processname}-${processid}|${level:uppercase=true}|${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}" />
     <target xsi:type="File" name="File" archiveFileName="${currentdir}/logs/log.{#}.txt" archiveNumbering="Rolling" archiveOldFileOnStartup="true" cleanupFileName="false" concurrentWrites="false" deleteOldFileOnStartup="true" fileName="${currentdir}/log.txt" layout="${date:format=yyyy-MM-dd HH\:mm\:ss}|${processname}-${processid}|${level:uppercase=true}|${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}" maxArchiveFiles="10" />
 
-    <!-- Код ниже становится активным при запуске IPC-интерфейса ASF. -->
+    <!-- Below becomes active when ASF's IPC interface is started -->
     <target type="History" name="History" layout="${date:format=yyyy-MM-dd HH\:mm\:ss}|${processname}-${processid}|${level:uppercase=true}|${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}" maxCount="20" />
   </targets>
 
   <rules>
-    <!-- Следующие записи определяют ведение журнала ASP.NET (IPC), мы объявляем их, чтобы наша последняя сборка отладки не включала журналы ASP.NET по умолчанию. -->
-    <logger name="Microsoft*" finalMinLevel="Warn" writeTo="ColoredConsole" />
-    <logger name="Microsoft.Hosting.Lifetime*" finalMinLevel="Info" writeTo="ColoredConsole" />
-    <logger name="System*" finalMinLevel="Warn" writeTo="ColoredConsole" />
+    <!-- The following entries specify ASP.NET (IPC) logging, we declare those so our last Debug catch-all doesn't include ASP.NET logs by default -->
+    <logger name="Microsoft.*" finalMinLevel="Warn" writeTo="ColoredConsole" />
+    <logger name="Microsoft.Hosting.Lifetime" finalMinLevel="Info" writeTo="ColoredConsole" />
+    <logger name="System.*" finalMinLevel="Warn" writeTo="ColoredConsole" />
 
     <logger name="*" minlevel="Debug" writeTo="ColoredConsole" />
 
-    <!-- Следующие записи определяют ведение журнала ASP.NET (IPC), мы объявляем их, чтобы наша последняя сборка отладки не включала журналы ASP.NET по умолчанию. -->
-    <logger name="Microsoft*" finalMinLevel="Warn" writeTo="File" />
-    <logger name="Microsoft.Hosting.Lifetime*" finalMinLevel="Info" writeTo="File" />
-    <logger name="System*" finalMinLevel="Warn" writeTo="File" />
+    <!-- The following entries specify ASP.NET (IPC) logging, we declare those so our last Debug catch-all doesn't include ASP.NET logs by default -->
+    <logger name="Microsoft.*" finalMinLevel="Warn" writeTo="File" />
+    <logger name="Microsoft.Hosting.Lifetime" finalMinLevel="Info" writeTo="File" />
+    <logger name="System.*" finalMinLevel="Warn" writeTo="File" />
 
     <logger name="*" minlevel="Debug" writeTo="File" />
 
-    <!-- Код ниже становится активным, когда IPC-интерфейс ASF включен. -->
-    <!-- Следующие записи определяют ведение журнала ASP.NET (IPC), мы объявляем их, чтобы наша последняя сборка отладки не включала журналы ASP.NET по умолчанию. -->
-    <logger name="Microsoft*" finalMinLevel="Warn" writeTo="History" />
-    <logger name="Microsoft.Hosting.Lifetime*" finalMinLevel="Info" writeTo="History" />
-    <logger name="System*" finalMinLevel="Warn" writeTo="History" />
+    <!-- Below becomes active when ASF's IPC interface is enabled -->
+    <!-- The following entries specify ASP.NET (IPC) logging, we declare those so our last Debug catch-all doesn't include ASP.NET logs by default -->
+    <logger name="Microsoft.*" finalMinLevel="Warn" writeTo="History" />
+    <logger name="Microsoft.Hosting.Lifetime" finalMinLevel="Info" writeTo="History" />
+    <logger name="System.*" finalMinLevel="Warn" writeTo="History" />
 
     <logger name="*" minlevel="Debug" writeTo="History" />
   </rules>
@@ -107,7 +107,7 @@ ASF журналирует дополнительные данные, такие
 
 Если вы теперь запустите ASF, вы заметите что дата, уровень предупреждения и источник сообщения исчезли - оставив вам только сообщения ASF в формате `Function() Message`.
 
-Мы также можем изменить конфигурацию чтобы журналировать в больше чем одну цель. Давайте писать журнал одновременно в `ColoredConsole` и **[File](https://github.com/nlog/nlog/wiki/File-target)**.
+Мы также можем изменить конфигурацию чтобы журналировать в больше чем одну цель. Let's log to `ColoredConsole` and **[`File`](https://github.com/nlog/nlog/wiki/File-target)** at the same time.
 
 ```xml
 <?xml version="1.0" encoding="utf-8" ?>

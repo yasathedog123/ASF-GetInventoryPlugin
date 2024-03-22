@@ -54,7 +54,7 @@ Remember to ensure that file containing the password is not readable by unauthor
 
 ---
 
-## Öneriler
+## Encryption recommendations
 
 If compatibility is not an issue for you, and you're fine with the way how `ProtectedDataForCurrentUser` method works, it is the **recommended** option of storing the password in ASF, as it provides the best security. `AES` method is a good choice for people who still want to make use of their configs on any machine they want, while `PlainText` is the most simple way of storing the password, if you don't mind that anybody can look into JSON configuration file for it.
 
@@ -110,6 +110,6 @@ ASF allows you to specify salt for this method via `--cryptkey` **[command-line 
 
 ---
 
-## Öneriler
+## Hashing recommendations
 
 If you'd like to use a hashing method for storing some secrets, such as `IPCPassword`, we recommend to use `SCrypt` with custom salt, as it provides a very decent security against brute-forcing attempts. `Pbkdf2` is offered only for compatibility reasons, mainly because we already have a working (and needed) implementation of it for other use cases across Steam platform (e.g. parental pins). It's still considered secure, but weak compared to alternatives (e.g. `SCrypt`).

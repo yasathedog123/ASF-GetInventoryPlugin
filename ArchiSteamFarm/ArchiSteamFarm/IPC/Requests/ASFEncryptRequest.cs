@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,8 +23,8 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Helpers;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Requests;
 
@@ -31,16 +33,18 @@ public sealed class ASFEncryptRequest {
 	/// <summary>
 	///     Encryption method used for encrypting this string.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public ArchiCryptoHelper.ECryptoMethod CryptoMethod { get; private set; }
+	public ArchiCryptoHelper.ECryptoMethod CryptoMethod { get; private init; }
 
 	/// <summary>
 	///     String to encrypt with provided <see cref="CryptoMethod" />.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public string StringToEncrypt { get; private set; } = "";
+	public string StringToEncrypt { get; private init; } = "";
 
 	[JsonConstructor]
 	private ASFEncryptRequest() { }

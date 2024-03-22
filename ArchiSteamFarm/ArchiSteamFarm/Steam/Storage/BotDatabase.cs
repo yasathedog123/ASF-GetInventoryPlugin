@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,36 +27,20 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Helpers.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Security;
 using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Steam.Storage;
 
 public sealed class BotDatabase : GenericDatabase {
-	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> FarmingBlacklistAppIDs = [];
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> FarmingPriorityQueueAppIDs = [];
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ObservableConcurrentDictionary<uint, DateTime> FarmingRiskyIgnoredAppIDs = new();
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> FarmingRiskyPrioritizedAppIDs = [];
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> MatchActivelyBlacklistAppIDs = [];
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<ulong> TradingBlacklistSteamIDs = [];
-
 	internal uint GamesToRedeemInBackgroundCount {
 		get {
 			lock (GamesToRedeemInBackground) {
@@ -64,9 +50,6 @@ public sealed class BotDatabase : GenericDatabase {
 	}
 
 	internal bool HasGamesToRedeemInBackground => GamesToRedeemInBackgroundCount > 0;
-
-	[JsonProperty(Required = Required.DisallowNull)]
-	private readonly OrderedDictionary GamesToRedeemInBackground = new();
 
 	internal string? AccessToken {
 		get => BackingAccessToken;
@@ -80,6 +63,26 @@ public sealed class BotDatabase : GenericDatabase {
 			Utilities.InBackground(Save);
 		}
 	}
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	internal ConcurrentHashSet<uint> FarmingBlacklistAppIDs { get; private init; } = [];
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	internal ConcurrentHashSet<uint> FarmingPriorityQueueAppIDs { get; private init; } = [];
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	internal ObservableConcurrentDictionary<uint, DateTime> FarmingRiskyIgnoredAppIDs { get; private init; } = new();
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	internal ConcurrentHashSet<uint> FarmingRiskyPrioritizedAppIDs { get; private init; } = [];
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	internal ConcurrentHashSet<uint> MatchActivelyBlacklistAppIDs { get; private init; } = [];
 
 	internal MobileAuthenticator? MobileAuthenticator {
 		get => BackingMobileAuthenticator;
@@ -120,17 +123,26 @@ public sealed class BotDatabase : GenericDatabase {
 		}
 	}
 
-	[JsonProperty]
-	private string? BackingAccessToken;
+	[JsonDisallowNull]
+	[JsonInclude]
+	internal ConcurrentHashSet<ulong> TradingBlacklistSteamIDs { get; private init; } = [];
 
-	[JsonProperty($"_{nameof(MobileAuthenticator)}")]
-	private MobileAuthenticator? BackingMobileAuthenticator;
+	[JsonInclude]
+	private string? BackingAccessToken { get; set; }
 
-	[JsonProperty]
-	private string? BackingRefreshToken;
+	[JsonInclude]
+	[JsonPropertyName($"_{nameof(MobileAuthenticator)}")]
+	private MobileAuthenticator? BackingMobileAuthenticator { get; set; }
 
-	[JsonProperty]
-	private string? BackingSteamGuardData;
+	[JsonInclude]
+	private string? BackingRefreshToken { get; set; }
+
+	[JsonInclude]
+	private string? BackingSteamGuardData { get; set; }
+
+	[JsonDisallowNull]
+	[JsonInclude]
+	private OrderedDictionary GamesToRedeemInBackground { get; init; } = new();
 
 	private BotDatabase(string filePath) : this() {
 		ArgumentException.ThrowIfNullOrEmpty(filePath);
@@ -146,6 +158,32 @@ public sealed class BotDatabase : GenericDatabase {
 		FarmingRiskyPrioritizedAppIDs.OnModified += OnObjectModified;
 		MatchActivelyBlacklistAppIDs.OnModified += OnObjectModified;
 		TradingBlacklistSteamIDs.OnModified += OnObjectModified;
+	}
+
+	[PublicAPI]
+	public void DeleteFromJsonStorage(string key) {
+		ArgumentException.ThrowIfNullOrEmpty(key);
+
+		DeleteFromJsonStorage(this, key);
+	}
+
+	[PublicAPI]
+	public void SaveToJsonStorage<T>(string key, T value) where T : notnull {
+		ArgumentException.ThrowIfNullOrEmpty(key);
+		ArgumentNullException.ThrowIfNull(value);
+
+		SaveToJsonStorage(this, key, value);
+	}
+
+	[PublicAPI]
+	public void SaveToJsonStorage(string key, JsonElement value) {
+		ArgumentException.ThrowIfNullOrEmpty(key);
+
+		if (value.ValueKind == JsonValueKind.Undefined) {
+			throw new ArgumentOutOfRangeException(nameof(value));
+		}
+
+		SaveToJsonStorage(this, key, value);
 	}
 
 	[UsedImplicitly]
@@ -199,23 +237,24 @@ public sealed class BotDatabase : GenericDatabase {
 		base.Dispose(disposing);
 	}
 
+	protected override Task Save() => Save(this);
+
 	internal void AddGamesToRedeemInBackground(IOrderedDictionary games) {
 		if ((games == null) || (games.Count == 0)) {
 			throw new ArgumentNullException(nameof(games));
 		}
 
-		bool save = false;
-
 		lock (GamesToRedeemInBackground) {
-			foreach (DictionaryEntry game in games.OfType<DictionaryEntry>().Where(game => !GamesToRedeemInBackground.Contains(game.Key))) {
-				GamesToRedeemInBackground.Add(game.Key, game.Value);
-				save = true;
+			foreach (DictionaryEntry game in games) {
+				if (!IsValidGameToRedeemInBackground(game)) {
+					throw new InvalidOperationException(nameof(game));
+				}
+
+				GamesToRedeemInBackground[game.Key] = game.Value;
 			}
 		}
 
-		if (save) {
-			Utilities.InBackground(Save);
-		}
+		Utilities.InBackground(Save);
 	}
 
 	internal static async Task<BotDatabase?> CreateOrLoad(string filePath) {
@@ -236,7 +275,7 @@ public sealed class BotDatabase : GenericDatabase {
 				return null;
 			}
 
-			botDatabase = JsonConvert.DeserializeObject<BotDatabase>(json);
+			botDatabase = json.ToJsonObject<BotDatabase>();
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
 
@@ -249,6 +288,16 @@ public sealed class BotDatabase : GenericDatabase {
 			return null;
 		}
 
+		(bool valid, string? errorMessage) = botDatabase.CheckValidation();
+
+		if (!valid) {
+			if (!string.IsNullOrEmpty(errorMessage)) {
+				ASF.ArchiLogger.LogGenericError(errorMessage);
+			}
+
+			return null;
+		}
+
 		botDatabase.FilePath = filePath;
 
 		return botDatabase;
@@ -257,11 +306,33 @@ public sealed class BotDatabase : GenericDatabase {
 	internal (string? Key, string? Name) GetGameToRedeemInBackground() {
 		lock (GamesToRedeemInBackground) {
 			foreach (DictionaryEntry game in GamesToRedeemInBackground) {
-				return (game.Key as string, game.Value as string);
+				return game.Value switch {
+					string name => (game.Key as string, name),
+					JsonElement { ValueKind: JsonValueKind.String } jsonElement => (game.Key as string, jsonElement.GetString()),
+					_ => throw new InvalidOperationException(nameof(game.Value))
+				};
 			}
 		}
 
 		return (null, null);
+	}
+
+	internal static bool IsValidGameToRedeemInBackground(DictionaryEntry game) {
+		ArgumentNullException.ThrowIfNull(game);
+
+		string? key = game.Key as string;
+
+		if (string.IsNullOrEmpty(key) || !Utilities.IsValidCdKey(key)) {
+			return false;
+		}
+
+		switch (game.Value) {
+			case string name when !string.IsNullOrEmpty(name):
+			case JsonElement { ValueKind: JsonValueKind.String } jsonElement when !string.IsNullOrEmpty(jsonElement.GetString()):
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	internal void PerformMaintenance() {
@@ -285,6 +356,8 @@ public sealed class BotDatabase : GenericDatabase {
 
 		Utilities.InBackground(Save);
 	}
+
+	private (bool Valid, string? ErrorMessage) CheckValidation() => GamesToRedeemInBackground.Cast<DictionaryEntry>().Any(static game => !IsValidGameToRedeemInBackground(game)) ? (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(GamesToRedeemInBackground), string.Join("", GamesToRedeemInBackground))) : (true, null);
 
 	private async void OnObjectModified(object? sender, EventArgs e) {
 		if (string.IsNullOrEmpty(FilePath)) {

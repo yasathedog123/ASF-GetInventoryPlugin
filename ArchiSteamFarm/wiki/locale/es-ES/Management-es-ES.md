@@ -21,9 +21,9 @@ Haremos todas las siguientes acciones como `root`, por lo que debes llegar al sh
 
 En primer lugar, es buena idea asegurarse de que nuestra carpeta todavía pertenece a nuestro usuario `asf`, ejecutar `chown -hR asf:asf /home/asf/ArchiSteamFarm` una vez será suficiente. Los permisos podrían ser incorrectos, por ejemplo, si has descargado y/o descomprimido el archivo zip como usuario `root`.
 
-En segundo lugar, si estás usando la variante genérica de ASF, necesitas asegurarte de que el comando `dotnet` sea reconocido y se encuentre en una de las ubicaciones estándar: `/usr/local/bin`, `/usr/bin` o `/bin`. Esto es necesario para nuestro servicio systemd que ejecuta el comando `dotnet /path/to/ArchiSteamFarm.dll` Comprueba si `dotnet --info` funciona para ti, en caso afirmativo, escribe `command -v dotnet` para averiguar dónde está ubicado. Si usaste el instalador oficial, debería estar en `/usr/bin/dotnet` o una de las otras dos ubicaciones, lo que es correcto. Si se encuentra en una ubicación personalizada tal como `/usr/share/dotnet/dotnet`, crea un enlace simbólico para este usando `ln -s "$(command -v dotnet)" /usr/bin/dotnet`. Ahora `command -v dotnet` debería reportar `/usr/bin/dotnet`, lo que también hará que nuestra unidad systemd funcione. Si estás usando una variante de sistema operativo específico, no necesitas hacer nada al respecto.
+En segundo lugar, si estás usando la variante genérica de ASF, necesitas asegurarte de que el comando `dotnet` sea reconocido y se encuentre en una de las ubicaciones estándar: `/usr/local/bin`, `/usr/bin` o `/bin`. Esto es necesario para nuestro servicio systemd que ejecuta el comando `dotnet /path/to/ArchiSteamFarm.dll` Comprueba si `dotnet --info` funciona para ti, en caso afirmativo, escribe `command -v dotnet` para averiguar dónde está ubicado. Si usaste el instalador oficial, debería estar en `/usr/bin/dotnet` o una de las otras dos ubicaciones, lo que es correcto. Si se encuentra en una ubicación personalizada tal como `/usr/share/dotnet/dotnet`, crea un **[enlace simbólico](https://es.wikipedia.org/wiki/Enlace_simb%C3%B3lico)** para este usando `ln -s "$(command -v dotnet)" /usr/bin/dotnet`. Ahora `command -v dotnet` debería reportar `/usr/bin/dotnet`, lo que también hará que nuestra unidad systemd funcione. Si estás usando una variante de sistema operativo específico, no necesitas hacer nada al respecto.
 
-A continuación, `cd /etc/systemd/system` y ejecuta `ln -s /home/asf/ArchiSteamFarm/ArchiSteamFarm\@.service .`, esto creará un enlace simbólico a nuestra declaración de servicio y lo registrará en `systemd`. El enlace simbólico permitirá a ASF actualizar automáticamente tu unidad `systemd` como parte de la actualización de ASF - dependiendo de tu situación, o simplemente usa el comando `cp` en el archivo y gestiónalo como gustes.
+A continuación, ejecuta `ln -s /home/asf/ArchiSteamFarm/ArchiSteamFarm\@.service /etc/systemd/system/ArchiSteamFarm\@.service`, esto creará un enlace simbólico a nuestra declaración de servicio y lo registrará en `systemd`. El enlace simbólico permitirá a ASF actualizar automáticamente tu unidad `systemd` como parte de la actualización de ASF - dependiendo de tu situación, o simplemente usa el comando `cp` en el archivo y gestiónalo como gustes.
 
 Después, asegúrate de que `systemd` reconoce nuestro servicio:
 
@@ -105,15 +105,15 @@ Restart=always
 
 Y eso es todo, ahora tu unidad actúa como si solo tuviera `Restart=always` en `[Service]`.
 
-La alternativa es usar el comando `cp` en el archivo y administrarlo tú mismo, pero esto te permite cambios flexibles incluso si decides conservar la unidad original de ASF, por ejemplo con un symlink.
+La alternativa es usar el comando `cp` en el archivo y administrarlo tú mismo, pero esto te permite cambios flexibles incluso si decides conservar la unidad original de ASF, por ejemplo con un **[enlace simbólico](https://es.wikipedia.org/wiki/Enlace_simb%C3%B3lico)**.
 
 ---
 
 ## ¡Nunca ejecutes ASF como administrador!
 
-ASF incluye su propia validación ya sea que el proceso se ejecute como administrador (`root`) o no. Ejecutar como root **no** se requiere para ningún tipo de operación realizada por el proceso de ASF, suponiendo que el entorno en el que opera esté correctamente configurado, y por lo tanto debería ser considerado como una **mala práctica**. Esto significa que en Windows, ASF nunca debe ser ejecutado con la configuración "ejecutar como administrador", y en Unix ASF debería tener una cuenta de usuario dedicada, o reutilizar la tuya en caso de un sistema de escritorio.
+ASF incluye su propia validación ya sea que el proceso se ejecute como administrador (`root`) o no. Ejecutar como `root` **no** se requiere para ningún tipo de operación realizada por el proceso de ASF, suponiendo que el entorno en el que opera esté correctamente configurado, y por lo tanto debería ser considerado como una **mala práctica**. Esto significa que en Windows, ASF **nunca** debe ser ejecutado con la configuración "ejecutar como administrador", y en Unix ASF debería tener una **cuenta de usuario dedicada**, o reutilizar la tuya en caso de un sistema de escritorio.
 
-Para más información sobre *por qué* no recomendamos ejecutar ASF como root, revisa **[superuser](https://superuser.com/questions/218379/why-is-it-bad-to-run-as-root)** y otros recursos. Si aún no estás convencido, pregúntate qué le pasaría a tu máquina si el proceso de ASF ejecutara el comando `rm -rf /*` justo después de iniciar.
+Para mayor información sobre *por qué* no recomendamos ejecutar ASF como `root`, dirígete a **[superuser](https://superuser.com/questions/218379/why-is-it-bad-to-run-as-root)** y otras fuentes. Si aún no estás convencido, pregúntate qué le pasaría a tu máquina si el proceso de ASF ejecutara el comando `rm -rf /*` justo después de iniciar.
 
 ### Ejecuto como `root` porque ASF no puede escribir a sus archivos
 

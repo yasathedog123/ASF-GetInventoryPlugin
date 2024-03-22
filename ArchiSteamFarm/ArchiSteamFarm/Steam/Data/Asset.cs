@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,13 +22,8 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Globalization;
-using ArchiSteamFarm.Core;
+using System.Text.Json.Serialization;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ArchiSteamFarm.Steam.Data;
 
@@ -43,217 +40,94 @@ public sealed class Asset {
 
 	[JsonIgnore]
 	[PublicAPI]
-	public IReadOnlyDictionary<string, JToken>? AdditionalPropertiesReadOnly => AdditionalProperties;
-
-	[JsonIgnore]
-	[PublicAPI]
 	public bool IsSteamPointsShopItem => !Tradable && (InstanceID == SteamPointsShopInstanceID);
 
 	[JsonIgnore]
 	[PublicAPI]
+	public bool Marketable => Description?.Marketable ?? false;
+
+	[JsonIgnore]
+	[PublicAPI]
+	public EAssetRarity Rarity => Description?.Rarity ?? EAssetRarity.Unknown;
+
+	[JsonIgnore]
+	[PublicAPI]
+	public uint RealAppID => Description?.RealAppID ?? 0;
+
+	[JsonIgnore]
+	[PublicAPI]
+	public bool Tradable => Description?.Tradable ?? false;
+
+	[JsonIgnore]
+	[PublicAPI]
+	public EAssetType Type => Description?.Type ?? EAssetType.Unknown;
+
+	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+	[JsonPropertyName("amount")]
+	[JsonRequired]
+	[PublicAPI]
 	public uint Amount { get; internal set; }
 
-	[JsonProperty("appid", Required = Required.DisallowNull)]
-	public uint AppID { get; private set; }
+	[JsonInclude]
+	[JsonPropertyName("appid")]
+	public uint AppID { get; private init; }
+
+	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+	[JsonPropertyName("assetid")]
+	[PublicAPI]
+	public ulong AssetID { get; private init; }
+
+	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+	[JsonPropertyName("classid")]
+	[PublicAPI]
+	public ulong ClassID { get; private init; }
+
+	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+	[JsonPropertyName("contextid")]
+	[PublicAPI]
+	public ulong ContextID { get; private init; }
 
 	[JsonIgnore]
 	[PublicAPI]
-	public ulong AssetID { get; private set; }
+	public InventoryDescription? Description { get; internal set; }
 
-	[JsonIgnore]
+	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+	[JsonPropertyName("instanceid")]
 	[PublicAPI]
-	public ulong ClassID { get; private set; }
+	public ulong InstanceID { get; private init; }
 
-	[JsonIgnore]
-	[PublicAPI]
-	public ulong ContextID { get; private set; }
-
-	[JsonIgnore]
-	[PublicAPI]
-	public ulong InstanceID { get; private set; }
-
-	[JsonIgnore]
-	[PublicAPI]
-	public bool Marketable { get; internal set; }
-
-	[JsonIgnore]
-	[PublicAPI]
-	public ERarity Rarity { get; internal set; }
-
-	[JsonIgnore]
-	[PublicAPI]
-	public uint RealAppID { get; internal set; }
-
-	[JsonIgnore]
-	[PublicAPI]
-	public ImmutableHashSet<Tag>? Tags { get; internal set; }
-
-	[JsonIgnore]
-	[PublicAPI]
-	public bool Tradable { get; internal set; }
-
-	[JsonIgnore]
-	[PublicAPI]
-	public EType Type { get; internal set; }
-
-	[JsonExtensionData(WriteData = false)]
-	internal Dictionary<string, JToken>? AdditionalProperties { private get; set; }
-
-	[JsonProperty("amount", Required = Required.Always)]
-	private string AmountText {
-		get => Amount.ToString(CultureInfo.InvariantCulture);
-
-		set {
-			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(value);
-
-				return;
-			}
-
-			if (!uint.TryParse(value, out uint amount) || (amount == 0)) {
-				ASF.ArchiLogger.LogNullError(amount);
-
-				return;
-			}
-
-			Amount = amount;
-		}
+	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+	[JsonPropertyName("id")]
+	private ulong ID {
+		get => AssetID;
+		init => AssetID = value;
 	}
 
-	[JsonProperty("assetid", Required = Required.DisallowNull)]
-	private string AssetIDText {
-		get => AssetID.ToString(CultureInfo.InvariantCulture);
-
-		set {
-			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(value);
-
-				return;
-			}
-
-			if (!ulong.TryParse(value, out ulong assetID) || (assetID == 0)) {
-				ASF.ArchiLogger.LogNullError(assetID);
-
-				return;
-			}
-
-			AssetID = assetID;
-		}
-	}
-
-	[JsonProperty("classid", Required = Required.DisallowNull)]
-	private string ClassIDText {
-		set {
-			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(value);
-
-				return;
-			}
-
-			if (!ulong.TryParse(value, out ulong classID) || (classID == 0)) {
-				return;
-			}
-
-			ClassID = classID;
-		}
-	}
-
-	[JsonProperty("contextid", Required = Required.DisallowNull)]
-	private string ContextIDText {
-		get => ContextID.ToString(CultureInfo.InvariantCulture);
-
-		set {
-			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(value);
-
-				return;
-			}
-
-			if (!ulong.TryParse(value, out ulong contextID) || (contextID == 0)) {
-				ASF.ArchiLogger.LogNullError(contextID);
-
-				return;
-			}
-
-			ContextID = contextID;
-		}
-	}
-
-	[JsonProperty("id", Required = Required.DisallowNull)]
-	private string IDText {
-		set => AssetIDText = value;
-	}
-
-	[JsonProperty("instanceid", Required = Required.DisallowNull)]
-	private string InstanceIDText {
-		set {
-			if (string.IsNullOrEmpty(value)) {
-				return;
-			}
-
-			if (!ulong.TryParse(value, out ulong instanceID)) {
-				ASF.ArchiLogger.LogNullError(instanceID);
-
-				return;
-			}
-
-			InstanceID = instanceID;
-		}
-	}
-
-	// Constructed from trades being received or plugins
-	public Asset(uint appID, ulong contextID, ulong classID, uint amount, ulong instanceID = 0, ulong assetID = 0, bool marketable = true, bool tradable = true, ImmutableHashSet<Tag>? tags = null, uint realAppID = 0, EType type = EType.Unknown, ERarity rarity = ERarity.Unknown) {
+	internal Asset(uint appID, ulong contextID, ulong classID, uint amount, InventoryDescription description, ulong assetID = 0, ulong instanceID = 0) {
 		ArgumentOutOfRangeException.ThrowIfZero(appID);
 		ArgumentOutOfRangeException.ThrowIfZero(contextID);
 		ArgumentOutOfRangeException.ThrowIfZero(classID);
 		ArgumentOutOfRangeException.ThrowIfZero(amount);
+		ArgumentNullException.ThrowIfNull(description);
 
 		AppID = appID;
 		ContextID = contextID;
 		ClassID = classID;
 		Amount = amount;
-		InstanceID = instanceID;
-		AssetID = assetID;
-		Marketable = marketable;
-		Tradable = tradable;
-		RealAppID = realAppID;
-		Type = type;
-		Rarity = rarity;
+		Description = description;
 
-		if (tags?.Count > 0) {
-			Tags = tags;
-		}
+		AssetID = assetID;
+		InstanceID = instanceID;
 	}
 
 	[JsonConstructor]
 	private Asset() { }
 
 	internal Asset CreateShallowCopy() => (Asset) MemberwiseClone();
-
-	public enum ERarity : byte {
-		Unknown,
-		Common,
-		Uncommon,
-		Rare
-	}
-
-	public enum EType : byte {
-		Unknown,
-		BoosterPack,
-		Emoticon,
-		FoilTradingCard,
-		ProfileBackground,
-		TradingCard,
-		SteamGems,
-		SaleItem,
-		Consumable,
-		ProfileModifier,
-		Sticker,
-		ChatEffect,
-		MiniProfileBackground,
-		AvatarProfileFrame,
-		AnimatedAvatar,
-		KeyboardSkin,
-		StartupVideo
-	}
 }

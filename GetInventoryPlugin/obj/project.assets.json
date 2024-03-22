@@ -413,7 +413,7 @@
           }
         }
       },
-      "Markdig.Signed/0.34.0": {
+      "Markdig.Signed/0.36.2": {
         "type": "package",
         "compile": {
           "lib/net8.0/_._": {
@@ -425,44 +425,6 @@
             "related": ".xml"
           }
         }
-      },
-      "Microsoft.AspNetCore.JsonPatch/7.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.CSharp": "4.7.0",
-          "Newtonsoft.Json": "13.0.1"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        }
-      },
-      "Microsoft.AspNetCore.Mvc.NewtonsoftJson/7.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.JsonPatch": "7.0.0",
-          "Newtonsoft.Json": "13.0.1",
-          "Newtonsoft.Json.Bson": "1.0.2"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ]
       },
       "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
         "type": "package",
@@ -475,15 +437,6 @@
           "lib/netstandard2.1/_._": {
             "related": ".xml"
           }
-        }
-      },
-      "Microsoft.CSharp/4.7.0": {
-        "type": "package",
-        "compile": {
-          "ref/netcoreapp2.0/_._": {}
-        },
-        "runtime": {
-          "lib/netcoreapp2.0/_._": {}
         }
       },
       "Microsoft.Extensions.ApiDescription.Server/6.0.5": {
@@ -625,7 +578,7 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "Microsoft.IdentityModel.Abstractions/7.0.3": {
+      "Microsoft.IdentityModel.Abstractions/7.4.1": {
         "type": "package",
         "compile": {
           "lib/net8.0/_._": {
@@ -638,10 +591,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.JsonWebTokens/7.0.3": {
+      "Microsoft.IdentityModel.JsonWebTokens/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "7.0.3"
+          "Microsoft.IdentityModel.Tokens": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -654,10 +607,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Logging/7.0.3": {
+      "Microsoft.IdentityModel.Logging/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Abstractions": "7.0.3"
+          "Microsoft.IdentityModel.Abstractions": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -670,10 +623,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Tokens/7.0.3": {
+      "Microsoft.IdentityModel.Tokens/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Logging": "7.0.3"
+          "Microsoft.IdentityModel.Logging": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -728,35 +681,6 @@
           "runtimes/win/lib/netstandard2.0/_._": {
             "assetType": "runtime",
             "rid": "win"
-          }
-        }
-      },
-      "Newtonsoft.Json/13.0.3": {
-        "type": "package",
-        "compile": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "Newtonsoft.Json.Bson/1.0.2": {
-        "type": "package",
-        "dependencies": {
-          "Newtonsoft.Json": "12.0.1"
-        },
-        "compile": {
-          "lib/netstandard2.0/_._": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/_._": {
-            "related": ".pdb;.xml"
           }
         }
       },
@@ -822,7 +746,7 @@
           }
         }
       },
-      "NLog/5.2.7": {
+      "NLog/5.2.8": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/_._": {
@@ -835,12 +759,12 @@
           }
         }
       },
-      "NLog.Extensions.Logging/5.3.7": {
+      "NLog.Extensions.Logging/5.3.8": {
         "type": "package",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
           "Microsoft.Extensions.Logging": "8.0.0",
-          "NLog": "5.2.7"
+          "NLog": "5.2.8"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -853,10 +777,10 @@
           }
         }
       },
-      "NLog.Web.AspNetCore/5.3.7": {
+      "NLog.Web.AspNetCore/5.3.8": {
         "type": "package",
         "dependencies": {
-          "NLog.Extensions.Logging": "5.3.7"
+          "NLog.Extensions.Logging": "5.3.8"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -946,23 +870,6 @@
         "runtime": {
           "lib/net7.0/_._": {
             "related": ".pdb;.xml"
-          }
-        }
-      },
-      "Swashbuckle.AspNetCore.Newtonsoft/6.5.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "7.0.0",
-          "Swashbuckle.AspNetCore.SwaggerGen": "6.5.0"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".pdb"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".pdb"
           }
         }
       },
@@ -1143,23 +1050,6 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "System.IdentityModel.Tokens.Jwt/7.0.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.IdentityModel.JsonWebTokens": "7.0.3",
-          "Microsoft.IdentityModel.Tokens": "7.0.3"
-        },
-        "compile": {
-          "lib/net8.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net8.0/_._": {
-            "related": ".xml"
-          }
-        }
-      },
       "System.Linq.Async/6.0.1": {
         "type": "package",
         "dependencies": {
@@ -1269,23 +1159,21 @@
           }
         }
       },
-      "ArchiSteamFarm/5.5.0.11": {
+      "ArchiSteamFarm/6.0.1.2": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "AngleSharp.XPath": "2.0.3",
           "CryptSharpStandard": "1.0.0",
           "Humanizer": "2.14.1",
-          "Markdig.Signed": "0.34.0",
-          "NLog.Web.AspNetCore": "5.3.7",
-          "Newtonsoft.Json": "13.0.3",
+          "Markdig.Signed": "0.36.2",
+          "Microsoft.IdentityModel.JsonWebTokens": "7.4.1",
+          "NLog.Web.AspNetCore": "5.3.8",
           "Nito.AsyncEx.Coordination": "5.1.2",
           "SteamKit2": "2.5.0",
           "Swashbuckle.AspNetCore": "6.5.0",
           "Swashbuckle.AspNetCore.Annotations": "6.5.0",
-          "Swashbuckle.AspNetCore.Newtonsoft": "6.5.0",
           "System.Composition": "8.0.0",
-          "System.IdentityModel.Tokens.Jwt": "7.0.3",
           "System.Linq.Async": "6.0.1",
           "System.Security.Cryptography.ProtectedData": "8.0.0",
           "zxcvbn-core": "7.0.92"
@@ -1710,7 +1598,7 @@
           }
         }
       },
-      "Markdig.Signed/0.34.0": {
+      "Markdig.Signed/0.36.2": {
         "type": "package",
         "compile": {
           "lib/net8.0/_._": {
@@ -1722,44 +1610,6 @@
             "related": ".xml"
           }
         }
-      },
-      "Microsoft.AspNetCore.JsonPatch/7.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.CSharp": "4.7.0",
-          "Newtonsoft.Json": "13.0.1"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        }
-      },
-      "Microsoft.AspNetCore.Mvc.NewtonsoftJson/7.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.JsonPatch": "7.0.0",
-          "Newtonsoft.Json": "13.0.1",
-          "Newtonsoft.Json.Bson": "1.0.2"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ]
       },
       "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
         "type": "package",
@@ -1772,15 +1622,6 @@
           "lib/netstandard2.1/_._": {
             "related": ".xml"
           }
-        }
-      },
-      "Microsoft.CSharp/4.7.0": {
-        "type": "package",
-        "compile": {
-          "ref/netcoreapp2.0/_._": {}
-        },
-        "runtime": {
-          "lib/netcoreapp2.0/_._": {}
         }
       },
       "Microsoft.Extensions.ApiDescription.Server/6.0.5": {
@@ -1922,7 +1763,7 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "Microsoft.IdentityModel.Abstractions/7.0.3": {
+      "Microsoft.IdentityModel.Abstractions/7.4.1": {
         "type": "package",
         "compile": {
           "lib/net8.0/_._": {
@@ -1935,10 +1776,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.JsonWebTokens/7.0.3": {
+      "Microsoft.IdentityModel.JsonWebTokens/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "7.0.3"
+          "Microsoft.IdentityModel.Tokens": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -1951,10 +1792,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Logging/7.0.3": {
+      "Microsoft.IdentityModel.Logging/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Abstractions": "7.0.3"
+          "Microsoft.IdentityModel.Abstractions": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -1967,10 +1808,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Tokens/7.0.3": {
+      "Microsoft.IdentityModel.Tokens/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Logging": "7.0.3"
+          "Microsoft.IdentityModel.Logging": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -2019,35 +1860,6 @@
         "runtime": {
           "lib/netstandard2.0/_._": {
             "related": ".xml"
-          }
-        }
-      },
-      "Newtonsoft.Json/13.0.3": {
-        "type": "package",
-        "compile": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "Newtonsoft.Json.Bson/1.0.2": {
-        "type": "package",
-        "dependencies": {
-          "Newtonsoft.Json": "12.0.1"
-        },
-        "compile": {
-          "lib/netstandard2.0/_._": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/_._": {
-            "related": ".pdb;.xml"
           }
         }
       },
@@ -2113,7 +1925,7 @@
           }
         }
       },
-      "NLog/5.2.7": {
+      "NLog/5.2.8": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/_._": {
@@ -2126,12 +1938,12 @@
           }
         }
       },
-      "NLog.Extensions.Logging/5.3.7": {
+      "NLog.Extensions.Logging/5.3.8": {
         "type": "package",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
           "Microsoft.Extensions.Logging": "8.0.0",
-          "NLog": "5.2.7"
+          "NLog": "5.2.8"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -2144,10 +1956,10 @@
           }
         }
       },
-      "NLog.Web.AspNetCore/5.3.7": {
+      "NLog.Web.AspNetCore/5.3.8": {
         "type": "package",
         "dependencies": {
-          "NLog.Extensions.Logging": "5.3.7"
+          "NLog.Extensions.Logging": "5.3.8"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -2237,23 +2049,6 @@
         "runtime": {
           "lib/net7.0/_._": {
             "related": ".pdb;.xml"
-          }
-        }
-      },
-      "Swashbuckle.AspNetCore.Newtonsoft/6.5.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "7.0.0",
-          "Swashbuckle.AspNetCore.SwaggerGen": "6.5.0"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".pdb"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".pdb"
           }
         }
       },
@@ -2434,23 +2229,6 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "System.IdentityModel.Tokens.Jwt/7.0.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.IdentityModel.JsonWebTokens": "7.0.3",
-          "Microsoft.IdentityModel.Tokens": "7.0.3"
-        },
-        "compile": {
-          "lib/net8.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net8.0/_._": {
-            "related": ".xml"
-          }
-        }
-      },
       "System.Linq.Async/6.0.1": {
         "type": "package",
         "dependencies": {
@@ -2542,23 +2320,21 @@
           }
         }
       },
-      "ArchiSteamFarm/5.5.0.11": {
+      "ArchiSteamFarm/6.0.1.2": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "AngleSharp.XPath": "2.0.3",
           "CryptSharpStandard": "1.0.0",
           "Humanizer": "2.14.1",
-          "Markdig.Signed": "0.34.0",
-          "NLog.Web.AspNetCore": "5.3.7",
-          "Newtonsoft.Json": "13.0.3",
+          "Markdig.Signed": "0.36.2",
+          "Microsoft.IdentityModel.JsonWebTokens": "7.4.1",
+          "NLog.Web.AspNetCore": "5.3.8",
           "Nito.AsyncEx.Coordination": "5.1.2",
           "SteamKit2": "2.5.0",
           "Swashbuckle.AspNetCore": "6.5.0",
           "Swashbuckle.AspNetCore.Annotations": "6.5.0",
-          "Swashbuckle.AspNetCore.Newtonsoft": "6.5.0",
           "System.Composition": "8.0.0",
-          "System.IdentityModel.Tokens.Jwt": "7.0.3",
           "System.Linq.Async": "6.0.1",
           "System.Security.Cryptography.ProtectedData": "8.0.0",
           "zxcvbn-core": "7.0.92"
@@ -2983,7 +2759,7 @@
           }
         }
       },
-      "Markdig.Signed/0.34.0": {
+      "Markdig.Signed/0.36.2": {
         "type": "package",
         "compile": {
           "lib/net8.0/_._": {
@@ -2995,44 +2771,6 @@
             "related": ".xml"
           }
         }
-      },
-      "Microsoft.AspNetCore.JsonPatch/7.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.CSharp": "4.7.0",
-          "Newtonsoft.Json": "13.0.1"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        }
-      },
-      "Microsoft.AspNetCore.Mvc.NewtonsoftJson/7.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.JsonPatch": "7.0.0",
-          "Newtonsoft.Json": "13.0.1",
-          "Newtonsoft.Json.Bson": "1.0.2"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ]
       },
       "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
         "type": "package",
@@ -3045,15 +2783,6 @@
           "lib/netstandard2.1/_._": {
             "related": ".xml"
           }
-        }
-      },
-      "Microsoft.CSharp/4.7.0": {
-        "type": "package",
-        "compile": {
-          "ref/netcoreapp2.0/_._": {}
-        },
-        "runtime": {
-          "lib/netcoreapp2.0/_._": {}
         }
       },
       "Microsoft.Extensions.ApiDescription.Server/6.0.5": {
@@ -3195,7 +2924,7 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "Microsoft.IdentityModel.Abstractions/7.0.3": {
+      "Microsoft.IdentityModel.Abstractions/7.4.1": {
         "type": "package",
         "compile": {
           "lib/net8.0/_._": {
@@ -3208,10 +2937,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.JsonWebTokens/7.0.3": {
+      "Microsoft.IdentityModel.JsonWebTokens/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "7.0.3"
+          "Microsoft.IdentityModel.Tokens": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -3224,10 +2953,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Logging/7.0.3": {
+      "Microsoft.IdentityModel.Logging/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Abstractions": "7.0.3"
+          "Microsoft.IdentityModel.Abstractions": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -3240,10 +2969,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Tokens/7.0.3": {
+      "Microsoft.IdentityModel.Tokens/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Logging": "7.0.3"
+          "Microsoft.IdentityModel.Logging": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -3292,35 +3021,6 @@
         "runtime": {
           "lib/netstandard2.0/_._": {
             "related": ".xml"
-          }
-        }
-      },
-      "Newtonsoft.Json/13.0.3": {
-        "type": "package",
-        "compile": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "Newtonsoft.Json.Bson/1.0.2": {
-        "type": "package",
-        "dependencies": {
-          "Newtonsoft.Json": "12.0.1"
-        },
-        "compile": {
-          "lib/netstandard2.0/_._": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/_._": {
-            "related": ".pdb;.xml"
           }
         }
       },
@@ -3386,7 +3086,7 @@
           }
         }
       },
-      "NLog/5.2.7": {
+      "NLog/5.2.8": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/_._": {
@@ -3399,12 +3099,12 @@
           }
         }
       },
-      "NLog.Extensions.Logging/5.3.7": {
+      "NLog.Extensions.Logging/5.3.8": {
         "type": "package",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
           "Microsoft.Extensions.Logging": "8.0.0",
-          "NLog": "5.2.7"
+          "NLog": "5.2.8"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -3417,10 +3117,10 @@
           }
         }
       },
-      "NLog.Web.AspNetCore/5.3.7": {
+      "NLog.Web.AspNetCore/5.3.8": {
         "type": "package",
         "dependencies": {
-          "NLog.Extensions.Logging": "5.3.7"
+          "NLog.Extensions.Logging": "5.3.8"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -3510,23 +3210,6 @@
         "runtime": {
           "lib/net7.0/_._": {
             "related": ".pdb;.xml"
-          }
-        }
-      },
-      "Swashbuckle.AspNetCore.Newtonsoft/6.5.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "7.0.0",
-          "Swashbuckle.AspNetCore.SwaggerGen": "6.5.0"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".pdb"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".pdb"
           }
         }
       },
@@ -3707,23 +3390,6 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "System.IdentityModel.Tokens.Jwt/7.0.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.IdentityModel.JsonWebTokens": "7.0.3",
-          "Microsoft.IdentityModel.Tokens": "7.0.3"
-        },
-        "compile": {
-          "lib/net8.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net8.0/_._": {
-            "related": ".xml"
-          }
-        }
-      },
       "System.Linq.Async/6.0.1": {
         "type": "package",
         "dependencies": {
@@ -3815,23 +3481,21 @@
           }
         }
       },
-      "ArchiSteamFarm/5.5.0.11": {
+      "ArchiSteamFarm/6.0.1.2": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "AngleSharp.XPath": "2.0.3",
           "CryptSharpStandard": "1.0.0",
           "Humanizer": "2.14.1",
-          "Markdig.Signed": "0.34.0",
-          "NLog.Web.AspNetCore": "5.3.7",
-          "Newtonsoft.Json": "13.0.3",
+          "Markdig.Signed": "0.36.2",
+          "Microsoft.IdentityModel.JsonWebTokens": "7.4.1",
+          "NLog.Web.AspNetCore": "5.3.8",
           "Nito.AsyncEx.Coordination": "5.1.2",
           "SteamKit2": "2.5.0",
           "Swashbuckle.AspNetCore": "6.5.0",
           "Swashbuckle.AspNetCore.Annotations": "6.5.0",
-          "Swashbuckle.AspNetCore.Newtonsoft": "6.5.0",
           "System.Composition": "8.0.0",
-          "System.IdentityModel.Tokens.Jwt": "7.0.3",
           "System.Linq.Async": "6.0.1",
           "System.Security.Cryptography.ProtectedData": "8.0.0",
           "zxcvbn-core": "7.0.92"
@@ -4256,7 +3920,7 @@
           }
         }
       },
-      "Markdig.Signed/0.34.0": {
+      "Markdig.Signed/0.36.2": {
         "type": "package",
         "compile": {
           "lib/net8.0/_._": {
@@ -4268,44 +3932,6 @@
             "related": ".xml"
           }
         }
-      },
-      "Microsoft.AspNetCore.JsonPatch/7.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.CSharp": "4.7.0",
-          "Newtonsoft.Json": "13.0.1"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        }
-      },
-      "Microsoft.AspNetCore.Mvc.NewtonsoftJson/7.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.JsonPatch": "7.0.0",
-          "Newtonsoft.Json": "13.0.1",
-          "Newtonsoft.Json.Bson": "1.0.2"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ]
       },
       "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
         "type": "package",
@@ -4318,15 +3944,6 @@
           "lib/netstandard2.1/_._": {
             "related": ".xml"
           }
-        }
-      },
-      "Microsoft.CSharp/4.7.0": {
-        "type": "package",
-        "compile": {
-          "ref/netcoreapp2.0/_._": {}
-        },
-        "runtime": {
-          "lib/netcoreapp2.0/_._": {}
         }
       },
       "Microsoft.Extensions.ApiDescription.Server/6.0.5": {
@@ -4468,7 +4085,7 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "Microsoft.IdentityModel.Abstractions/7.0.3": {
+      "Microsoft.IdentityModel.Abstractions/7.4.1": {
         "type": "package",
         "compile": {
           "lib/net8.0/_._": {
@@ -4481,10 +4098,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.JsonWebTokens/7.0.3": {
+      "Microsoft.IdentityModel.JsonWebTokens/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "7.0.3"
+          "Microsoft.IdentityModel.Tokens": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -4497,10 +4114,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Logging/7.0.3": {
+      "Microsoft.IdentityModel.Logging/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Abstractions": "7.0.3"
+          "Microsoft.IdentityModel.Abstractions": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -4513,10 +4130,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Tokens/7.0.3": {
+      "Microsoft.IdentityModel.Tokens/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Logging": "7.0.3"
+          "Microsoft.IdentityModel.Logging": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -4565,35 +4182,6 @@
         "runtime": {
           "lib/netstandard2.0/_._": {
             "related": ".xml"
-          }
-        }
-      },
-      "Newtonsoft.Json/13.0.3": {
-        "type": "package",
-        "compile": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "Newtonsoft.Json.Bson/1.0.2": {
-        "type": "package",
-        "dependencies": {
-          "Newtonsoft.Json": "12.0.1"
-        },
-        "compile": {
-          "lib/netstandard2.0/_._": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/_._": {
-            "related": ".pdb;.xml"
           }
         }
       },
@@ -4659,7 +4247,7 @@
           }
         }
       },
-      "NLog/5.2.7": {
+      "NLog/5.2.8": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/_._": {
@@ -4672,12 +4260,12 @@
           }
         }
       },
-      "NLog.Extensions.Logging/5.3.7": {
+      "NLog.Extensions.Logging/5.3.8": {
         "type": "package",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
           "Microsoft.Extensions.Logging": "8.0.0",
-          "NLog": "5.2.7"
+          "NLog": "5.2.8"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -4690,10 +4278,10 @@
           }
         }
       },
-      "NLog.Web.AspNetCore/5.3.7": {
+      "NLog.Web.AspNetCore/5.3.8": {
         "type": "package",
         "dependencies": {
-          "NLog.Extensions.Logging": "5.3.7"
+          "NLog.Extensions.Logging": "5.3.8"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -4783,23 +4371,6 @@
         "runtime": {
           "lib/net7.0/_._": {
             "related": ".pdb;.xml"
-          }
-        }
-      },
-      "Swashbuckle.AspNetCore.Newtonsoft/6.5.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "7.0.0",
-          "Swashbuckle.AspNetCore.SwaggerGen": "6.5.0"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".pdb"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".pdb"
           }
         }
       },
@@ -4980,23 +4551,6 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "System.IdentityModel.Tokens.Jwt/7.0.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.IdentityModel.JsonWebTokens": "7.0.3",
-          "Microsoft.IdentityModel.Tokens": "7.0.3"
-        },
-        "compile": {
-          "lib/net8.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net8.0/_._": {
-            "related": ".xml"
-          }
-        }
-      },
       "System.Linq.Async/6.0.1": {
         "type": "package",
         "dependencies": {
@@ -5088,23 +4642,21 @@
           }
         }
       },
-      "ArchiSteamFarm/5.5.0.11": {
+      "ArchiSteamFarm/6.0.1.2": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "AngleSharp.XPath": "2.0.3",
           "CryptSharpStandard": "1.0.0",
           "Humanizer": "2.14.1",
-          "Markdig.Signed": "0.34.0",
-          "NLog.Web.AspNetCore": "5.3.7",
-          "Newtonsoft.Json": "13.0.3",
+          "Markdig.Signed": "0.36.2",
+          "Microsoft.IdentityModel.JsonWebTokens": "7.4.1",
+          "NLog.Web.AspNetCore": "5.3.8",
           "Nito.AsyncEx.Coordination": "5.1.2",
           "SteamKit2": "2.5.0",
           "Swashbuckle.AspNetCore": "6.5.0",
           "Swashbuckle.AspNetCore.Annotations": "6.5.0",
-          "Swashbuckle.AspNetCore.Newtonsoft": "6.5.0",
           "System.Composition": "8.0.0",
-          "System.IdentityModel.Tokens.Jwt": "7.0.3",
           "System.Linq.Async": "6.0.1",
           "System.Security.Cryptography.ProtectedData": "8.0.0",
           "zxcvbn-core": "7.0.92"
@@ -5529,7 +5081,7 @@
           }
         }
       },
-      "Markdig.Signed/0.34.0": {
+      "Markdig.Signed/0.36.2": {
         "type": "package",
         "compile": {
           "lib/net8.0/_._": {
@@ -5541,44 +5093,6 @@
             "related": ".xml"
           }
         }
-      },
-      "Microsoft.AspNetCore.JsonPatch/7.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.CSharp": "4.7.0",
-          "Newtonsoft.Json": "13.0.1"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        }
-      },
-      "Microsoft.AspNetCore.Mvc.NewtonsoftJson/7.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.JsonPatch": "7.0.0",
-          "Newtonsoft.Json": "13.0.1",
-          "Newtonsoft.Json.Bson": "1.0.2"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ]
       },
       "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
         "type": "package",
@@ -5591,15 +5105,6 @@
           "lib/netstandard2.1/_._": {
             "related": ".xml"
           }
-        }
-      },
-      "Microsoft.CSharp/4.7.0": {
-        "type": "package",
-        "compile": {
-          "ref/netcoreapp2.0/_._": {}
-        },
-        "runtime": {
-          "lib/netcoreapp2.0/_._": {}
         }
       },
       "Microsoft.Extensions.ApiDescription.Server/6.0.5": {
@@ -5741,7 +5246,7 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "Microsoft.IdentityModel.Abstractions/7.0.3": {
+      "Microsoft.IdentityModel.Abstractions/7.4.1": {
         "type": "package",
         "compile": {
           "lib/net8.0/_._": {
@@ -5754,10 +5259,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.JsonWebTokens/7.0.3": {
+      "Microsoft.IdentityModel.JsonWebTokens/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "7.0.3"
+          "Microsoft.IdentityModel.Tokens": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -5770,10 +5275,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Logging/7.0.3": {
+      "Microsoft.IdentityModel.Logging/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Abstractions": "7.0.3"
+          "Microsoft.IdentityModel.Abstractions": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -5786,10 +5291,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Tokens/7.0.3": {
+      "Microsoft.IdentityModel.Tokens/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Logging": "7.0.3"
+          "Microsoft.IdentityModel.Logging": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -5838,35 +5343,6 @@
         "runtime": {
           "lib/netstandard2.0/_._": {
             "related": ".xml"
-          }
-        }
-      },
-      "Newtonsoft.Json/13.0.3": {
-        "type": "package",
-        "compile": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "Newtonsoft.Json.Bson/1.0.2": {
-        "type": "package",
-        "dependencies": {
-          "Newtonsoft.Json": "12.0.1"
-        },
-        "compile": {
-          "lib/netstandard2.0/_._": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/_._": {
-            "related": ".pdb;.xml"
           }
         }
       },
@@ -5932,7 +5408,7 @@
           }
         }
       },
-      "NLog/5.2.7": {
+      "NLog/5.2.8": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/_._": {
@@ -5945,12 +5421,12 @@
           }
         }
       },
-      "NLog.Extensions.Logging/5.3.7": {
+      "NLog.Extensions.Logging/5.3.8": {
         "type": "package",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
           "Microsoft.Extensions.Logging": "8.0.0",
-          "NLog": "5.2.7"
+          "NLog": "5.2.8"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -5963,10 +5439,10 @@
           }
         }
       },
-      "NLog.Web.AspNetCore/5.3.7": {
+      "NLog.Web.AspNetCore/5.3.8": {
         "type": "package",
         "dependencies": {
-          "NLog.Extensions.Logging": "5.3.7"
+          "NLog.Extensions.Logging": "5.3.8"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -6056,23 +5532,6 @@
         "runtime": {
           "lib/net7.0/_._": {
             "related": ".pdb;.xml"
-          }
-        }
-      },
-      "Swashbuckle.AspNetCore.Newtonsoft/6.5.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "7.0.0",
-          "Swashbuckle.AspNetCore.SwaggerGen": "6.5.0"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".pdb"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".pdb"
           }
         }
       },
@@ -6253,23 +5712,6 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "System.IdentityModel.Tokens.Jwt/7.0.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.IdentityModel.JsonWebTokens": "7.0.3",
-          "Microsoft.IdentityModel.Tokens": "7.0.3"
-        },
-        "compile": {
-          "lib/net8.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net8.0/_._": {
-            "related": ".xml"
-          }
-        }
-      },
       "System.Linq.Async/6.0.1": {
         "type": "package",
         "dependencies": {
@@ -6361,23 +5803,21 @@
           }
         }
       },
-      "ArchiSteamFarm/5.5.0.11": {
+      "ArchiSteamFarm/6.0.1.2": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "AngleSharp.XPath": "2.0.3",
           "CryptSharpStandard": "1.0.0",
           "Humanizer": "2.14.1",
-          "Markdig.Signed": "0.34.0",
-          "NLog.Web.AspNetCore": "5.3.7",
-          "Newtonsoft.Json": "13.0.3",
+          "Markdig.Signed": "0.36.2",
+          "Microsoft.IdentityModel.JsonWebTokens": "7.4.1",
+          "NLog.Web.AspNetCore": "5.3.8",
           "Nito.AsyncEx.Coordination": "5.1.2",
           "SteamKit2": "2.5.0",
           "Swashbuckle.AspNetCore": "6.5.0",
           "Swashbuckle.AspNetCore.Annotations": "6.5.0",
-          "Swashbuckle.AspNetCore.Newtonsoft": "6.5.0",
           "System.Composition": "8.0.0",
-          "System.IdentityModel.Tokens.Jwt": "7.0.3",
           "System.Linq.Async": "6.0.1",
           "System.Security.Cryptography.ProtectedData": "8.0.0",
           "zxcvbn-core": "7.0.92"
@@ -6802,7 +6242,7 @@
           }
         }
       },
-      "Markdig.Signed/0.34.0": {
+      "Markdig.Signed/0.36.2": {
         "type": "package",
         "compile": {
           "lib/net8.0/_._": {
@@ -6814,44 +6254,6 @@
             "related": ".xml"
           }
         }
-      },
-      "Microsoft.AspNetCore.JsonPatch/7.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.CSharp": "4.7.0",
-          "Newtonsoft.Json": "13.0.1"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        }
-      },
-      "Microsoft.AspNetCore.Mvc.NewtonsoftJson/7.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.JsonPatch": "7.0.0",
-          "Newtonsoft.Json": "13.0.1",
-          "Newtonsoft.Json.Bson": "1.0.2"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ]
       },
       "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
         "type": "package",
@@ -6864,15 +6266,6 @@
           "lib/netstandard2.1/_._": {
             "related": ".xml"
           }
-        }
-      },
-      "Microsoft.CSharp/4.7.0": {
-        "type": "package",
-        "compile": {
-          "ref/netcoreapp2.0/_._": {}
-        },
-        "runtime": {
-          "lib/netcoreapp2.0/_._": {}
         }
       },
       "Microsoft.Extensions.ApiDescription.Server/6.0.5": {
@@ -7014,7 +6407,7 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "Microsoft.IdentityModel.Abstractions/7.0.3": {
+      "Microsoft.IdentityModel.Abstractions/7.4.1": {
         "type": "package",
         "compile": {
           "lib/net8.0/_._": {
@@ -7027,10 +6420,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.JsonWebTokens/7.0.3": {
+      "Microsoft.IdentityModel.JsonWebTokens/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "7.0.3"
+          "Microsoft.IdentityModel.Tokens": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -7043,10 +6436,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Logging/7.0.3": {
+      "Microsoft.IdentityModel.Logging/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Abstractions": "7.0.3"
+          "Microsoft.IdentityModel.Abstractions": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -7059,10 +6452,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Tokens/7.0.3": {
+      "Microsoft.IdentityModel.Tokens/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Logging": "7.0.3"
+          "Microsoft.IdentityModel.Logging": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -7111,35 +6504,6 @@
         "runtime": {
           "lib/netstandard2.0/_._": {
             "related": ".xml"
-          }
-        }
-      },
-      "Newtonsoft.Json/13.0.3": {
-        "type": "package",
-        "compile": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "Newtonsoft.Json.Bson/1.0.2": {
-        "type": "package",
-        "dependencies": {
-          "Newtonsoft.Json": "12.0.1"
-        },
-        "compile": {
-          "lib/netstandard2.0/_._": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/_._": {
-            "related": ".pdb;.xml"
           }
         }
       },
@@ -7205,7 +6569,7 @@
           }
         }
       },
-      "NLog/5.2.7": {
+      "NLog/5.2.8": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/_._": {
@@ -7218,12 +6582,12 @@
           }
         }
       },
-      "NLog.Extensions.Logging/5.3.7": {
+      "NLog.Extensions.Logging/5.3.8": {
         "type": "package",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
           "Microsoft.Extensions.Logging": "8.0.0",
-          "NLog": "5.2.7"
+          "NLog": "5.2.8"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -7236,10 +6600,10 @@
           }
         }
       },
-      "NLog.Web.AspNetCore/5.3.7": {
+      "NLog.Web.AspNetCore/5.3.8": {
         "type": "package",
         "dependencies": {
-          "NLog.Extensions.Logging": "5.3.7"
+          "NLog.Extensions.Logging": "5.3.8"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -7329,23 +6693,6 @@
         "runtime": {
           "lib/net7.0/_._": {
             "related": ".pdb;.xml"
-          }
-        }
-      },
-      "Swashbuckle.AspNetCore.Newtonsoft/6.5.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "7.0.0",
-          "Swashbuckle.AspNetCore.SwaggerGen": "6.5.0"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".pdb"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".pdb"
           }
         }
       },
@@ -7526,23 +6873,6 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "System.IdentityModel.Tokens.Jwt/7.0.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.IdentityModel.JsonWebTokens": "7.0.3",
-          "Microsoft.IdentityModel.Tokens": "7.0.3"
-        },
-        "compile": {
-          "lib/net8.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net8.0/_._": {
-            "related": ".xml"
-          }
-        }
-      },
       "System.Linq.Async/6.0.1": {
         "type": "package",
         "dependencies": {
@@ -7634,23 +6964,21 @@
           }
         }
       },
-      "ArchiSteamFarm/5.5.0.11": {
+      "ArchiSteamFarm/6.0.1.2": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "AngleSharp.XPath": "2.0.3",
           "CryptSharpStandard": "1.0.0",
           "Humanizer": "2.14.1",
-          "Markdig.Signed": "0.34.0",
-          "NLog.Web.AspNetCore": "5.3.7",
-          "Newtonsoft.Json": "13.0.3",
+          "Markdig.Signed": "0.36.2",
+          "Microsoft.IdentityModel.JsonWebTokens": "7.4.1",
+          "NLog.Web.AspNetCore": "5.3.8",
           "Nito.AsyncEx.Coordination": "5.1.2",
           "SteamKit2": "2.5.0",
           "Swashbuckle.AspNetCore": "6.5.0",
           "Swashbuckle.AspNetCore.Annotations": "6.5.0",
-          "Swashbuckle.AspNetCore.Newtonsoft": "6.5.0",
           "System.Composition": "8.0.0",
-          "System.IdentityModel.Tokens.Jwt": "7.0.3",
           "System.Linq.Async": "6.0.1",
           "System.Security.Cryptography.ProtectedData": "8.0.0",
           "zxcvbn-core": "7.0.92"
@@ -8075,7 +7403,7 @@
           }
         }
       },
-      "Markdig.Signed/0.34.0": {
+      "Markdig.Signed/0.36.2": {
         "type": "package",
         "compile": {
           "lib/net8.0/_._": {
@@ -8087,44 +7415,6 @@
             "related": ".xml"
           }
         }
-      },
-      "Microsoft.AspNetCore.JsonPatch/7.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.CSharp": "4.7.0",
-          "Newtonsoft.Json": "13.0.1"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        }
-      },
-      "Microsoft.AspNetCore.Mvc.NewtonsoftJson/7.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.JsonPatch": "7.0.0",
-          "Newtonsoft.Json": "13.0.1",
-          "Newtonsoft.Json.Bson": "1.0.2"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ]
       },
       "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
         "type": "package",
@@ -8137,15 +7427,6 @@
           "lib/netstandard2.1/_._": {
             "related": ".xml"
           }
-        }
-      },
-      "Microsoft.CSharp/4.7.0": {
-        "type": "package",
-        "compile": {
-          "ref/netcoreapp2.0/_._": {}
-        },
-        "runtime": {
-          "lib/netcoreapp2.0/_._": {}
         }
       },
       "Microsoft.Extensions.ApiDescription.Server/6.0.5": {
@@ -8287,7 +7568,7 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "Microsoft.IdentityModel.Abstractions/7.0.3": {
+      "Microsoft.IdentityModel.Abstractions/7.4.1": {
         "type": "package",
         "compile": {
           "lib/net8.0/_._": {
@@ -8300,10 +7581,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.JsonWebTokens/7.0.3": {
+      "Microsoft.IdentityModel.JsonWebTokens/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "7.0.3"
+          "Microsoft.IdentityModel.Tokens": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -8316,10 +7597,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Logging/7.0.3": {
+      "Microsoft.IdentityModel.Logging/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Abstractions": "7.0.3"
+          "Microsoft.IdentityModel.Abstractions": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -8332,10 +7613,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Tokens/7.0.3": {
+      "Microsoft.IdentityModel.Tokens/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Logging": "7.0.3"
+          "Microsoft.IdentityModel.Logging": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -8384,35 +7665,6 @@
         "runtime": {
           "runtimes/win/lib/netstandard2.0/_._": {
             "related": ".xml"
-          }
-        }
-      },
-      "Newtonsoft.Json/13.0.3": {
-        "type": "package",
-        "compile": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "Newtonsoft.Json.Bson/1.0.2": {
-        "type": "package",
-        "dependencies": {
-          "Newtonsoft.Json": "12.0.1"
-        },
-        "compile": {
-          "lib/netstandard2.0/_._": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/_._": {
-            "related": ".pdb;.xml"
           }
         }
       },
@@ -8478,7 +7730,7 @@
           }
         }
       },
-      "NLog/5.2.7": {
+      "NLog/5.2.8": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/_._": {
@@ -8491,12 +7743,12 @@
           }
         }
       },
-      "NLog.Extensions.Logging/5.3.7": {
+      "NLog.Extensions.Logging/5.3.8": {
         "type": "package",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
           "Microsoft.Extensions.Logging": "8.0.0",
-          "NLog": "5.2.7"
+          "NLog": "5.2.8"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -8509,10 +7761,10 @@
           }
         }
       },
-      "NLog.Web.AspNetCore/5.3.7": {
+      "NLog.Web.AspNetCore/5.3.8": {
         "type": "package",
         "dependencies": {
-          "NLog.Extensions.Logging": "5.3.7"
+          "NLog.Extensions.Logging": "5.3.8"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -8602,23 +7854,6 @@
         "runtime": {
           "lib/net7.0/_._": {
             "related": ".pdb;.xml"
-          }
-        }
-      },
-      "Swashbuckle.AspNetCore.Newtonsoft/6.5.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "7.0.0",
-          "Swashbuckle.AspNetCore.SwaggerGen": "6.5.0"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".pdb"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".pdb"
           }
         }
       },
@@ -8799,23 +8034,6 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "System.IdentityModel.Tokens.Jwt/7.0.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.IdentityModel.JsonWebTokens": "7.0.3",
-          "Microsoft.IdentityModel.Tokens": "7.0.3"
-        },
-        "compile": {
-          "lib/net8.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net8.0/_._": {
-            "related": ".xml"
-          }
-        }
-      },
       "System.Linq.Async/6.0.1": {
         "type": "package",
         "dependencies": {
@@ -8907,23 +8125,21 @@
           }
         }
       },
-      "ArchiSteamFarm/5.5.0.11": {
+      "ArchiSteamFarm/6.0.1.2": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "AngleSharp.XPath": "2.0.3",
           "CryptSharpStandard": "1.0.0",
           "Humanizer": "2.14.1",
-          "Markdig.Signed": "0.34.0",
-          "NLog.Web.AspNetCore": "5.3.7",
-          "Newtonsoft.Json": "13.0.3",
+          "Markdig.Signed": "0.36.2",
+          "Microsoft.IdentityModel.JsonWebTokens": "7.4.1",
+          "NLog.Web.AspNetCore": "5.3.8",
           "Nito.AsyncEx.Coordination": "5.1.2",
           "SteamKit2": "2.5.0",
           "Swashbuckle.AspNetCore": "6.5.0",
           "Swashbuckle.AspNetCore.Annotations": "6.5.0",
-          "Swashbuckle.AspNetCore.Newtonsoft": "6.5.0",
           "System.Composition": "8.0.0",
-          "System.IdentityModel.Tokens.Jwt": "7.0.3",
           "System.Linq.Async": "6.0.1",
           "System.Security.Cryptography.ProtectedData": "8.0.0",
           "zxcvbn-core": "7.0.92"
@@ -9348,7 +8564,7 @@
           }
         }
       },
-      "Markdig.Signed/0.34.0": {
+      "Markdig.Signed/0.36.2": {
         "type": "package",
         "compile": {
           "lib/net8.0/_._": {
@@ -9360,44 +8576,6 @@
             "related": ".xml"
           }
         }
-      },
-      "Microsoft.AspNetCore.JsonPatch/7.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.CSharp": "4.7.0",
-          "Newtonsoft.Json": "13.0.1"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        }
-      },
-      "Microsoft.AspNetCore.Mvc.NewtonsoftJson/7.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.JsonPatch": "7.0.0",
-          "Newtonsoft.Json": "13.0.1",
-          "Newtonsoft.Json.Bson": "1.0.2"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ]
       },
       "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
         "type": "package",
@@ -9410,15 +8588,6 @@
           "lib/netstandard2.1/_._": {
             "related": ".xml"
           }
-        }
-      },
-      "Microsoft.CSharp/4.7.0": {
-        "type": "package",
-        "compile": {
-          "ref/netcoreapp2.0/_._": {}
-        },
-        "runtime": {
-          "lib/netcoreapp2.0/_._": {}
         }
       },
       "Microsoft.Extensions.ApiDescription.Server/6.0.5": {
@@ -9560,7 +8729,7 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "Microsoft.IdentityModel.Abstractions/7.0.3": {
+      "Microsoft.IdentityModel.Abstractions/7.4.1": {
         "type": "package",
         "compile": {
           "lib/net8.0/_._": {
@@ -9573,10 +8742,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.JsonWebTokens/7.0.3": {
+      "Microsoft.IdentityModel.JsonWebTokens/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "7.0.3"
+          "Microsoft.IdentityModel.Tokens": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -9589,10 +8758,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Logging/7.0.3": {
+      "Microsoft.IdentityModel.Logging/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Abstractions": "7.0.3"
+          "Microsoft.IdentityModel.Abstractions": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -9605,10 +8774,10 @@
           }
         }
       },
-      "Microsoft.IdentityModel.Tokens/7.0.3": {
+      "Microsoft.IdentityModel.Tokens/7.4.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Logging": "7.0.3"
+          "Microsoft.IdentityModel.Logging": "7.4.1"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -9657,35 +8826,6 @@
         "runtime": {
           "runtimes/win/lib/netstandard2.0/_._": {
             "related": ".xml"
-          }
-        }
-      },
-      "Newtonsoft.Json/13.0.3": {
-        "type": "package",
-        "compile": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "Newtonsoft.Json.Bson/1.0.2": {
-        "type": "package",
-        "dependencies": {
-          "Newtonsoft.Json": "12.0.1"
-        },
-        "compile": {
-          "lib/netstandard2.0/_._": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/_._": {
-            "related": ".pdb;.xml"
           }
         }
       },
@@ -9751,7 +8891,7 @@
           }
         }
       },
-      "NLog/5.2.7": {
+      "NLog/5.2.8": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/_._": {
@@ -9764,12 +8904,12 @@
           }
         }
       },
-      "NLog.Extensions.Logging/5.3.7": {
+      "NLog.Extensions.Logging/5.3.8": {
         "type": "package",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
           "Microsoft.Extensions.Logging": "8.0.0",
-          "NLog": "5.2.7"
+          "NLog": "5.2.8"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -9782,10 +8922,10 @@
           }
         }
       },
-      "NLog.Web.AspNetCore/5.3.7": {
+      "NLog.Web.AspNetCore/5.3.8": {
         "type": "package",
         "dependencies": {
-          "NLog.Extensions.Logging": "5.3.7"
+          "NLog.Extensions.Logging": "5.3.8"
         },
         "compile": {
           "lib/net8.0/_._": {
@@ -9875,23 +9015,6 @@
         "runtime": {
           "lib/net7.0/_._": {
             "related": ".pdb;.xml"
-          }
-        }
-      },
-      "Swashbuckle.AspNetCore.Newtonsoft/6.5.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "7.0.0",
-          "Swashbuckle.AspNetCore.SwaggerGen": "6.5.0"
-        },
-        "compile": {
-          "lib/net7.0/_._": {
-            "related": ".pdb"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/_._": {
-            "related": ".pdb"
           }
         }
       },
@@ -10072,23 +9195,6 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "System.IdentityModel.Tokens.Jwt/7.0.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.IdentityModel.JsonWebTokens": "7.0.3",
-          "Microsoft.IdentityModel.Tokens": "7.0.3"
-        },
-        "compile": {
-          "lib/net8.0/_._": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net8.0/_._": {
-            "related": ".xml"
-          }
-        }
-      },
       "System.Linq.Async/6.0.1": {
         "type": "package",
         "dependencies": {
@@ -10180,23 +9286,21 @@
           }
         }
       },
-      "ArchiSteamFarm/5.5.0.11": {
+      "ArchiSteamFarm/6.0.1.2": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "AngleSharp.XPath": "2.0.3",
           "CryptSharpStandard": "1.0.0",
           "Humanizer": "2.14.1",
-          "Markdig.Signed": "0.34.0",
-          "NLog.Web.AspNetCore": "5.3.7",
-          "Newtonsoft.Json": "13.0.3",
+          "Markdig.Signed": "0.36.2",
+          "Microsoft.IdentityModel.JsonWebTokens": "7.4.1",
+          "NLog.Web.AspNetCore": "5.3.8",
           "Nito.AsyncEx.Coordination": "5.1.2",
           "SteamKit2": "2.5.0",
           "Swashbuckle.AspNetCore": "6.5.0",
           "Swashbuckle.AspNetCore.Annotations": "6.5.0",
-          "Swashbuckle.AspNetCore.Newtonsoft": "6.5.0",
           "System.Composition": "8.0.0",
-          "System.IdentityModel.Tokens.Jwt": "7.0.3",
           "System.Linq.Async": "6.0.1",
           "System.Security.Cryptography.ProtectedData": "8.0.0",
           "zxcvbn-core": "7.0.92"
@@ -11048,10 +10152,10 @@
         "lib/portable40-net40+sl5+win8+wp8+wpa81/JetBrains.Annotations.xml"
       ]
     },
-    "Markdig.Signed/0.34.0": {
-      "sha512": "3G/6tP/koKeMv7QzusXMBG3iHi4IOjf3RmMBoA3bKmNjtM5HIMOuxiiUBBwfU8Sjx8ztcqsC1BIP2hpJjI7EoQ==",
+    "Markdig.Signed/0.36.2": {
+      "sha512": "IW/z/6caqoFbxJZ7bq2ufEcaXHiNZEiL79Of7wY6EEU2NQgQ7yR1CQkNwijFEdm2pzK628jVpPLWOohBNNNc8g==",
       "type": "package",
-      "path": "markdig.signed/0.34.0",
+      "path": "markdig.signed/0.36.2",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -11066,43 +10170,9 @@
         "lib/netstandard2.1/Markdig.Signed.dll",
         "lib/netstandard2.1/Markdig.Signed.xml",
         "markdig.png",
-        "markdig.signed.0.34.0.nupkg.sha512",
+        "markdig.signed.0.36.2.nupkg.sha512",
         "markdig.signed.nuspec",
         "readme.md"
-      ]
-    },
-    "Microsoft.AspNetCore.JsonPatch/7.0.0": {
-      "sha512": "svHQiUvLNdI2nac68WNQHNo/ZWyavFpt3Oip09QRnWeFqG9iyakKiNLavXr6KE8y7KxEXZNld96KQYbKz8SJMQ==",
-      "type": "package",
-      "path": "microsoft.aspnetcore.jsonpatch/7.0.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "Icon.png",
-        "THIRD-PARTY-NOTICES.TXT",
-        "lib/net462/Microsoft.AspNetCore.JsonPatch.dll",
-        "lib/net462/Microsoft.AspNetCore.JsonPatch.xml",
-        "lib/net7.0/Microsoft.AspNetCore.JsonPatch.dll",
-        "lib/net7.0/Microsoft.AspNetCore.JsonPatch.xml",
-        "lib/netstandard2.0/Microsoft.AspNetCore.JsonPatch.dll",
-        "lib/netstandard2.0/Microsoft.AspNetCore.JsonPatch.xml",
-        "microsoft.aspnetcore.jsonpatch.7.0.0.nupkg.sha512",
-        "microsoft.aspnetcore.jsonpatch.nuspec"
-      ]
-    },
-    "Microsoft.AspNetCore.Mvc.NewtonsoftJson/7.0.0": {
-      "sha512": "IJOsB1cm6FYGXxhlNoWR6zZYFREEBzeFX76NlBGhrZ7+VMK4piLm3fAgUBliasyEUg5MOOqFz5EGv8nmU5rXWQ==",
-      "type": "package",
-      "path": "microsoft.aspnetcore.mvc.newtonsoftjson/7.0.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "Icon.png",
-        "THIRD-PARTY-NOTICES.TXT",
-        "lib/net7.0/Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll",
-        "lib/net7.0/Microsoft.AspNetCore.Mvc.NewtonsoftJson.xml",
-        "microsoft.aspnetcore.mvc.newtonsoftjson.7.0.0.nupkg.sha512",
-        "microsoft.aspnetcore.mvc.newtonsoftjson.nuspec"
       ]
     },
     "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
@@ -11124,75 +10194,6 @@
         "microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
         "microsoft.bcl.asyncinterfaces.nuspec",
         "useSharedDesignerContext.txt"
-      ]
-    },
-    "Microsoft.CSharp/4.7.0": {
-      "sha512": "pTj+D3uJWyN3My70i2Hqo+OXixq3Os2D1nJ2x92FFo6sk8fYS1m1WLNTs0Dc1uPaViH0YvEEwvzddQ7y4rhXmA==",
-      "type": "package",
-      "path": "microsoft.csharp/4.7.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE.TXT",
-        "THIRD-PARTY-NOTICES.TXT",
-        "lib/MonoAndroid10/_._",
-        "lib/MonoTouch10/_._",
-        "lib/net45/_._",
-        "lib/netcore50/Microsoft.CSharp.dll",
-        "lib/netcoreapp2.0/_._",
-        "lib/netstandard1.3/Microsoft.CSharp.dll",
-        "lib/netstandard2.0/Microsoft.CSharp.dll",
-        "lib/netstandard2.0/Microsoft.CSharp.xml",
-        "lib/portable-net45+win8+wp8+wpa81/_._",
-        "lib/uap10.0.16299/_._",
-        "lib/win8/_._",
-        "lib/wp80/_._",
-        "lib/wpa81/_._",
-        "lib/xamarinios10/_._",
-        "lib/xamarinmac20/_._",
-        "lib/xamarintvos10/_._",
-        "lib/xamarinwatchos10/_._",
-        "microsoft.csharp.4.7.0.nupkg.sha512",
-        "microsoft.csharp.nuspec",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
-        "ref/net45/_._",
-        "ref/netcore50/Microsoft.CSharp.dll",
-        "ref/netcore50/Microsoft.CSharp.xml",
-        "ref/netcore50/de/Microsoft.CSharp.xml",
-        "ref/netcore50/es/Microsoft.CSharp.xml",
-        "ref/netcore50/fr/Microsoft.CSharp.xml",
-        "ref/netcore50/it/Microsoft.CSharp.xml",
-        "ref/netcore50/ja/Microsoft.CSharp.xml",
-        "ref/netcore50/ko/Microsoft.CSharp.xml",
-        "ref/netcore50/ru/Microsoft.CSharp.xml",
-        "ref/netcore50/zh-hans/Microsoft.CSharp.xml",
-        "ref/netcore50/zh-hant/Microsoft.CSharp.xml",
-        "ref/netcoreapp2.0/_._",
-        "ref/netstandard1.0/Microsoft.CSharp.dll",
-        "ref/netstandard1.0/Microsoft.CSharp.xml",
-        "ref/netstandard1.0/de/Microsoft.CSharp.xml",
-        "ref/netstandard1.0/es/Microsoft.CSharp.xml",
-        "ref/netstandard1.0/fr/Microsoft.CSharp.xml",
-        "ref/netstandard1.0/it/Microsoft.CSharp.xml",
-        "ref/netstandard1.0/ja/Microsoft.CSharp.xml",
-        "ref/netstandard1.0/ko/Microsoft.CSharp.xml",
-        "ref/netstandard1.0/ru/Microsoft.CSharp.xml",
-        "ref/netstandard1.0/zh-hans/Microsoft.CSharp.xml",
-        "ref/netstandard1.0/zh-hant/Microsoft.CSharp.xml",
-        "ref/netstandard2.0/Microsoft.CSharp.dll",
-        "ref/netstandard2.0/Microsoft.CSharp.xml",
-        "ref/portable-net45+win8+wp8+wpa81/_._",
-        "ref/uap10.0.16299/_._",
-        "ref/win8/_._",
-        "ref/wp80/_._",
-        "ref/wpa81/_._",
-        "ref/xamarinios10/_._",
-        "ref/xamarinmac20/_._",
-        "ref/xamarintvos10/_._",
-        "ref/xamarinwatchos10/_._",
-        "useSharedDesignerContext.txt",
-        "version.txt"
       ]
     },
     "Microsoft.Extensions.ApiDescription.Server/6.0.5": {
@@ -11702,10 +10703,10 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.IdentityModel.Abstractions/7.0.3": {
-      "sha512": "cfPUWdjigLIRIJSKz3uaZxShgf86RVDXHC1VEEchj1gnY25akwPYpbrfSoIGDCqA9UmOMdlctq411+2pAViFow==",
+    "Microsoft.IdentityModel.Abstractions/7.4.1": {
+      "sha512": "GiQzMSzHQWPhnjpn/xy6SGcjtN8ZJbhB9ZEg3RglJ64QwH+VGp7xEpIN674UgjSDF+jJSrAY4/7/2S6F7Nh0hw==",
       "type": "package",
-      "path": "microsoft.identitymodel.abstractions/7.0.3",
+      "path": "microsoft.identitymodel.abstractions/7.4.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -11721,14 +10722,14 @@
         "lib/net8.0/Microsoft.IdentityModel.Abstractions.xml",
         "lib/netstandard2.0/Microsoft.IdentityModel.Abstractions.dll",
         "lib/netstandard2.0/Microsoft.IdentityModel.Abstractions.xml",
-        "microsoft.identitymodel.abstractions.7.0.3.nupkg.sha512",
+        "microsoft.identitymodel.abstractions.7.4.1.nupkg.sha512",
         "microsoft.identitymodel.abstractions.nuspec"
       ]
     },
-    "Microsoft.IdentityModel.JsonWebTokens/7.0.3": {
-      "sha512": "vxjHVZbMKD3rVdbvKhzAW+7UiFrYToUVm3AGmYfKSOAwyhdLl/ELX1KZr+FaLyyS5VReIzWRWJfbOuHM9i6ywg==",
+    "Microsoft.IdentityModel.JsonWebTokens/7.4.1": {
+      "sha512": "RnrQO8IniImY6qrC9qYDc7UBcbPF7+Dp14ee9TqKnlB2/oyIKq8Q3tJ/65zgYvfV4p6iMYLpi+W8C/36J58cIg==",
       "type": "package",
-      "path": "microsoft.identitymodel.jsonwebtokens/7.0.3",
+      "path": "microsoft.identitymodel.jsonwebtokens/7.4.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -11744,14 +10745,14 @@
         "lib/net8.0/Microsoft.IdentityModel.JsonWebTokens.xml",
         "lib/netstandard2.0/Microsoft.IdentityModel.JsonWebTokens.dll",
         "lib/netstandard2.0/Microsoft.IdentityModel.JsonWebTokens.xml",
-        "microsoft.identitymodel.jsonwebtokens.7.0.3.nupkg.sha512",
+        "microsoft.identitymodel.jsonwebtokens.7.4.1.nupkg.sha512",
         "microsoft.identitymodel.jsonwebtokens.nuspec"
       ]
     },
-    "Microsoft.IdentityModel.Logging/7.0.3": {
-      "sha512": "b6GbGO+2LOTBEccHhqoJsOsmemG4A/MY+8H0wK/ewRhiG+DCYwEnucog1cSArPIY55zcn+XdZl0YEiUHkpDISQ==",
+    "Microsoft.IdentityModel.Logging/7.4.1": {
+      "sha512": "QsNBNAdoTP+JxBqqMw3isVeV86z2b+ka94Pue3eRRz8O15mfHhcSnb10IM+aqavAaxCO+EwNu5F/yyRlQ0usWg==",
       "type": "package",
-      "path": "microsoft.identitymodel.logging/7.0.3",
+      "path": "microsoft.identitymodel.logging/7.4.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -11767,14 +10768,14 @@
         "lib/net8.0/Microsoft.IdentityModel.Logging.xml",
         "lib/netstandard2.0/Microsoft.IdentityModel.Logging.dll",
         "lib/netstandard2.0/Microsoft.IdentityModel.Logging.xml",
-        "microsoft.identitymodel.logging.7.0.3.nupkg.sha512",
+        "microsoft.identitymodel.logging.7.4.1.nupkg.sha512",
         "microsoft.identitymodel.logging.nuspec"
       ]
     },
-    "Microsoft.IdentityModel.Tokens/7.0.3": {
-      "sha512": "wB+LlbDjhnJ98DULjmFepqf9eEMh/sDs6S6hFh68iNRHmwollwhxk+nbSSfpA5+j+FbRyNskoaY4JsY1iCOKCg==",
+    "Microsoft.IdentityModel.Tokens/7.4.1": {
+      "sha512": "akl3hQWdj87XkSRahwhrmx9ZfchF97RZoKr9v9fwjrpQz3t0x8lnsjcOfButSS6cvyY/EX0HJuXb5hgkqFjP/g==",
       "type": "package",
-      "path": "microsoft.identitymodel.tokens/7.0.3",
+      "path": "microsoft.identitymodel.tokens/7.4.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -11790,7 +10791,7 @@
         "lib/net8.0/Microsoft.IdentityModel.Tokens.xml",
         "lib/netstandard2.0/Microsoft.IdentityModel.Tokens.dll",
         "lib/netstandard2.0/Microsoft.IdentityModel.Tokens.xml",
-        "microsoft.identitymodel.tokens.7.0.3.nupkg.sha512",
+        "microsoft.identitymodel.tokens.7.4.1.nupkg.sha512",
         "microsoft.identitymodel.tokens.nuspec"
       ]
     },
@@ -11873,57 +10874,6 @@
         "version.txt"
       ]
     },
-    "Newtonsoft.Json/13.0.3": {
-      "sha512": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
-      "type": "package",
-      "path": "newtonsoft.json/13.0.3",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE.md",
-        "README.md",
-        "lib/net20/Newtonsoft.Json.dll",
-        "lib/net20/Newtonsoft.Json.xml",
-        "lib/net35/Newtonsoft.Json.dll",
-        "lib/net35/Newtonsoft.Json.xml",
-        "lib/net40/Newtonsoft.Json.dll",
-        "lib/net40/Newtonsoft.Json.xml",
-        "lib/net45/Newtonsoft.Json.dll",
-        "lib/net45/Newtonsoft.Json.xml",
-        "lib/net6.0/Newtonsoft.Json.dll",
-        "lib/net6.0/Newtonsoft.Json.xml",
-        "lib/netstandard1.0/Newtonsoft.Json.dll",
-        "lib/netstandard1.0/Newtonsoft.Json.xml",
-        "lib/netstandard1.3/Newtonsoft.Json.dll",
-        "lib/netstandard1.3/Newtonsoft.Json.xml",
-        "lib/netstandard2.0/Newtonsoft.Json.dll",
-        "lib/netstandard2.0/Newtonsoft.Json.xml",
-        "newtonsoft.json.13.0.3.nupkg.sha512",
-        "newtonsoft.json.nuspec",
-        "packageIcon.png"
-      ]
-    },
-    "Newtonsoft.Json.Bson/1.0.2": {
-      "sha512": "QYFyxhaABwmq3p/21VrZNYvCg3DaEoN/wUuw5nmfAf0X3HLjgupwhkEWdgfb9nvGAUIv3osmZoD3kKl4jxEmYQ==",
-      "type": "package",
-      "path": "newtonsoft.json.bson/1.0.2",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE.md",
-        "lib/net45/Newtonsoft.Json.Bson.dll",
-        "lib/net45/Newtonsoft.Json.Bson.pdb",
-        "lib/net45/Newtonsoft.Json.Bson.xml",
-        "lib/netstandard1.3/Newtonsoft.Json.Bson.dll",
-        "lib/netstandard1.3/Newtonsoft.Json.Bson.pdb",
-        "lib/netstandard1.3/Newtonsoft.Json.Bson.xml",
-        "lib/netstandard2.0/Newtonsoft.Json.Bson.dll",
-        "lib/netstandard2.0/Newtonsoft.Json.Bson.pdb",
-        "lib/netstandard2.0/Newtonsoft.Json.Bson.xml",
-        "newtonsoft.json.bson.1.0.2.nupkg.sha512",
-        "newtonsoft.json.bson.nuspec"
-      ]
-    },
     "Nito.AsyncEx.Coordination/5.1.2": {
       "sha512": "QMyUfsaxov//0ZMbOHWr9hJaBFteZd66DV1ay4J5wRODDb8+K/uHC7+3VsOflo6SVw/29mu8OWZp8vMDSuzc0w==",
       "type": "package",
@@ -11998,10 +10948,10 @@
         "nito.disposables.nuspec"
       ]
     },
-    "NLog/5.2.7": {
-      "sha512": "Ww/0b6V1NL8iqpFKtRKVQFFX03LoowNzYeNG6FpVzmhgCfLAkW0h/4lT3+V8mHfyvtHptNoV8Cz0YePLFRUaPA==",
+    "NLog/5.2.8": {
+      "sha512": "jAIELkWBs1CXFPp986KSGpDFQZHCFccO+LMbKBTTNm42KifaI1mYzFMFQQfuGmGMTrCx0TFPhDjHDE4cLAZWiQ==",
       "type": "package",
-      "path": "nlog/5.2.7",
+      "path": "nlog/5.2.8",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -12018,14 +10968,14 @@
         "lib/netstandard1.5/NLog.xml",
         "lib/netstandard2.0/NLog.dll",
         "lib/netstandard2.0/NLog.xml",
-        "nlog.5.2.7.nupkg.sha512",
+        "nlog.5.2.8.nupkg.sha512",
         "nlog.nuspec"
       ]
     },
-    "NLog.Extensions.Logging/5.3.7": {
-      "sha512": "3VJFapWBopaQvGSuSUwWxjrK43RPC+pSi8yJisRQMdN87e/xmWLCzqrCzujU2fx9ktq4kRkZC3m/9PRLNBZ44g==",
+    "NLog.Extensions.Logging/5.3.8": {
+      "sha512": "6VD0lyeokWltL6j8lO7mS7v7lbuO/qn0F7kdvhKhEx1JvFyD39nzohOK3JvkVh4Nn3mrcMDCyDxvTvmiW55jQg==",
       "type": "package",
-      "path": "nlog.extensions.logging/5.3.7",
+      "path": "nlog.extensions.logging/5.3.8",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -12045,14 +10995,14 @@
         "lib/netstandard2.0/NLog.Extensions.Logging.xml",
         "lib/netstandard2.1/NLog.Extensions.Logging.dll",
         "lib/netstandard2.1/NLog.Extensions.Logging.xml",
-        "nlog.extensions.logging.5.3.7.nupkg.sha512",
+        "nlog.extensions.logging.5.3.8.nupkg.sha512",
         "nlog.extensions.logging.nuspec"
       ]
     },
-    "NLog.Web.AspNetCore/5.3.7": {
-      "sha512": "eZ/00Cnmu7488VNdkpIjzWOnmtxQKFEmIHFoLdprgWFviqpAEbNA50qX5OjkUPfhWyGPBVKmvhkzQTB85j4wPA==",
+    "NLog.Web.AspNetCore/5.3.8": {
+      "sha512": "Rt2OCulpAF6rSrZWZzPgHikAI8SDKkq3/52xA/uJ4JtmNjoizULN/IBYtYlZojbPbXiFm3uadOO2rOvvMhjXBQ==",
       "type": "package",
-      "path": "nlog.web.aspnetcore/5.3.7",
+      "path": "nlog.web.aspnetcore/5.3.8",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -12070,7 +11020,7 @@
         "lib/netcoreapp3.1/NLog.Web.AspNetCore.xml",
         "lib/netstandard2.0/NLog.Web.AspNetCore.dll",
         "lib/netstandard2.0/NLog.Web.AspNetCore.xml",
-        "nlog.web.aspnetcore.5.3.7.nupkg.sha512",
+        "nlog.web.aspnetcore.5.3.8.nupkg.sha512",
         "nlog.web.aspnetcore.nuspec"
       ]
     },
@@ -12171,27 +11121,6 @@
         "lib/netstandard2.0/Swashbuckle.AspNetCore.Annotations.xml",
         "swashbuckle.aspnetcore.annotations.6.5.0.nupkg.sha512",
         "swashbuckle.aspnetcore.annotations.nuspec"
-      ]
-    },
-    "Swashbuckle.AspNetCore.Newtonsoft/6.5.0": {
-      "sha512": "o1dOWCENDG3ViE8aFR9GpVTq8smsNkCXs3eonVaD3DziJgxAfkcOa0/syHtFSfpluh3bmnJ8isQh3S/T3hpz2Q==",
-      "type": "package",
-      "path": "swashbuckle.aspnetcore.newtonsoft/6.5.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/net5.0/Swashbuckle.AspNetCore.Newtonsoft.dll",
-        "lib/net5.0/Swashbuckle.AspNetCore.Newtonsoft.pdb",
-        "lib/net6.0/Swashbuckle.AspNetCore.Newtonsoft.dll",
-        "lib/net6.0/Swashbuckle.AspNetCore.Newtonsoft.pdb",
-        "lib/net7.0/Swashbuckle.AspNetCore.Newtonsoft.dll",
-        "lib/net7.0/Swashbuckle.AspNetCore.Newtonsoft.pdb",
-        "lib/netcoreapp3.0/Swashbuckle.AspNetCore.Newtonsoft.dll",
-        "lib/netcoreapp3.0/Swashbuckle.AspNetCore.Newtonsoft.pdb",
-        "lib/netstandard2.0/Swashbuckle.AspNetCore.Newtonsoft.dll",
-        "lib/netstandard2.0/Swashbuckle.AspNetCore.Newtonsoft.pdb",
-        "swashbuckle.aspnetcore.newtonsoft.6.5.0.nupkg.sha512",
-        "swashbuckle.aspnetcore.newtonsoft.nuspec"
       ]
     },
     "Swashbuckle.AspNetCore.Swagger/6.5.0": {
@@ -12467,29 +11396,6 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "System.IdentityModel.Tokens.Jwt/7.0.3": {
-      "sha512": "caEe+OpQNYNiyZb+DJpUVROXoVySWBahko2ooNfUcllxa9ZQUM8CgM/mDjP6AoFn6cQU9xMmG+jivXWub8cbGg==",
-      "type": "package",
-      "path": "system.identitymodel.tokens.jwt/7.0.3",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/net461/System.IdentityModel.Tokens.Jwt.dll",
-        "lib/net461/System.IdentityModel.Tokens.Jwt.xml",
-        "lib/net462/System.IdentityModel.Tokens.Jwt.dll",
-        "lib/net462/System.IdentityModel.Tokens.Jwt.xml",
-        "lib/net472/System.IdentityModel.Tokens.Jwt.dll",
-        "lib/net472/System.IdentityModel.Tokens.Jwt.xml",
-        "lib/net6.0/System.IdentityModel.Tokens.Jwt.dll",
-        "lib/net6.0/System.IdentityModel.Tokens.Jwt.xml",
-        "lib/net8.0/System.IdentityModel.Tokens.Jwt.dll",
-        "lib/net8.0/System.IdentityModel.Tokens.Jwt.xml",
-        "lib/netstandard2.0/System.IdentityModel.Tokens.Jwt.dll",
-        "lib/netstandard2.0/System.IdentityModel.Tokens.Jwt.xml",
-        "system.identitymodel.tokens.jwt.7.0.3.nupkg.sha512",
-        "system.identitymodel.tokens.jwt.nuspec"
-      ]
-    },
     "System.Linq.Async/6.0.1": {
       "sha512": "0YhHcaroWpQ9UCot3Pizah7ryAzQhNvobLMSxeDIGmnXfkQn8u5owvpOH0K6EVB+z9L7u6Cc4W17Br/+jyttEQ==",
       "type": "package",
@@ -12711,7 +11617,7 @@
         "zxcvbn-core.nuspec"
       ]
     },
-    "ArchiSteamFarm/5.5.0.11": {
+    "ArchiSteamFarm/6.0.1.2": {
       "type": "project",
       "path": "../ArchiSteamFarm/ArchiSteamFarm/ArchiSteamFarm.csproj",
       "msbuildProject": "../ArchiSteamFarm/ArchiSteamFarm/ArchiSteamFarm.csproj"
@@ -12719,41 +11625,48 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "ArchiSteamFarm >= 5.5.0.11",
+      "ArchiSteamFarm >= 6.0.1.2",
       "ConfigureAwaitChecker.Analyzer >= 5.0.0.1",
       "JetBrains.Annotations >= 2023.3.0",
-      "Newtonsoft.Json >= 13.0.3",
       "System.Composition.AttributedModel >= 8.0.0"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\yanie\\.nuget\\packages\\": {}
+    "C:\\Users\\yanie\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
-    "version": "2.0.1",
+    "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\yanie\\RiderProjects\\ASF-GetInventoryPlugin\\GetInventoryPlugin\\GetInventoryPlugin.csproj",
+      "projectUniqueName": "C:\\Users\\yanie\\Reshade\\Reshade Installers\\ASF-GetInventoryPlugin\\GetInventoryPlugin\\GetInventoryPlugin.csproj",
       "projectName": "GetInventoryPlugin",
-      "projectPath": "C:\\Users\\yanie\\RiderProjects\\ASF-GetInventoryPlugin\\GetInventoryPlugin\\GetInventoryPlugin.csproj",
+      "projectPath": "C:\\Users\\yanie\\Reshade\\Reshade Installers\\ASF-GetInventoryPlugin\\GetInventoryPlugin\\GetInventoryPlugin.csproj",
       "packagesPath": "C:\\Users\\yanie\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\yanie\\RiderProjects\\ASF-GetInventoryPlugin\\GetInventoryPlugin\\obj\\",
+      "outputPath": "C:\\Users\\yanie\\Reshade\\Reshade Installers\\ASF-GetInventoryPlugin\\GetInventoryPlugin\\obj\\",
       "projectStyle": "PackageReference",
       "centralPackageVersionsManagementEnabled": true,
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\yanie\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\yanie\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\yanie\\RiderProjects\\ASF-GetInventoryPlugin\\ArchiSteamFarm\\ArchiSteamFarm\\ArchiSteamFarm.csproj": {
-              "projectPath": "C:\\Users\\yanie\\RiderProjects\\ASF-GetInventoryPlugin\\ArchiSteamFarm\\ArchiSteamFarm\\ArchiSteamFarm.csproj",
+            "C:\\Users\\yanie\\Reshade\\Reshade Installers\\ASF-GetInventoryPlugin\\ArchiSteamFarm\\ArchiSteamFarm\\ArchiSteamFarm.csproj": {
+              "projectPath": "C:\\Users\\yanie\\Reshade\\Reshade Installers\\ASF-GetInventoryPlugin\\ArchiSteamFarm\\ArchiSteamFarm\\ArchiSteamFarm.csproj",
               "excludeAssets": "all"
             }
           }
@@ -12784,11 +11697,6 @@
             "version": "[2023.3.0, )",
             "versionCentrallyManaged": true
           },
-          "Newtonsoft.Json": {
-            "target": "Package",
-            "version": "[13.0.3, )",
-            "versionCentrallyManaged": true
-          },
           "System.Composition.AttributedModel": {
             "include": "Compile",
             "target": "Package",
@@ -12802,20 +11710,16 @@
           "CryptSharpStandard": "[1.0.0, )",
           "Humanizer": "[2.14.1, )",
           "JetBrains.Annotations": "[2023.3.0, )",
-          "Markdig.Signed": "[0.34.0, )",
-          "Microsoft.NET.Test.Sdk": "[17.8.0, )",
-          "MSTest.TestAdapter": "[3.1.1, )",
-          "MSTest.TestFramework": "[3.1.1, )",
-          "Newtonsoft.Json": "[13.0.3, )",
+          "Markdig.Signed": "[0.36.2, )",
+          "Microsoft.IdentityModel.JsonWebTokens": "[7.4.1, )",
+          "MSTest": "[3.2.2, )",
           "Nito.AsyncEx.Coordination": "[5.1.2, )",
-          "NLog.Web.AspNetCore": "[5.3.7, )",
+          "NLog.Web.AspNetCore": "[5.3.8, )",
           "SteamKit2": "[2.5.0, )",
           "Swashbuckle.AspNetCore": "[6.5.0, )",
           "Swashbuckle.AspNetCore.Annotations": "[6.5.0, )",
-          "Swashbuckle.AspNetCore.Newtonsoft": "[6.5.0, )",
           "System.Composition": "[8.0.0, )",
           "System.Composition.AttributedModel": "[8.0.0, )",
-          "System.IdentityModel.Tokens.Jwt": "[7.0.3, )",
           "System.Linq.Async": "[6.0.1, )",
           "System.Security.Cryptography.ProtectedData": "[8.0.0, )",
           "zxcvbn-core": "[7.0.92, )"

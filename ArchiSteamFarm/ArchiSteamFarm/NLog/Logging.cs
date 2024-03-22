@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -280,7 +282,7 @@ internal static class Logging {
 				return;
 			}
 
-			Console.Beep();
+			Console.Write('\a');
 		}
 	}
 
@@ -292,9 +294,17 @@ internal static class Logging {
 
 			Utilities.InBackground(() => BeepUntilCanceled(token));
 
+			if (OperatingSystem.IsWindows()) {
+				OS.WindowsStartFlashingConsoleWindow();
+			}
+
 			return Console.ReadLine();
 		} finally {
 			cts.Cancel();
+
+			if (OperatingSystem.IsWindows()) {
+				OS.WindowsStopFlashingConsoleWindow();
+			}
 		}
 	}
 
@@ -305,6 +315,10 @@ internal static class Logging {
 			CancellationToken token = cts.Token;
 
 			Utilities.InBackground(() => BeepUntilCanceled(token));
+
+			if (OperatingSystem.IsWindows()) {
+				OS.WindowsStartFlashingConsoleWindow();
+			}
 
 			StringBuilder result = new();
 
@@ -341,6 +355,10 @@ internal static class Logging {
 			}
 		} finally {
 			cts.Cancel();
+
+			if (OperatingSystem.IsWindows()) {
+				OS.WindowsStopFlashingConsoleWindow();
+			}
 		}
 	}
 
@@ -441,9 +459,9 @@ internal static class Logging {
 
 		if (!Debugging.IsUserDebugging) {
 			// Silence default ASP.NET logging
-			config.LoggingRules.Add(new LoggingRule("Microsoft*", target) { FinalMinLevel = LogLevel.Warn });
-			config.LoggingRules.Add(new LoggingRule("Microsoft.Hosting.Lifetime*", target) { FinalMinLevel = LogLevel.Info });
-			config.LoggingRules.Add(new LoggingRule("System*", target) { FinalMinLevel = LogLevel.Warn });
+			config.LoggingRules.Add(new LoggingRule("Microsoft.*", target) { FinalMinLevel = LogLevel.Warn });
+			config.LoggingRules.Add(new LoggingRule("Microsoft.Hosting.Lifetime", target) { FinalMinLevel = LogLevel.Info });
+			config.LoggingRules.Add(new LoggingRule("System.*", target) { FinalMinLevel = LogLevel.Warn });
 		}
 
 		config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, target));

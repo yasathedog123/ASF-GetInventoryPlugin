@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +23,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Net;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.IPC.Responses;
 
@@ -29,16 +31,18 @@ public sealed class StatusCodeResponse {
 	/// <summary>
 	///     Value indicating whether the status is permanent. If yes, retrying the request with exactly the same payload doesn't make sense due to a permanent problem (e.g. ASF misconfiguration).
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public bool Permanent { get; private set; }
+	public bool Permanent { get; private init; }
 
 	/// <summary>
 	///     Status code transmitted in addition to the one in HTTP spec.
 	/// </summary>
-	[JsonProperty(Required = Required.Always)]
+	[JsonInclude]
+	[JsonRequired]
 	[Required]
-	public HttpStatusCode StatusCode { get; private set; }
+	public HttpStatusCode StatusCode { get; private init; }
 
 	internal StatusCodeResponse(HttpStatusCode statusCode, bool permanent) {
 		StatusCode = statusCode;

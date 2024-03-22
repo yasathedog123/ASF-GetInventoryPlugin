@@ -131,13 +131,14 @@ ASF 會將命令末尾超出規定範圍的多餘參數「聯接」到符合語�
 
 Some commands are also available with their aliases, mostly to save you on typing or account for different dialects:
 
-| 命令           | 別名           |
-| ------------ | ------------ |
-| `addlicense` | `addlicence` |
-| `owns ASF`   | `oa`         |
-| `status ASF` | `sa`         |
-| `redeem`     | `r`          |
-| `redeem^`    | `r^`         |
+| 命令               | 別名                 |
+| ---------------- | ------------------ |
+| `addlicense`     | `al`, `addlicence` |
+| `addlicense ASF` | `ala`              |
+| `owns ASF`       | `oa`               |
+| `status ASF`     | `sa`               |
+| `redeem`         | `r`                |
+| `redeem^`        | `r^`               |
 
 ---
 

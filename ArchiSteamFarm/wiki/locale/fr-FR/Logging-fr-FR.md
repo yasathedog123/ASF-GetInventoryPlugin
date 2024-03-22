@@ -25,24 +25,24 @@ Si vous souhaitez utiliser l'authentification ASF par défaut sans aucune modifi
 
   <rules>
     <!-- The following entries specify ASP.NET (IPC) logging, we declare those so our last Debug catch-all doesn't include ASP.NET logs by default -->
-    <logger name="Microsoft*" finalMinLevel="Warn" writeTo="ColoredConsole" />
-    <logger name="Microsoft.Hosting.Lifetime*" finalMinLevel="Info" writeTo="ColoredConsole" />
-    <logger name="System*" finalMinLevel="Warn" writeTo="ColoredConsole" />
+    <logger name="Microsoft.*" finalMinLevel="Warn" writeTo="ColoredConsole" />
+    <logger name="Microsoft.Hosting.Lifetime" finalMinLevel="Info" writeTo="ColoredConsole" />
+    <logger name="System.*" finalMinLevel="Warn" writeTo="ColoredConsole" />
 
     <logger name="*" minlevel="Debug" writeTo="ColoredConsole" />
 
     <!-- The following entries specify ASP.NET (IPC) logging, we declare those so our last Debug catch-all doesn't include ASP.NET logs by default -->
-    <logger name="Microsoft*" finalMinLevel="Warn" writeTo="File" />
-    <logger name="Microsoft.Hosting.Lifetime*" finalMinLevel="Info" writeTo="File" />
-    <logger name="System*" finalMinLevel="Warn" writeTo="File" />
+    <logger name="Microsoft.*" finalMinLevel="Warn" writeTo="File" />
+    <logger name="Microsoft.Hosting.Lifetime" finalMinLevel="Info" writeTo="File" />
+    <logger name="System.*" finalMinLevel="Warn" writeTo="File" />
 
     <logger name="*" minlevel="Debug" writeTo="File" />
 
     <!-- Below becomes active when ASF's IPC interface is enabled -->
     <!-- The following entries specify ASP.NET (IPC) logging, we declare those so our last Debug catch-all doesn't include ASP.NET logs by default -->
-    <logger name="Microsoft*" finalMinLevel="Warn" writeTo="History" />
-    <logger name="Microsoft.Hosting.Lifetime*" finalMinLevel="Info" writeTo="History" />
-    <logger name="System*" finalMinLevel="Warn" writeTo="History" />
+    <logger name="Microsoft.*" finalMinLevel="Warn" writeTo="History" />
+    <logger name="Microsoft.Hosting.Lifetime" finalMinLevel="Info" writeTo="History" />
+    <logger name="System.*" finalMinLevel="Warn" writeTo="History" />
 
     <logger name="*" minlevel="Debug" writeTo="History" />
   </rules>
@@ -107,7 +107,7 @@ Maintenant, disons que nous n'aimons pas le format par défaut de `${longdate}|$
 
 Si vous lancez ASF maintenant, vous remarquerez que la date, le niveau et le nom de l'enregistreur ont disparu - vous laissant uniquement des messages ASF au format `Function() Message`.
 
-Nous pouvons également modifier la configuration pour vous connecter à plusieurs cibles. Connectons-nous à `ColoredConsole` et au **[File](https://github.com/nlog/nlog/wiki/File-target)** en même temps.
+Nous pouvons également modifier la configuration pour vous connecter à plusieurs cibles. Let's log to `ColoredConsole` and **[`File`](https://github.com/nlog/nlog/wiki/File-target)** at the same time.
 
 ```xml
 <?xml version="1.0" encoding="utf-8" ?>

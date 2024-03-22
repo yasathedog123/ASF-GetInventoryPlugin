@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,10 +23,10 @@
 
 using System;
 using System.Net;
+using System.Text.Json;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Responses;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api;
 
@@ -51,7 +53,7 @@ public sealed class StorageController : ArchiController {
 	///     Loads entry under specified key from ASF's persistent KeyValue JSON storage.
 	/// </summary>
 	[HttpGet]
-	[ProducesResponseType<GenericResponse<JToken>>((int) HttpStatusCode.OK)]
+	[ProducesResponseType<GenericResponse<JsonElement?>>((int) HttpStatusCode.OK)]
 	public ActionResult<GenericResponse> StorageGet(string key) {
 		ArgumentException.ThrowIfNullOrEmpty(key);
 
@@ -59,9 +61,9 @@ public sealed class StorageController : ArchiController {
 			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
 		}
 
-		JToken? value = ASF.GlobalDatabase.LoadFromJsonStorage(key);
+		JsonElement value = ASF.GlobalDatabase.LoadFromJsonStorage(key);
 
-		return Ok(new GenericResponse<JToken>(true, value));
+		return Ok(new GenericResponse<JsonElement?>(true, value.ValueKind != JsonValueKind.Undefined ? value : null));
 	}
 
 	/// <summary>
@@ -70,15 +72,18 @@ public sealed class StorageController : ArchiController {
 	[Consumes("application/json")]
 	[HttpPost]
 	[ProducesResponseType<GenericResponse>((int) HttpStatusCode.OK)]
-	public ActionResult<GenericResponse> StoragePost(string key, [FromBody] JToken value) {
+	public ActionResult<GenericResponse> StoragePost(string key, [FromBody] JsonElement value) {
 		ArgumentException.ThrowIfNullOrEmpty(key);
-		ArgumentNullException.ThrowIfNull(value);
+
+		if (value.ValueKind == JsonValueKind.Undefined) {
+			throw new ArgumentOutOfRangeException(nameof(value));
+		}
 
 		if (ASF.GlobalDatabase == null) {
 			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
 		}
 
-		if (value.Type == JTokenType.Null) {
+		if (value.ValueKind == JsonValueKind.Null) {
 			ASF.GlobalDatabase.DeleteFromJsonStorage(key);
 		} else {
 			ASF.GlobalDatabase.SaveToJsonStorage(key, value);

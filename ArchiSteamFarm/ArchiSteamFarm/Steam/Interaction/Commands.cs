@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -185,10 +187,12 @@ public sealed class Commands {
 						return await Response2FAConfirm(access, Utilities.GetArgsAsText(args, 1, ","), false, steamID).ConfigureAwait(false);
 					case "2FAOK":
 						return await Response2FAConfirm(access, Utilities.GetArgsAsText(args, 1, ","), true, steamID).ConfigureAwait(false);
-					case "ADDLICENCE" or "ADDLICENSE" when args.Length > 2:
+					case "AL" or "ADDLICENCE" or "ADDLICENSE" when args.Length > 2:
 						return await ResponseAddLicense(access, args[1], Utilities.GetArgsAsText(args, 2, ","), steamID).ConfigureAwait(false);
-					case "ADDLICENCE" or "ADDLICENSE":
+					case "AL" or "ADDLICENCE" or "ADDLICENSE":
 						return await ResponseAddLicense(access, args[1]).ConfigureAwait(false);
+					case "ALA":
+						return await ResponseAddLicense(access, SharedInfo.ASF, Utilities.GetArgsAsText(args, 1, ","), steamID).ConfigureAwait(false);
 					case "BALANCE":
 						return await ResponseWalletBalance(access, Utilities.GetArgsAsText(args, 1, ","), steamID).ConfigureAwait(false);
 					case "BGR":
@@ -325,6 +329,10 @@ public sealed class Commands {
 						return await ResponseUnpackBoosters(access, Utilities.GetArgsAsText(args, 1, ","), steamID).ConfigureAwait(false);
 					case "UPDATE":
 						return await ResponseUpdate(access, args[1]).ConfigureAwait(false);
+					case "UPDATEPLUGINS" when args.Length > 2:
+						return await ResponseUpdatePlugins(access, Utilities.GetArgsAsText(args, 2, ","), args[1]).ConfigureAwait(false);
+					case "UPDATEPLUGINS":
+						return await ResponseUpdatePlugins(access, args[1]).ConfigureAwait(false);
 					default:
 						string? pluginsResponse = await PluginsCore.OnBotCommand(Bot, access, message, args, steamID).ConfigureAwait(false);
 
@@ -621,7 +629,7 @@ public sealed class Commands {
 			}
 
 			switch (type.ToUpperInvariant()) {
-				case "A" or "APP":
+				case "A" or "APP": {
 					HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(gameID, Bot.OwnedPackageIDs.Keys, 1);
 
 					if (packageIDs is { Count: > 0 }) {
@@ -630,32 +638,34 @@ public sealed class Commands {
 						break;
 					}
 
-					SteamApps.FreeLicenseCallback callback;
+					(EResult result, IReadOnlyCollection<uint>? grantedApps, IReadOnlyCollection<uint>? grantedPackages) = await Bot.Actions.AddFreeLicenseApp(gameID).ConfigureAwait(false);
 
-					try {
-						callback = await Bot.SteamApps.RequestFreeLicense(gameID).ToLongRunningTask().ConfigureAwait(false);
-					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericWarningException(e);
-						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, $"app/{gameID}", EResult.Timeout)));
+					if (((grantedApps == null) || (grantedApps.Count == 0)) && ((grantedPackages == null) || (grantedPackages.Count == 0))) {
+						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, $"app/{gameID}", result)));
 
 						break;
 					}
 
-					response.AppendLine(FormatBotResponse((callback.GrantedApps.Count > 0) || (callback.GrantedPackages.Count > 0) ? string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicenseWithItems, $"app/{gameID}", callback.Result, string.Join(", ", callback.GrantedApps.Select(static appID => $"app/{appID}").Union(callback.GrantedPackages.Select(static subID => $"sub/{subID}")))) : string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, $"app/{gameID}", callback.Result)));
+					grantedApps ??= Array.Empty<uint>();
+					grantedPackages ??= Array.Empty<uint>();
+
+					response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicenseWithItems, $"app/{gameID}", result, string.Join(", ", grantedApps.Select(static appID => $"app/{appID}").Union(grantedPackages.Select(static subID => $"sub/{subID}"))))));
 
 					break;
-				default:
+				}
+				default: {
 					if (Bot.OwnedPackageIDs.ContainsKey(gameID)) {
 						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, $"sub/{gameID}", $"{EResult.Fail}/{EPurchaseResultDetail.AlreadyPurchased}")));
 
 						break;
 					}
 
-					(EResult result, EPurchaseResultDetail purchaseResult) = await Bot.ArchiWebHandler.AddFreeLicense(gameID).ConfigureAwait(false);
+					(EResult result, EPurchaseResultDetail purchaseResult) = await Bot.Actions.AddFreeLicensePackage(gameID).ConfigureAwait(false);
 
 					response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, $"sub/{gameID}", $"{result}/{purchaseResult}")));
 
 					break;
+				}
 			}
 		}
 
@@ -1237,7 +1247,7 @@ public sealed class Commands {
 		}
 
 		switch (Bot.CardsFarmer.NowFarming) {
-			case false when Bot.BotConfig.FarmPriorityQueueOnly:
+			case false when Bot.BotConfig.FarmingPreferences.HasFlag(BotConfig.EFarmingPreferences.FarmPriorityQueueOnly):
 				Utilities.InBackground(Bot.CardsFarmer.StartFarming);
 
 				break;
@@ -1902,14 +1912,12 @@ public sealed class Commands {
 			return null;
 		}
 
-		Dictionary<string, (ushort Count, string GameName)> ownedGamesStats = new(StringComparer.Ordinal);
+		Dictionary<string, (ushort Count, string? GameName)> ownedGamesStats = new(StringComparer.Ordinal);
 
 		foreach ((string gameID, string gameName) in validResults.Where(static validResult => validResult.OwnedGames.Count > 0).SelectMany(static validResult => validResult.OwnedGames)) {
-			if (ownedGamesStats.TryGetValue(gameID, out (ushort Count, string GameName) ownedGameStats)) {
-				ownedGameStats.Count++;
-			} else {
-				ownedGameStats.Count = 1;
-			}
+			(ushort Count, string? GameName) ownedGameStats = ownedGamesStats.GetValueOrDefault(gameID);
+
+			ownedGameStats.Count++;
 
 			if (!string.IsNullOrEmpty(gameName)) {
 				ownedGameStats.GameName = gameName;
@@ -2113,7 +2121,7 @@ public sealed class Commands {
 		// There are only 7 privacy settings
 		const byte privacySettings = 7;
 
-		string[] privacySettingsArgs = privacySettingsText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
+		string[] privacySettingsArgs = privacySettingsText.Split(SharedInfo.ListElementSeparators, privacySettings + 1, StringSplitOptions.RemoveEmptyEntries);
 
 		switch (privacySettingsArgs.Length) {
 			case 0:
@@ -3099,7 +3107,7 @@ public sealed class Commands {
 
 		// It'd also make sense to run all of this in parallel, but it seems that Steam has a lot of problems with inventory-related parallel requests | https://steamcommunity.com/groups/archiasf/discussions/1/3559414588264550284/
 		try {
-			await foreach (Asset item in Bot.ArchiWebHandler.GetInventoryAsync().Where(static item => item.Type == Asset.EType.BoosterPack).ConfigureAwait(false)) {
+			await foreach (Asset item in Bot.ArchiHandler.GetMyInventoryAsync().Where(static item => item.Type == EAssetType.BoosterPack).ConfigureAwait(false)) {
 				if (!await Bot.ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID).ConfigureAwait(false)) {
 					completeSuccess = false;
 				}
@@ -3157,6 +3165,38 @@ public sealed class Commands {
 		(bool success, string? message, Version? version) = await Actions.Update(channel).ConfigureAwait(false);
 
 		return FormatStaticResponse($"{(success ? Strings.Success : Strings.WarningFailed)}{(!string.IsNullOrEmpty(message) ? $" {message}" : version != null ? $" {version}" : "")}");
+	}
+
+	private static async Task<string?> ResponseUpdatePlugins(EAccess access, string pluginsText, string? channelText = null) {
+		if (!Enum.IsDefined(access)) {
+			throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(EAccess));
+		}
+
+		ArgumentException.ThrowIfNullOrEmpty(pluginsText);
+
+		if (access < EAccess.Owner) {
+			return null;
+		}
+
+		GlobalConfig.EUpdateChannel? channel = null;
+
+		if (!string.IsNullOrEmpty(channelText)) {
+			if (!Enum.TryParse(channelText, true, out GlobalConfig.EUpdateChannel parsedChannel) || (parsedChannel == GlobalConfig.EUpdateChannel.None)) {
+				return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(channelText)));
+			}
+
+			channel = parsedChannel;
+		}
+
+		string[] plugins = pluginsText.Split(SharedInfo.ListElementSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+		if (plugins.Length == 0) {
+			return FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(plugins)));
+		}
+
+		(bool success, string? message) = await Actions.UpdatePlugins(plugins, channel).ConfigureAwait(false);
+
+		return FormatStaticResponse($"{(success ? Strings.Success : Strings.WarningFailed)}{(!string.IsNullOrEmpty(message) ? $" {message}" : "")}");
 	}
 
 	private string? ResponseVersion(EAccess access) {

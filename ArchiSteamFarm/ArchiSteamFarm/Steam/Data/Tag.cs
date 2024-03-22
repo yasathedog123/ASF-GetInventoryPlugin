@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,26 +22,48 @@
 // limitations under the License.
 
 using System;
+using System.Text.Json.Serialization;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 public sealed class Tag {
-	[JsonProperty("category", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("color")]
 	[PublicAPI]
-	public string Identifier { get; private set; } = "";
+	public string? Color { get; private init; }
 
-	[JsonProperty("internal_name", Required = Required.Always)]
+	[JsonInclude]
+	[JsonPropertyName("category")]
+	[JsonRequired]
 	[PublicAPI]
-	public string Value { get; private set; } = "";
+	public string Identifier { get; private init; } = "";
 
-	internal Tag(string identifier, string value) {
+	[JsonInclude]
+	[JsonPropertyName("localized_category_name")]
+	[PublicAPI]
+	public string? LocalizedIdentifier { get; private init; }
+
+	[JsonInclude]
+	[JsonPropertyName("localized_tag_name")]
+	[PublicAPI]
+	public string? LocalizedValue { get; private init; }
+
+	[JsonInclude]
+	[JsonPropertyName("internal_name")]
+	[JsonRequired]
+	[PublicAPI]
+	public string Value { get; private init; } = "";
+
+	internal Tag(string identifier, string value, string? localizedIdentifier = null, string? localizedValue = null, string? color = null) {
 		ArgumentException.ThrowIfNullOrEmpty(identifier);
 		ArgumentNullException.ThrowIfNull(value);
 
 		Identifier = identifier;
 		Value = value;
+		LocalizedIdentifier = localizedIdentifier;
+		LocalizedValue = localizedValue;
+		Color = color;
 	}
 
 	[JsonConstructor]

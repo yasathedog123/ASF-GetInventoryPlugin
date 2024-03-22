@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,39 +22,24 @@
 // limitations under the License.
 
 using System.Diagnostics.CodeAnalysis;
-using ArchiSteamFarm.Core;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ArchiSteamFarm.Steam.Data;
 
 [SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 internal sealed class TradeOfferSendResponse {
-	[JsonProperty("strError", Required = Required.DisallowNull)]
-	internal readonly string ErrorText = "";
+	[JsonInclude]
+	[JsonPropertyName("strError")]
+	internal string? ErrorText { get; private init; }
 
-	[JsonProperty("needs_mobile_confirmation", Required = Required.DisallowNull)]
-	internal readonly bool RequiresMobileConfirmation;
+	[JsonInclude]
+	[JsonPropertyName("needs_mobile_confirmation")]
+	internal bool RequiresMobileConfirmation { get; private init; }
 
-	internal ulong TradeOfferID { get; private set; }
-
-	[JsonProperty("tradeofferid", Required = Required.DisallowNull)]
-	private string TradeOfferIDText {
-		set {
-			if (string.IsNullOrEmpty(value)) {
-				ASF.ArchiLogger.LogNullError(value);
-
-				return;
-			}
-
-			if (!ulong.TryParse(value, out ulong tradeOfferID) || (tradeOfferID == 0)) {
-				ASF.ArchiLogger.LogNullError(tradeOfferID);
-
-				return;
-			}
-
-			TradeOfferID = tradeOfferID;
-		}
-	}
+	[JsonInclude]
+	[JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+	[JsonPropertyName("tradeofferid")]
+	internal ulong TradeOfferID { get; private init; }
 
 	[JsonConstructor]
 	private TradeOfferSendResponse() { }

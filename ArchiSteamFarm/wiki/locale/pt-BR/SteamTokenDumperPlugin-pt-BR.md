@@ -1,6 +1,6 @@
 # SteamTokenDumperPlugin
 
-`SteamTokenDumperPlugin` is official ASF **[plugin](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Plugins)** developed by us, which allows you to contribute to **[SteamDB](https://steamdb.info)** project by sharing package tokens, app tokens and depot keys that your Steam account has access to. As informações na integra sobre o porque o SteamDB precisa de tais dados podem ser encontrado na página de **[Depósito de Tokens](https://steamdb.info/tokendumper)** do SteamDB. Os dados enviados não incluem qualquer informação potencialmente sensível, e não possui qualquer risco à sua segurança ou privacidade, como especificado acima.
+`SteamTokenDumperPlugin` é o **[plug-in](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Plugins-pt-BR)** oficial do ASF desenvolvido por nós, que permite que você contribua com o projeto **[SteamDB](https://steamdb.info)** compartilhando tokens de pacote, tokens de app e chaves de depósito que sua conta Steam tem acesso. As informações na integra sobre o porque o SteamDB precisa de tais dados podem ser encontrado na página de **[Depósito de Tokens](https://steamdb.info/tokendumper)** do SteamDB. Os dados enviados não incluem qualquer informação potencialmente sensível, e não possui qualquer risco à sua segurança ou privacidade, como especificado acima.
 
 ---
 
@@ -38,15 +38,15 @@ De qualquer forma, a equipe do SteamDB gostaria de agradecer antecipadamente pel
 
 ## Comando
 
-STD plugin comes with extra ASF command, `!std [Bots]`, which allows you to trigger refresh and submission for selected bots on demand. Using the command doesn't require enabled config, which allows you to skip automatic gathering and submission, and control the process yourself manually. Naturally it can also be executed with enabled config, which will simply trigger the usual gathering and submission procedures earlier than expected.
+O plug-in STD vem com um comando extra do ASF, `std [Bots]`, que permite a você acionar a atualização e a submissão dos bots selecionados sob demanda. Usar o comando não requer uma configuração ativada, o que permite que você pule a coleta automática e o envio, e controle o processo por você mesmo manualmente. Naturalmente, também pode ser executado por uma configuração habilitada, o que simplesmente acionará os procedimentos normais de coleta e envio antes do esperado.
 
-We recommend `!std ASF` in order to trigger refresh for all available bots. However, you can also trigger it for selected ones if you'd like to.
+Recomendamos `!std ASF` para acionar a atualização de todos os bots disponíveis. No entanto, você também pode acioná-lo para os selecionados, se você quiser.
 
 ---
 
 ## Configuração avançada
 
-Our plugin supports advanced config which might come useful for people that would like to tweak the internals to their preference.
+Nosso plug-in suporta configuração avançada, o que pode ser útil para pessoas que gostariam de ajustar os dados internos à sua preferência.
 
 A configuração avançada tem a seguinte estrutura localizada dentro do `ASF.json`:
 
@@ -66,19 +66,19 @@ Todas as opções são explicadas abaixo:
 
 ### `Enabled`
 
-Tipo `bool` com valor padrão `false`. This property acts the same as `SteamTokenDumperPluginEnabled` root-level property explained above, and can be used instead, dedicated to people that would prefer to have entire plugin-related config in its own structure (so most likely those already using other advanced properties explained below).
+Tipo `bool` com valor padrão `false`. Essa propriedade atua como o `SteamTokenDumperPluginEnabled`, propriedade de raiz explicada acima, e pode ser usada em vez disso, dedicado a pessoas que prefeririam ter toda a configuração relacionada ao plugin em sua própria estrutura (então, provavelmente quem já usa outras propriedades avançadas explicadas abaixo).
 
 ---
 
 ### `SecretAppIDs`
 
-Tipo `ImmutableHashSet<uint>` com valor padrão vazio. This property specifies `appIDs` that the plugin won't resolve, and if they're already resolved, won't submit the token for. This property can be useful for people with access to potentially-sensitive information about unpublished items, especially the developers, publishers or closed beta testers.
+Tipo `ImmutableHashSet<uint>` com valor padrão vazio. Esta propriedade específica os `appIDs` que o plug-in não resolverá e se já estiverem resolvidos, não enviará o token. Esta propriedade pode ser útil para pessoas com acesso a informações potencialmente sensíveis sobre itens não publicados, especialmente os desenvolvedores, editores ou testadores de betas fechados.
 
 ---
 
 ### `SecretDepotIDs`
 
-Tipo `ImmutableHashSet<uint>` com valor padrão vazio. This property specifies `depotIDs` that the plugin won't resolve, and if they're already resolved, won't submit the key for. This property can be useful for people with access to potentially-sensitive information about unpublished items, especially the developers, publishers or closed beta testers.
+Tipo `ImmutableHashSet<uint>` com valor padrão vazio. Esta propriedade específica os `depotIDs` que o plug-in não resolverá e se já estiverem resolvidos, não enviará a chave. This property can be useful for people with access to potentially-sensitive information about unpublished items, especially the developers, publishers or closed beta testers.
 
 ---
 

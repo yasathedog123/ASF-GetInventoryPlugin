@@ -1,14 +1,14 @@
 # ItemsMatcherPlugin
 
-`ItemsMatcherPlugin` is official ASF **[plugin](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Plugins)** that extends ASF with ASF STM listing features. In particular, this includes `PublicListing` in **[`RemoteCommunication`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#remotecommunication)** and `MatchActively` in **[`TradingPreferences`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration#tradingpreferences)**. ASF comes with `ItemsMatcherPlugin` bundled together with the release, therefore it's ready for usage right away.
+`ItemsMatcherPlugin` é um **[plugin](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Plugins-pt-BR)** oficial que estende o ASF com recursos de listagem do ASF STM. Em particular, isso inclui `PublicListing` em **[`RemoteCommunication`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-pt-BR#remotecommunication)** e `MatchActively` em **[`TradingPreferences`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-pt-BR#tradingpreferences)**. O ASF vem com o `ItemsMatcherPlugin` incluído junto com o lançamento, portanto está pronto para uso imediato.
 
 ---
 
 ## `PublicListing`
 
-Public listing, as the name implies, is listing of currently available ASF STM bots. It's located on **[our website](https://asf.justarchi.net/STM)**, managed automatically and used as a public service for both ASF users that make use of `MatchActively`, as well as ASF and non-ASF users for manual matching.
+A listagem pública, como o nome indica, é a listagem dos bots ASF STM atualmente disponíveis. It's located on **[our website](https://asf.justarchi.net/STM)**, managed automatically and used as a public service for both ASF users that make use of `MatchActively`, as well as ASF and non-ASF users for manual matching.
 
-In order to be listed, you have a set of requirements to meet. No mínimo, você deve ter permitido `PublicListing` em `RemoteCommunication` (configuração padrão), `SteamTradeMatcher` ativado em `TradingPreferences`, configurações de privacidade de **[inventário público](https://steamcommunity.com/my/edit/settings)**, conta **[não restrita](https://help.steampowered.com/faqs/view/71D3-35C2-AD96-AA3A)** e o **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-pt-BR#asf-2fa)** ativo. Additional requirements include 2FA active since at least 15 days, last password change more than 5 days ago, lack of any account limitations like lockdowns, economical bans and trade bans. Naturally, you must also have at least one item from your specified `MatchableTypes`, such as trading cards. In addition to that, bots with more than `500000` items are not accepted due to excessive overhead, we recommend to split your inventory across several accounts in this case.
+In order to be listed, you have a set of requirements to meet. At the minimum, you must have allowed `PublicListing` in `RemoteCommunication` (default setting), `SteamTradeMatcher` enabled in `TradingPreferences`, **[public inventory](https://steamcommunity.com/my/edit/settings)** privacy settings, an **[unrestricted](https://help.steampowered.com/faqs/view/71D3-35C2-AD96-AA3A)** account and **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication#asf-2fa)** active. Additional requirements include 2FA active since at least 15 days, last password change more than 5 days ago, lack of any account limitations like lockdowns, economical bans and trade bans. Naturally, you must also have at least one item from your specified `MatchableTypes`, such as trading cards. In addition to that, bots with more than `500000` items are not accepted due to excessive overhead, we recommend to split your inventory across several accounts in this case.
 
 While `PublicListing` is enabled by default, please note that you will **not** be displayed on the website if you do not meet all of the requirements, especially `SteamTradeMatcher`, which isn't enabled by default. For people that do not meet the criteria, even if they kept `PublicListing` enabled, ASF doesn't communicate with the server in any way. Public listing is also compatible only with latest stable version of ASF and may refuse to display outdated bots, especially if they're missing core functionality that can be found only in newer versions.
 
@@ -42,7 +42,7 @@ Private info (selected data required for providing the functionality) includes:
 - Your `MatchEverything` setting (for display purposes and matching)
 - Your `MaxTradeHoldDuration` setting (so other people know whether you're willing to accept their trades)
 
-Your data is stored for maximum of two weeks since you stop using (announcing on) our listing, and automatically deleted after that period.
+Your data is stored for a maximum of two weeks since you stop using (announcing on) our listing, and automatically deleted after that period.
 
 ---
 
@@ -50,7 +50,7 @@ Your data is stored for maximum of two weeks since you stop using (announcing on
 
 `MatchActively` setting is active version of **[`SteamTradeMatcher`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Trading#steamtradematcher)** including interactive matching in which the bot will send trades to other people. Isso pode funcionar em espera sozinho, ou junto com a configuração `SteamTradeMatcher`. This feature requires `LicenseID` to be set, as it uses third-party server and paid resources to operate.
 
-Para usar essa opção há uma série de requisitos para serem atendidas. No mínimo, você deve ter uma conta **[não restrita](https://help.steampowered.com/faqs/view/71D3-35C2-AD96-AA3A)**, **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication-pt-BR#asf-2fa)** ativo e pelo menos um tipo válido em `MatchableTypes`, como cartas de troca. Additional requirements include 2FA active since at least 15 days, last password change more than 5 days ago, lack of any account limitations like lockdowns, economical bans and trade bans.
+Para usar essa opção há uma série de requisitos para serem atendidas. At the minimum, you must have an **[unrestricted](https://help.steampowered.com/faqs/view/71D3-35C2-AD96-AA3A)** account, **[ASF 2FA](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Two-factor-authentication#asf-2fa)** active and at least one valid type in `MatchableTypes`, such as trading cards. Additional requirements include 2FA active since at least 15 days, last password change more than 5 days ago, lack of any account limitations like lockdowns, economical bans and trade bans.
 
 If you meet all of the requirements above, ASF will periodically communicate with our **[public ASF STM listing](#publiclisting)** in order to actively match bots that are currently available.
 

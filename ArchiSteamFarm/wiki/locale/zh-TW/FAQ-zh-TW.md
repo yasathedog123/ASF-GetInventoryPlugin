@@ -89,7 +89,7 @@ ASF是個C#程式，需要.NET環境來執行。 從.NET 6.0開始，Android就�
 
 ### 我可以選擇要掛哪些遊戲嗎？
 
-**可以**，這有幾種不同的方法。 若您想調整預設的掛卡順序，可以修改&#8203;`FarmingOrders`&#8203; &#8203;**[Bot設定屬性](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-TW#bot-設定檔)**&#8203;。 若您想手動將某些遊戲列入自動掛卡黑名單，可以使用&#8203;`fb`&#8203;**[指令](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-zh-TW)**&#8203;來設定黑名單。 若您想掛所有的卡，且想要先掛某一部份，可以使用&#8203;`fq`&#8203;**[指令](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-zh-TW)**&#8203;來管理優先掛卡佇列。 最後，若您只想掛您想要的遊戲，那您可以使用&#8203;`FarmPriorityQueueOnly`&#8203; &#8203;**[Bot設定屬性](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-TW#bot-設定檔)**&#8203;來達成，並將您所選的應用程式加入至優先掛卡佇列中。
+**可以**，這有幾種不同的方法。 若您想調整預設的掛卡順序，可以修改&#8203;`FarmingOrders`&#8203; &#8203;**[Bot設定屬性](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-TW#bot-設定檔)**&#8203;。 若您想手動將某些遊戲列入自動掛卡黑名單，可以使用&#8203;`fb`&#8203;**[指令](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-zh-TW)**&#8203;來設定黑名單。 若您想掛所有的卡，且想要先掛某一部份，可以使用&#8203;`fq`&#8203;**[指令](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-zh-TW)**&#8203;來管理優先掛卡佇列。 最後，若您只想掛您想要的遊戲，那您可以在Bot的&#8203;**[`FarmingPreferences`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-TW#farmingpreferences掛卡偏好)**&#8203;中宣告&#8203;`FarmPriorityQueueOnly`&#8203;來達成，並將您所選的應用程式加入至優先掛卡佇列中。
 
 除了管理上述的自動掛卡模組以外，您也可以使用手動掛卡模式&#8203;`play`&#8203;**[指令](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-zh-TW)**&#8203;，或使用一些雜項的外部設定，例如&#8203;`GamesPlayedWhileIdle`&#8203; &#8203;**[Bot設定屬性](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-TW#bot-設定檔)**&#8203;。
 
@@ -99,7 +99,7 @@ ASF是個C#程式，需要.NET環境來執行。 從.NET 6.0開始，Android就�
 
 可以，ASF允許您以幾種方式做到。
 
-最好的方法是設定&#8203;**[`GamesPlayedWhileIdle`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-TW#gamesplayedwhileidle閒置時掛卡的遊戲)**&#8203;設定屬性，ASF會在無卡可掛時掛您所選的AppID。 若您希望在其他遊戲仍未掛完卡時，也始終掛您所指定的遊戲，那麼可以接著設定&#8203;**[`FarmPriorityQueueOnly`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-TW#farmpriorityqueueonly只掛卡優先佇列)**&#8203;，這樣ASF就只會掛那些您明確設定出的遊戲；或設定&#8203;**[`Paused`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-TW#paused暫停)**&#8203;暫停掛卡模組，直到您取消暫停。
+最好的方法是設定&#8203;**[`GamesPlayedWhileIdle`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-TW#gamesplayedwhileidle閒置時掛卡的遊戲)**&#8203;設定屬性，ASF會在無卡可掛時掛您所選的AppID。 若您希望在其他遊戲仍未掛完卡時，也始終掛您所指定的遊戲，那麼您可以設定&#8203;**[`FarmPriorityQueueOnly`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-TW#farmingpreferences掛卡偏好)**&#8203;，這樣ASF就只會掛那些您明確設定出的遊戲；或設定&#8203;**[`FarmingPausedByDefault`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Configuration-zh-TW#farmingpreferences掛卡偏好)**&#8203;暫停掛卡模組，直到您取消暫停。
 
 或者，您也可以使用&#8203;**[`play`](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Commands-zh-TW##指令-1)**&#8203;指令，來使ASF開始掛您所選的遊戲。 但請注意，&#8203;`play`&#8203;只應在您需要臨時掛遊戲時使用，因為它並不是個持續指令，若ASF遇到例如像Steam網路斷線等情形，就會恢復成預設狀態。 因此，我們建議您使用&#8203;`GamesPlayedWhileIdle`&#8203;，除非您確實想在短時間內掛您選擇的遊戲，然後再恢復成一般的掛卡流程。
 
@@ -147,15 +147,17 @@ ASF也擁有正確的邏輯來處理&#8203;**影集**&#8203;。 Steam上有許�
 
 - **您可以使用離線模式掛卡**&#8203;（將&#8203;`OnlineStatus`&#8203;設定成&#8203;`Offline`&#8203;）。 離線模式掛卡使您能夠隱藏您Steam「正在遊戲中」的狀態，這樣您可以在顯示「正在線上」的同時使用ASF繼續掛卡，您的朋友們就不會發現ASF正在代替您玩遊戲。 這是一個絕佳的功能，它使您能夠在Steam用戶端維持在線狀態，但又不會因頻繁的遊戲切換而打擾到您的朋友們，或讓他們誤認為您正在玩遊戲。 若您尊重朋友，只憑這一點就應使用ASF，但這仍只是個開始。 值得一提的是，這個功能與您的Steam隱私設定無關⸺若您自行啟動遊戲，您仍會向朋友們顯示正確的遊戲狀態；只有ASF啟動的遊戲會被隱藏，且這並不會影響到您的帳號。
 
-- **您可以跳過仍可退款的遊戲**&#8203;（&#8203;`SkipRefundableGames`&#8203;的功能）。 ASF擁有正確的內建邏輯來處理仍可退款的遊戲，您可以設定ASF不要自動掛它們。 這樣您就能夠自行評估那些從Steam商店購買的遊戲是否值這個價格，而不是讓ASF盡快掛完遊戲的卡片。 若您已遊玩超過2小時，或購買超過2周，那麼ASF將會繼續掛這款遊戲，因為它不再能退款。 在此之前，您都有該遊戲的完整控制權，不論您是否滿意，都可以直接退款該遊戲，整個流程您都毋須手動將它加入黑名單中，也不需要在這段期間停用ASF。
+- **您可以跳過仍可退款的遊戲**&#8203;（啟用Bot的&#8203;`FarmingPreferences`&#8203;功能中的&#8203;`SkipRefundableGames`&#8203;設定）。 ASF擁有正確的內建邏輯來處理仍可退款的遊戲，您可以設定ASF不要自動掛它們。 這樣您就能夠自行評估那些從Steam商店購買的遊戲是否值這個價格，而不是讓ASF盡快掛完遊戲的卡片。 若您已遊玩超過2小時，或購買超過2周，那麼ASF將會繼續掛這款遊戲，因為它不再能退款。 在此之前，您都有該遊戲的完整控制權，不論您是否滿意，都可以直接退款該遊戲，整個流程您都毋須手動將它加入黑名單中，也不需要在這段期間停用ASF。
 
-- **您可以自動將新物品的通知自動標示成已讀**&#8203;（&#8203;`BotBehaviour`&#8203;中的&#8203;`DismissInventoryNotifications`&#8203;功能）。 使用ASF掛卡會使您的帳號收到新的交換卡片。 這是您已經知道會發生的事情，所以就讓ASF幫您清理這些無用的通知，來確保您只會注意到那些重要通知。 當然，這取決於您。
+- **您可以跳過尚未遊玩過的遊戲**&#8203;（啟用Bot的&#8203;`FarmingPreferences`&#8203;功能中的&#8203;`SkipUnplayedGames`&#8203;設定）。 ASF擁有正確的內建邏輯來處理遊戲的遊玩時數，您可以設定ASF不要自動掛它們。 這使您能夠自行控制要遊玩或掛卡的遊戲，而不用手動將所有遊戲加入黑名單，或完全放棄使用ASF。
 
-- **您可以在Steam特賣期間自動獲得活動的交換卡片**&#8203;（&#8203;`AutoSteamSaleEvent`&#8203;的功能）。 若您想要，ASF可以在Steam特賣期間自動探索佇列。 這能在Steam特賣期間為您節省大量時間，並能確保您再也不會錯過每日獲得卡片的機會。
+- **您可以自動將新物品的通知自動標示成已讀**&#8203;（啟用&#8203;`BotBehaviour`&#8203;中的&#8203;`DismissInventoryNotifications`&#8203;功能）。 使用ASF掛卡會使您的帳號收到新的交換卡片。 這是您已經知道會發生的事情，所以就讓ASF幫您清理這些無用的通知，來確保您只會注意到那些重要通知。 當然，這取決於您。
+
+- **您可以在Steam特賣期間自動獲得活動的交換卡片**&#8203;（啟用Bot的&#8203;`FarmingPreferences`&#8203;功能中的&#8203;`AutoSteamSaleEvent`&#8203;設定）。 若您想要，ASF可以在Steam特賣期間自動探索佇列。 這能在Steam特賣期間為您節省大量時間，並能確保您再也不會錯過每日獲得卡片的機會。
 
 - **您可以使用更多選項來自定掛卡順序**&#8203;（&#8203;`FarmingOrders`的功能）。 或許您會想要先掛新買的遊戲？ 或最早購買的？ 依據能掉卡的數量去做排序？ 您已合成的徽章等級排序？ 遊玩時數？ 字母順序？ 依據AppID？ 或完全隨機？ 這完全取決於您。
 
-- **能夠協助您收集完成徽章進度**&#8203;（&#8203;`TradingPreferences`&#8203;中的&#8203;`SteamTradeMatcher`&#8203;功能）。 透過更進階的調整，您可以將ASF轉換成全功能的使用者機器人，能自動接受&#8203;**[STM](https://www.steamtradematcher.com)**&#8203;交易提案，幫助您每天比對交易，而不需要您的操作。 ASF甚至包含了獨有的ASF雙重驗證模組，使您能夠匯入自己的Steam行動驗證器，讓您能完全自動化整個交易流程。 或許您想要ASF為您只準備交易提案，但仍需自行手動確認？ 再次強調，這完全取決於您。
+- **能夠協助您收集完成徽章進度**&#8203;（啟用&#8203;`TradingPreferences`&#8203;中的&#8203;`SteamTradeMatcher`&#8203;功能）。 透過更進階的調整，您可以將ASF轉換成全功能的使用者機器人，能自動接受&#8203;**[STM](https://www.steamtradematcher.com)**&#8203;交易提案，幫助您每天比對交易，而不需要您的操作。 ASF甚至包含了獨有的ASF雙重驗證模組，使您能夠匯入自己的Steam行動驗證器，讓您能完全自動化整個交易流程。 或許您想要ASF為您只準備交易提案，但仍需自行手動確認？ 再次強調，這完全取決於您。
 
 - **ASF可以在背景幫您兌換產品序號**&#8203;（&#8203;**[背景序號啟動器](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Background-games-redeemer-zh-TW)**&#8203;的功能）。 也許您擁有來自各種組合包、數以百計的產品序號，但您懶得一遍又一遍地打開視窗，同意Steam條款，並輸入產品序號。 這樣的話，何不將您的序號清單複製貼上給ASF，並讓它幫您完成這項工作呢？ ASF會在背景自動兌換這些產品序號，並為您提供對應的輸出訊息，讓您能得知每次兌換後的結果。 另外一點，若您有上百個序號，您將很快會觸發Steam的頻率限制，ASF也知道這一點，所以它會耐心等候頻率限制失效，並從中斷處繼續兌換。
 
@@ -335,7 +337,7 @@ Unless required by applicable law or agreed to in writing, ASF is distributed on
 
 可以，若您想要ASF在啟動的時候就暫停掛卡模組，您可以將&#8203;`Paused`&#8203; Bot設定屬性設定成&#8203;`true`&#8203;來達成。 您可以在執行期間使用&#8203;`resume`&#8203;來恢復掛卡。
 
-如果您想完全停用掛卡模組，且確保它不會在沒有明確要求時執行，那麼我們建議您將&#8203;`FarmPriorityQueueOnly`&#8203;設定成&#8203;`true`&#8203;，而不是只將它暫停，這項操作會完全停用掛卡，直到您自己將遊戲加進優先掛卡佇列中。
+如果您想完全停用掛卡模組，且確保它不會在沒有明確要求時執行，那麼我們建議您在Bot的&#8203;`FarmingPreferences`&#8203;中設定&#8203;`FarmPriorityQueueOnly`&#8203;，而不是只將它暫停，這項操作會完全停用掛卡，直到您自己將遊戲加進優先掛卡佇列中。
 
 暫停／停用掛卡模組後，您可以使用ASF的額外功能，例如&#8203;`GamesPlayedWhileIdle`&#8203;。
 
@@ -456,7 +458,7 @@ ASF是依據自由的Apache 2.0授權條款所授權，允許其他開發人員�
 
 第二個原因並不那麼顯而易見，有時，您的徽章頁面確實顯示了該遊戲可供掉卡，但ASF並未馬上為它掛卡。 除非您是遇到其他錯誤，例如ASF無法檢查徽頁面（詳見下述），否則這只是個快取效應，就是Steam讓ASF取得了舊的徽章頁面。 等快取過期後，這個問題很快就會自行解決。 在我們這邊沒有任何方式能解決。
 
-當然，上述都假設了您使用預設設定執行ASF，因為您也可以透過&#8203;`FarmPriorityQueueOnly`&#8203;、&#8203;`SkipRefundableGames`&#8203;等方式，將遊戲加入掛卡黑名單中。
+當然，上述都假設了您使用預設設定執行ASF，因為您也可以透過&#8203;`FarmingPreferences`&#8203;，例如&#8203;`FarmPriorityQueueOnly`&#8203;、&#8203;`SkipRefundableGames`&#8203;等方式，將遊戲加入掛卡黑名單中。
 
 ---
 

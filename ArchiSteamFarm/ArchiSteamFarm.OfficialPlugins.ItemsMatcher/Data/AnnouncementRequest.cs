@@ -1,10 +1,12 @@
+// ----------------------------------------------------------------------------------------------
 //     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+// ----------------------------------------------------------------------------------------------
 // |
-// Copyright 2015-2023 Łukasz "JustArchi" Domeradzki
+// Copyright 2015-2024 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 // |
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,49 +24,58 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Storage;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.ItemsMatcher.Data;
 
 internal class AnnouncementRequest {
-	[JsonProperty]
-	private readonly string? AvatarHash;
+	[JsonInclude]
+	private string? AvatarHash { get; init; }
 
-	[JsonProperty(Required = Required.Always)]
-	private readonly Guid Guid;
+	[JsonInclude]
+	[JsonRequired]
+	private Guid Guid { get; init; }
 
-	[JsonProperty(Required = Required.Always)]
-	private readonly ImmutableHashSet<AssetForListing> Inventory;
+	[JsonInclude]
+	[JsonRequired]
+	private ImmutableHashSet<AssetForListing> Inventory { get; init; }
 
-	[JsonProperty(Required = Required.Always)]
-	private readonly string InventoryChecksum;
+	[JsonInclude]
+	[JsonRequired]
+	private string InventoryChecksum { get; init; }
 
-	[JsonProperty(Required = Required.Always)]
-	private readonly ImmutableHashSet<Asset.EType> MatchableTypes;
+	[JsonInclude]
+	[JsonRequired]
+	private ImmutableHashSet<EAssetType> MatchableTypes { get; init; }
 
-	[JsonProperty(Required = Required.Always)]
-	private readonly bool MatchEverything;
+	[JsonInclude]
+	[JsonRequired]
+	private bool MatchEverything { get; init; }
 
-	[JsonProperty(Required = Required.Always)]
-	private readonly byte MaxTradeHoldDuration;
+	[JsonInclude]
+	[JsonRequired]
+	private byte MaxTradeHoldDuration { get; init; }
 
-	[JsonProperty]
-	private readonly string? Nickname;
+	[JsonInclude]
+	private string? Nickname { get; init; }
 
-	[JsonProperty(Required = Required.Always)]
-	private readonly ulong SteamID;
+	[JsonInclude]
+	[JsonRequired]
+	private ulong SteamID { get; init; }
 
-	[JsonProperty(Required = Required.Always)]
-	private readonly uint TotalInventoryCount;
+	[JsonInclude]
+	[JsonRequired]
+	private uint TotalInventoryCount { get; init; }
 
-	[JsonProperty(Required = Required.Always)]
-	private readonly string TradeToken;
+	[JsonInclude]
+	[JsonRequired]
+	private string TradeToken { get; init; }
 
-	internal AnnouncementRequest(Guid guid, ulong steamID, IReadOnlyCollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<Asset.EType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, string tradeToken, string? nickname = null, string? avatarHash = null) {
+	internal AnnouncementRequest(Guid guid, ulong steamID, IReadOnlyCollection<AssetForListing> inventory, string inventoryChecksum, IReadOnlyCollection<EAssetType> matchableTypes, uint totalInventoryCount, bool matchEverything, byte maxTradeHoldDuration, string tradeToken, string? nickname = null, string? avatarHash = null) {
 		ArgumentOutOfRangeException.ThrowIfEqual(guid, Guid.Empty);
 
 		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
