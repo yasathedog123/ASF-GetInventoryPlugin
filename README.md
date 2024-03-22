@@ -5,10 +5,6 @@
 
 ---
 
-[![Repobeats analytics image](https://repobeats.axiom.co/api/embed/4aa3ac833c7593826ac47ccfdc49c46ae27abb3d.svg "Repobeats analytics image")](https://github.com/yasathedog123/ASF-GetInventoryPlugin/pulse)
-
----
-
 ## Description
 
 ASF-GetInventoryPlugin is a repository that you can use for getting Inventory Info (Cards + Total Gems) by using a command.
